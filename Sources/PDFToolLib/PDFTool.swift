@@ -65,7 +65,7 @@ extension PDFTool {
             let result = try perform(operation: operation)
             
             switch result {
-            case .noChange(let reason):
+            case let .noChange(reason):
                 if let reason {
                     print("No change performed: \(reason)")
                 } else {
@@ -81,19 +81,36 @@ extension PDFTool {
         logger.info("Performing operation: \(operation.verboseDescription)")
         
         switch operation {
-        case .filterPages(let filter):
+        case let .filterPages(filter):
             return try performFilterPages(filter: filter)
             
         case .reversePageOrder:
             return try performReversePageOrder()
             
-        case .replacePages(let fromFileA, let toFileB):
+        case let .replacePages(fromFileA, toFileB):
             return try performReplacePages(from: fromFileA, to: toFileB)
         }
     }
     
     func saveOutputPDFs() throws {
-        #warning("> not done yet")
+        let pdf = try expectOneFile(
+            error: "Encountered more than one PDF while attempting to export. This is an error condition."
+        )
+                
+        let outFilePath = try getOutputFilePath(from: settings)
+        
+        guard !outFilePath.fileExists else {
+            throw PDFToolError.runtimeError(
+                "Output file already exists: \(outFilePath.path.quoted)"
+            )
+        }
+        
+        logger.info("Saving to file \(outFilePath.path.quoted)...")
+        if !pdf.write(to: outFilePath) {
+            throw PDFToolError.runtimeError(
+                "An error occurred while attempting to save the PDF file."
+            )
+        }
     }
 }
 
@@ -102,7 +119,24 @@ extension PDFTool {
 extension PDFTool {
     /// Used when output path is not specified.
     /// Generates output path based on input path.
-    private func makeDefaultOutputPath(from firstSourceFile: URL) throws -> URL {
-        firstSourceFile.deletingLastPathComponent()
+    private func getOutputFilePath(
+        from settings: Settings,
+        baseFileName: String? = nil
+    ) throws -> URL {
+        guard let folderPath = settings.outputDir
+            ?? settings.sourcePDFs.first?.deletingLastPathComponent()
+        else {
+            throw PDFToolError.runtimeError(
+                "Could not determine output path. Output path is either not a folder or does not exist."
+            )
+        }
+        
+        let baseFileName = baseFileName
+            ?? settings.sourcePDFs.first?.deletingPathExtension().lastPathComponent
+            ?? "Output"
+        
+        return folderPath
+            .appendingPathComponent(baseFileName)
+            .appendingPathExtension("pdf")
     }
 }

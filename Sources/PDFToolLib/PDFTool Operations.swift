@@ -66,6 +66,8 @@ extension PDFTool {
                 try pdfB.exchangePage(at: pdfBIndex, withPage: pdfAPage)
             }
         
+        pdfs = [pdfB]
+        
         return .changed
     }
 }
@@ -73,20 +75,24 @@ extension PDFTool {
 // MARK: - Helpers
 
 extension PDFTool {
-    func expectOneFile() throws -> PDFDocument {
+    func expectOneFile(
+        error: String? = nil
+    ) throws -> PDFDocument {
         guard pdfs.count == 1 else {
             throw PDFToolError.runtimeError(
-                "Expected one input PDF file."
+                error ?? "Expected one input PDF file."
             )
         }
         
         return pdfs[0]
     }
     
-    func expectTwoFiles() throws -> (pdfA: PDFDocument, pdfB: PDFDocument) {
+    func expectTwoFiles(
+        error: String? = nil
+    ) throws -> (pdfA: PDFDocument, pdfB: PDFDocument) {
         guard pdfs.count == 2 else {
             throw PDFToolError.runtimeError(
-                "Expected two input PDF files."
+                error ?? "Expected two input PDF files."
             )
         }
         
