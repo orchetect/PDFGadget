@@ -9,11 +9,11 @@ import OTCore
 
 public enum PDFPageFilter: Equatable, Hashable {
     case all
-    
-    case include([PDFPageSet], IndexStyle)
-    
-    case exclude([PDFPageSet], IndexStyle)
-    
+    case include(_ pageSets: [PDFPageSet], IndexStyle)
+    case exclude(_ pageSets: [PDFPageSet], IndexStyle)
+}
+
+extension PDFPageFilter {
     func apply(to pageNumbers: [Int]) -> [Int] {
         var pageNumbers = pageNumbers
         
@@ -47,11 +47,38 @@ public enum PDFPageFilter: Equatable, Hashable {
 }
 
 extension PDFPageFilter {
+    public var verboseDescription: String {
+        switch self {
+        case .all:
+            return "All"
+            
+        case let .include(pageSets, indexStyle):
+            let pageSetsStr = pageSets.map(\.verboseDescription).joined(separator: ", ")
+            return "Including \(pageSetsStr) using \(indexStyle.verboseDescription)"
+            
+        case let .exclude(pageSets, indexStyle):
+            let pageSetsStr = pageSets.map(\.verboseDescription).joined(separator: ", ")
+            return "Including \(pageSetsStr) using \(indexStyle.verboseDescription)"
+        }
+    }
+}
+
+extension PDFPageFilter {
     public enum IndexStyle: Equatable, Hashable {
         /// Explicit page numbers.
         case explicit
         
         /// Index offsets based on the array of input page numbers.
         case offset
+        
+        public var verboseDescription: String {
+            switch self {
+            case .explicit:
+                return "explicit page numbering"
+                
+            case .offset:
+                return "offset page numbering"
+            }
+        }
     }
 }

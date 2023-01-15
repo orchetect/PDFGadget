@@ -14,6 +14,7 @@ public enum PDFToolError: LocalizedError {
         switch self {
         case let .validationError(error):
             return "Validation error: \(error)"
+            
         case let .runtimeError(error):
             return error
         }

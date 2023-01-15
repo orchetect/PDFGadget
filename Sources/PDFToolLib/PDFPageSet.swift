@@ -77,6 +77,30 @@ extension PDFPageSet: Hashable {
 }
 
 extension PDFPageSet {
+    public var verboseDescription: String {
+        switch self {
+        case .odd:
+            return "Odd pages"
+            
+        case .even:
+            return "Even pages"
+            
+        case let .every(nthPage):
+            return "Every \(nthPage) page"
+            
+        case let .range(closedRange):
+            return "Pages \(closedRange.lowerBound)-\(closedRange.upperBound)"
+            
+        case let .openRange(start):
+            return "From page \(start)"
+            
+        case let .pages(intArray):
+            return "Pages \(intArray.map { "\($0)" }.joined(separator: ", "))"
+        }
+    }
+}
+
+extension PDFPageSet {
     public func apply(to pageNumbers: [Int], explicit: Bool) -> [Int] {
         var pageNumbers = pageNumbers
         
