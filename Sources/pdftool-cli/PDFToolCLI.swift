@@ -57,14 +57,16 @@ struct PDFToolCLI: ParsableCommand {
         do {
             settings = try PDFTool.Settings(
                 sourcePDFs: source,
-                outputDir: outputDir
+                outputDir: outputDir,
+                operations: [], // TODO: implement
+                outputBaseFileNameWithoutExtension: nil // TODO: implement
                 // ...
             )
         } catch let PDFToolError.validationError(error) {
             throw ValidationError(error)
         }
         
-        try PDFTool.process(settings)
+        try PDFTool.process(settings: settings)
     }
 }
 

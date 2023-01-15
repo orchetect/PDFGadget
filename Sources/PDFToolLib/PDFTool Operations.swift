@@ -11,8 +11,8 @@ import OTCore
 import PDFKit
 
 extension PDFTool {
-    func performFilterPages(filter: PDFPageFilter) throws -> PDFOperationResult {
-        let pdf = try expectOneFile()
+    func performFilterPages(file: Int, filter: PDFPageFilter) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(index: file)
         
         let diff = try pdf.pageIndexes(filter: filter)
         
@@ -25,8 +25,8 @@ extension PDFTool {
         return .changed
     }
     
-    func performReversePageOrder() throws -> PDFOperationResult {
-        let pdf = try expectOneFile()
+    func performReversePageOrder(file: Int) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(index: file)
         
         let pages = try pdf.pages().reversed()
         try pdf.replaceAllPages(with: pages)
@@ -35,10 +35,12 @@ extension PDFTool {
     }
     
     func performReplacePages(
-        from fromFilter: PDFPageFilter,
-        to toFilter: PDFPageFilter
+        fromFileIndex: Int,
+        fromFilter: PDFPageFilter,
+        toFileIndex: Int,
+        toFilter: PDFPageFilter
     ) throws -> PDFOperationResult {
-        let (pdfA, pdfB) = try expectTwoFiles()
+        let (pdfA, pdfB) = try expectTwoFiles(indexA: fromFileIndex, indexB: toFileIndex)
         
         let pdfAIndexes = try pdfA.pageIndexes(filter: toFilter)
         let pdfBIndexes = try pdfB.pageIndexes(filter: toFilter)
@@ -61,9 +63,11 @@ extension PDFTool {
         
         let pdfAPages = try pdfA.pages(at: pdfAIndexes.included)
         
-        try zip(pdfAPages, pdfBIndexes.included)
-            .forEach { pdfAPage, pdfBIndex in
-                try pdfB.exchangePage(at: pdfBIndex, withPage: pdfAPage)
+        try zip(pdfAPages, zip(pdfAIndexes.included, pdfBIndexes.included))
+            .forEach { pdfAPage, indexes in
+                let pageCopy = pdfAPage.copy() as! PDFPage
+                try pdfB.exchangePage(at: indexes.1, withPage: pageCopy)
+                pdfA.removePage(at: indexes.0)
             }
         
         pdfs = [pdfB]
@@ -76,26 +80,34 @@ extension PDFTool {
 
 extension PDFTool {
     func expectOneFile(
+        index: Int,
         error: String? = nil
     ) throws -> PDFDocument {
-        guard pdfs.count == 1 else {
+        guard pdfs.count >= index else {
             throw PDFToolError.runtimeError(
-                error ?? "Expected one input PDF file."
+                error ?? "Missing input PDF file indexed \(index)."
             )
         }
         
-        return pdfs[0]
+        return pdfs[index]
     }
     
     func expectTwoFiles(
+        indexA: Int,
+        indexB: Int,
         error: String? = nil
     ) throws -> (pdfA: PDFDocument, pdfB: PDFDocument) {
-        guard pdfs.count == 2 else {
+        guard pdfs.indices.contains(indexA) else {
             throw PDFToolError.runtimeError(
-                error ?? "Expected two input PDF files."
+                error ?? "Missing input PDF file index \(indexA)."
+            )
+        }
+        guard pdfs.indices.contains(indexB) else {
+            throw PDFToolError.runtimeError(
+                error ?? "Missing input PDF file index \(indexB)."
             )
         }
         
-        return (pdfA: pdfs[0], pdfB: pdfs[1])
+        return (pdfA: pdfs[indexA], pdfB: pdfs[indexB])
     }
 }

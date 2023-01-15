@@ -11,7 +11,9 @@ import OTCore
 extension PDFTool {
     public struct Settings {
         public enum Defaults {
-            // public static let ... = ...
+            public static let operations: [PDFOperation] = []
+            public static let outputBaseFileNameWithoutExtension: String? = nil
+            public static let outputDir: URL? = nil
         }
         
         public enum Validation {
@@ -21,15 +23,17 @@ extension PDFTool {
         public var sourcePDFs: [URL]
         public var outputDir: URL?
         public var operations: [PDFOperation]
+        public var outputBaseFileNameWithoutExtension: String?
         
         /// Initialize with defaults for defaultable parameters.
         public init(
-            sourcePDFs: [URL],
-            outputDir: URL?
+            sourcePDFs: [URL]
         ) throws {
-            operations = []
             self.sourcePDFs = sourcePDFs
-            self.outputDir = outputDir
+            
+            self.outputDir = Defaults.outputDir
+            self.operations = Defaults.operations
+            self.outputBaseFileNameWithoutExtension = Defaults.outputBaseFileNameWithoutExtension
             
             try validate()
         }
@@ -37,11 +41,13 @@ extension PDFTool {
         public init(
             sourcePDFs: [URL],
             outputDir: URL?,
-            operations: [PDFOperation]
+            operations: [PDFOperation],
+            outputBaseFileNameWithoutExtension: String?
         ) throws {
             self.operations = operations
             self.sourcePDFs = sourcePDFs
             self.outputDir = outputDir
+            self.outputBaseFileNameWithoutExtension = outputBaseFileNameWithoutExtension
             
             try validate()
         }

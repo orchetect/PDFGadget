@@ -31,8 +31,9 @@ extension PDFDocument {
     }
     
     public func pages(at indexes: [Int]? = nil) throws -> [PDFPage] {
-        let getPages = (indexes ?? pageIndexes()).compactMap { page(at: $0) }
-        guard pageCount == getPages.count else {
+        let i = indexes ?? pageIndexes()
+        let getPages = i.compactMap { page(at: $0) }
+        guard i.count == getPages.count else {
             throw PDFToolError.runtimeError(
                 "Error while enumerating pages."
             )

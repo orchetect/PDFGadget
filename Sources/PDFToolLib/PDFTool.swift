@@ -16,7 +16,7 @@ public final class PDFTool {
     
     var pdfs: [PDFDocument] = []
     
-    public init(settings: Settings) {
+    init(settings: Settings) {
         self.settings = settings
     }
 }
@@ -24,7 +24,7 @@ public final class PDFTool {
 // MARK: - Run
 
 extension PDFTool {
-    public static func process(_ settings: Settings) throws {
+    public static func process(settings: Settings) throws {
         try self.init(settings: settings).run()
     }
     
@@ -81,19 +81,30 @@ extension PDFTool {
         logger.info("Performing operation: \(operation.verboseDescription)")
         
         switch operation {
-        case let .filterPages(filter):
-            return try performFilterPages(filter: filter)
+        case let .filterPages(file, filter):
+            return try performFilterPages(file: file, filter: filter)
             
-        case .reversePageOrder:
-            return try performReversePageOrder()
+        case let .reversePageOrder(file):
+            return try performReversePageOrder(file: file)
             
-        case let .replacePages(fromFileA, toFileB):
-            return try performReplacePages(from: fromFileA, to: toFileB)
+        case let .replacePages(
+            fromFileIndex,
+            fromFilter,
+            toFileIndex,
+            toFilter
+        ):
+            return try performReplacePages(
+                fromFileIndex: fromFileIndex,
+                fromFilter: fromFilter,
+                toFileIndex: toFileIndex,
+                toFilter: toFilter
+            )
         }
     }
     
     func saveOutputPDFs() throws {
         let pdf = try expectOneFile(
+            index: 0,
             error: "Encountered more than one PDF while attempting to export. This is an error condition."
         )
                 
@@ -121,7 +132,7 @@ extension PDFTool {
     /// Generates output path based on input path.
     private func getOutputFilePath(
         from settings: Settings,
-        baseFileName: String? = nil
+        fileNameWithoutExtension: String? = nil
     ) throws -> URL {
         guard let folderPath = settings.outputDir
             ?? settings.sourcePDFs.first?.deletingLastPathComponent()
@@ -131,9 +142,10 @@ extension PDFTool {
             )
         }
         
-        let baseFileName = baseFileName
+        let baseFileName = fileNameWithoutExtension
             ?? settings.sourcePDFs.first?.deletingPathExtension().lastPathComponent
-            ?? "Output"
+            .appending("-processed")
+            ?? "Processed"
         
         return folderPath
             .appendingPathComponent(baseFileName)

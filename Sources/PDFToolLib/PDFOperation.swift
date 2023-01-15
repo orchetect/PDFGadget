@@ -7,9 +7,16 @@
 import Foundation
 
 public enum PDFOperation: Equatable, Hashable {
-    case filterPages(PDFPageFilter)
-    case reversePageOrder
-    case replacePages(fromFileA: PDFPageFilter, toFileB: PDFPageFilter)
+    case filterPages(fileIndex: Int, PDFPageFilter)
+    
+    case reversePageOrder(fileIndex: Int)
+    
+    case replacePages(
+        fromFileIndex: Int,
+        fromFilter: PDFPageFilter,
+        toFileIndex: Int,
+        toFilter: PDFPageFilter
+    )
     
     // TODO: possible future features
     // case rotate(pages: PDFPageFilter, degrees: Angle)
@@ -21,14 +28,17 @@ public enum PDFOperation: Equatable, Hashable {
 extension PDFOperation {
     public var verboseDescription: String {
         switch self {
-        case let .filterPages(filter):
-            return "Filter pages: \(filter.verboseDescription)"
+        case let .filterPages(fileIndex, filter):
+            return "Filter pages: \(filter.verboseDescription) in file index \(fileIndex)"
             
-        case .reversePageOrder:
-            return "Reverse Page Order"
+        case let .reversePageOrder(fileIndex):
+            return "Reverse Page Order in file index \(fileIndex)"
             
-        case let .replacePages(fromFilter, toFilter):
-            return "Replace Pages \(toFilter.verboseDescription) in second file with pages \(fromFilter.verboseDescription) from first file"
+        case let .replacePages(fromFileIndex,
+                               fromFilter,
+                               toFileIndex,
+                               toFilter):
+            return "Replace Pages \(toFilter.verboseDescription) in file index \(toFileIndex) with pages \(fromFilter.verboseDescription) from file index \(fromFileIndex)"
         }
     }
 }
