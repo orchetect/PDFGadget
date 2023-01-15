@@ -12,7 +12,10 @@ public enum PDFOperation: Equatable, Hashable {
     case replacePages(fromFile1: PDFPageFilter, toFile2: PDFPageFilter)
     
     // TODO: possible future features
-    // case removeAnnotations(filter: PDFPageRange)
+    // case rotate(pages: PDFPageFilter, degrees: Angle)
+    // case flip(pages: PDFPageFilter, axis: Axis)
+    // case crop(pages: PDFPageFilter, area: Rect)
+    // case removeAnnotations(onPages: PDFPageFilter)
 }
 
 extension PDFOperation {

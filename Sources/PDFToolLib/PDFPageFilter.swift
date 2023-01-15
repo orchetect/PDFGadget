@@ -9,40 +9,69 @@ import OTCore
 
 public enum PDFPageFilter: Equatable, Hashable {
     case all
-    case include(_ pageSets: [PDFPageSet], IndexStyle)
-    case exclude(_ pageSets: [PDFPageSet], IndexStyle)
+    case include(_ descriptors: [PDFPagesDescriptor])
+    case exclude(_ descriptors: [PDFPagesDescriptor])
 }
 
 extension PDFPageFilter {
-    func apply(to pageNumbers: [Int]) -> [Int] {
-        var pageNumbers = pageNumbers
-        
-        func diff(_ pageSets: [PDFPageSet], _ indexStyle: IndexStyle, include: Bool) -> [Int] {
-            var results: Set<Int> = []
-            pageSets.forEach {
-                let result = $0.apply(to: pageNumbers, explicit: indexStyle == .explicit)
-                results.formUnion(result)
-            }
-            if include {
-                return Array(results)
-            } else {
-                return Array(pageNumbers.filter { !results.contains($0) })
-            }
-        }
+    func apply(
+        to input: [Int],
+        sort: Bool = true
+    ) -> IndexesDiff {
+        var included = input
+        var isInclusive = true
         
         switch self {
         case .all:
-            break
+            // no logic needed, just keep all input indexes
+            isInclusive = true
             
-        case let .include(pageSets, indexStyle):
-            pageNumbers = diff(pageSets, indexStyle, include: true)
+        case let .include(descriptor):
+            let diffed = Self.diff(indexes: included, descriptor, include: true)
+            included = diffed.indexes
+            isInclusive = diffed.allAreInclusive
             
-        case let .exclude(pageSets, indexStyle):
-            pageNumbers = diff(pageSets, indexStyle, include: false)
+        case let .exclude(descriptor):
+            let diffed = Self.diff(indexes: included, descriptor, include: false)
+            included = diffed.indexes
+            isInclusive = diffed.allAreInclusive
         }
         
-        pageNumbers.sort()
-        return pageNumbers
+        if sort {
+            included.sort()
+        }
+        
+        let excluded = input.filter {
+            !included.contains($0)
+        }
+        
+        return IndexesDiff(
+            original: input,
+            included: included,
+            excluded: excluded,
+            isInclusive: isInclusive
+        )
+    }
+    
+    private static func diff(
+        indexes: [Int],
+        _ pagesDescriptors: [PDFPagesDescriptor],
+        include: Bool
+    ) -> (indexes: [Int], allAreInclusive: Bool) {
+        let filtered: (results: Set<Int>, isInclusive: Bool) = pagesDescriptors
+            .reduce(into: (results: [], isInclusive: true)) { base, pagesDescriptor in
+                let result = pagesDescriptor.apply(to: indexes)
+                if result.isInclusive == false { base.isInclusive = false }
+                base.results.formUnion(result.indexes)
+            }
+        
+        let indexes = include
+            ? Array(filtered.results)
+            : Array(indexes.filter { !filtered.results.contains($0) })
+        
+        let allAreInclusive = filtered.isInclusive
+        
+        return (indexes: indexes, allAreInclusive: allAreInclusive)
     }
 }
 
@@ -52,33 +81,13 @@ extension PDFPageFilter {
         case .all:
             return "All"
             
-        case let .include(pageSets, indexStyle):
-            let pageSetsStr = pageSets.map(\.verboseDescription).joined(separator: ", ")
-            return "Including \(pageSetsStr) using \(indexStyle.verboseDescription)"
+        case let .include(descriptors):
+            let pageSetsStr = descriptors.map(\.verboseDescription).joined(separator: ", ")
+            return "Including \(pageSetsStr)"
             
-        case let .exclude(pageSets, indexStyle):
-            let pageSetsStr = pageSets.map(\.verboseDescription).joined(separator: ", ")
-            return "Including \(pageSetsStr) using \(indexStyle.verboseDescription)"
-        }
-    }
-}
-
-extension PDFPageFilter {
-    public enum IndexStyle: Equatable, Hashable {
-        /// Explicit page numbers.
-        case explicit
-        
-        /// Index offsets based on the array of input page numbers.
-        case offset
-        
-        public var verboseDescription: String {
-            switch self {
-            case .explicit:
-                return "explicit page numbering"
-                
-            case .offset:
-                return "offset page numbering"
-            }
+        case let .exclude(descriptors):
+            let pageSetsStr = descriptors.map(\.verboseDescription).joined(separator: ", ")
+            return "Including \(pageSetsStr)"
         }
     }
 }

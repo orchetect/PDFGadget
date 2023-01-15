@@ -8,16 +8,30 @@ import Foundation
 import PDFKit
 
 extension PDFDocument {
+    // MARK: - Page Indexes
+    
     public var pageRange: Range<Int> {
         0 ..< pageCount
     }
     
-    public var pageIndexes: [Int] {
-        Array(pageRange)
+    public func pageIndexes(at range: Range<Int>? = nil) -> [Int] {
+        Array(range ?? pageRange)
     }
     
-    public func pages() throws -> [PDFPage] {
-        let getPages = pageRange.compactMap { page(at: $0) }
+    public func pageIndexes(
+        filter: PDFPageFilter
+    ) throws -> IndexesDiff {
+        filter.apply(to: pageIndexes())
+    }
+    
+    // MARK: - Page Access
+    
+    public func pages(at range: Range<Int>) throws -> [PDFPage] {
+        try pages(at: pageIndexes(at: range))
+    }
+    
+    public func pages(at indexes: [Int]? = nil) throws -> [PDFPage] {
+        let getPages = (indexes ?? pageIndexes()).compactMap { page(at: $0) }
         guard pageCount == getPages.count else {
             throw PDFToolError.runtimeError(
                 "Error while enumerating pages."
@@ -25,6 +39,12 @@ extension PDFDocument {
         }
         return getPages
     }
+    
+    public func pages(for filter: PDFPageFilter) throws -> [PDFPage] {
+        try pages(at: pageIndexes(filter: filter).included)
+    }
+    
+    // MARK: - Page Operations
     
     public func replaceAllPages<S: Collection>(
         with pages: S
@@ -47,6 +67,28 @@ extension PDFDocument {
         guard pageCount == 0 else {
             throw PDFToolError.runtimeError(
                 "Failed to remove all pages."
+            )
+        }
+    }
+    
+    public func removePages(at indexes: [Int]) throws {
+        guard indexes.allSatisfy(pageRange.contains(_:)) else {
+            throw PDFToolError.runtimeError(
+                "One or more page indexes were not found while attempting to remove pages."
+            )
+        }
+        
+        let originalPageCount = pageCount
+        
+        indexes.sorted().reversed().forEach {
+            removePage(at: $0)
+        }
+        
+        let postPageCount = pageCount
+        
+        guard originalPageCount - postPageCount == indexes.count else {
+            throw PDFToolError.runtimeError(
+                "Failed to remove pages. Resulting page count is not as expected."
             )
         }
     }

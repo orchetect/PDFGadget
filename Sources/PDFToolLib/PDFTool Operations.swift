@@ -14,15 +14,15 @@ extension PDFTool {
     func performFilterPages(filter: PDFPageFilter) throws -> PDFOperationResult {
         let pdf = try expectOneFile()
         
-        let originalIndexes = pdf.pageIndexes
-        let filteredIndexes = filter.apply(to: originalIndexes)
+        let diff = try pdf.pageIndexes(filter: filter)
         
-        guard filteredIndexes != originalIndexes else {
+        guard !diff.isIdentical else {
             return .noChange(reason: "Filtered page numbers are identical to input.")
         }
         
-        #warning("> finish operation")
-        return .noChange(reason: "Feature not yet implemented.")
+        try pdf.removePages(at: diff.excluded)
+        
+        return .changed
     }
     
     func performReversePageOrder() throws -> PDFOperationResult {
@@ -39,6 +39,8 @@ extension PDFTool {
         toFile2: PDFPageFilter
     ) throws -> PDFOperationResult {
         let (pdfA, pdfB) = try expectTwoFiles()
+        
+        
         
         #warning("> not done yet")
         return .noChange(reason: "Feature not yet implemented.")
