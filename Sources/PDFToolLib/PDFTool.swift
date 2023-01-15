@@ -87,8 +87,8 @@ extension PDFTool {
         case .reversePageOrder:
             return try performReversePageOrder()
             
-        case .replacePages(let fromFile1, let toFile2):
-            return try performReplacePages(fromFile1: fromFile1, toFile2: toFile2)
+        case .replacePages(let fromFileA, let toFileB):
+            return try performReplacePages(from: fromFileA, to: toFileB)
         }
     }
     

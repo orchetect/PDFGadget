@@ -9,7 +9,7 @@ import Foundation
 public enum PDFOperation: Equatable, Hashable {
     case filterPages(PDFPageFilter)
     case reversePageOrder
-    case replacePages(fromFile1: PDFPageFilter, toFile2: PDFPageFilter)
+    case replacePages(fromFileA: PDFPageFilter, toFileB: PDFPageFilter)
     
     // TODO: possible future features
     // case rotate(pages: PDFPageFilter, degrees: Angle)

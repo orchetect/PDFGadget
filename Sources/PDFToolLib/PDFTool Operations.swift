@@ -35,15 +35,38 @@ extension PDFTool {
     }
     
     func performReplacePages(
-        fromFile1: PDFPageFilter,
-        toFile2: PDFPageFilter
+        from fromFilter: PDFPageFilter,
+        to toFilter: PDFPageFilter
     ) throws -> PDFOperationResult {
         let (pdfA, pdfB) = try expectTwoFiles()
         
+        let pdfAIndexes = try pdfA.pageIndexes(filter: toFilter)
+        let pdfBIndexes = try pdfB.pageIndexes(filter: toFilter)
         
+        // TODO: could have an exception for when toFilter is .all to always allow it
         
-        #warning("> not done yet")
-        return .noChange(reason: "Feature not yet implemented.")
+        guard pdfAIndexes.isInclusive, pdfBIndexes.isInclusive else {
+            throw PDFToolError.runtimeError(
+                "Page number descriptors are invalid or out of range."
+            )
+        }
+        
+        guard pdfAIndexes.included.count == pdfBIndexes.included.count else {
+            let a = pdfAIndexes.included.count
+            let b = pdfBIndexes.included.count
+            throw PDFToolError.runtimeError(
+                "Selected page counts for replacement do not match: \(a) pages from file A to \(b) pages in file B."
+            )
+        }
+        
+        let pdfAPages = try pdfA.pages(at: pdfAIndexes.included)
+        
+        try zip(pdfAPages, pdfBIndexes.included)
+            .forEach { pdfAPage, pdfBIndex in
+                try pdfB.exchangePage(at: pdfBIndex, withPage: pdfAPage)
+            }
+        
+        return .changed
     }
 }
 

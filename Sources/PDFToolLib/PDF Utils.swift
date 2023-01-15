@@ -92,4 +92,14 @@ extension PDFDocument {
             )
         }
     }
+    
+    public func exchangePage(at index: Int, withPage other: PDFPage) throws {
+        guard pageIndexes().contains(index) else {
+            throw PDFToolError.runtimeError(
+                "Failed to replace page. Index is out of bounds: \(index)."
+            )
+        }
+        removePage(at: index)
+        insert(other, at: index)
+    }
 }
