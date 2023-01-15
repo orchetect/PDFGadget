@@ -11,12 +11,12 @@ import OTCore
 import PDFKit
 
 public final class PDFTool {
-    private let logger = Logger(label: "\(PDFTool.self)")
-    private let settings: Settings
+    let logger = Logger(label: "\(PDFTool.self)")
+    let settings: Settings
     
-    private var pdfs: [PDFDocument] = []
+    var pdfs: [PDFDocument] = []
     
-    init(settings: Settings) {
+    public init(settings: Settings) {
         self.settings = settings
     }
 }
@@ -62,35 +62,34 @@ extension PDFTool {
     
     func performOperations() throws {
         for operation in settings.operations {
-            try perform(operation: operation)
+            let result = try perform(operation: operation)
+            
+            switch result {
+            case .noChange(let reason):
+                if let reason {
+                    print("No change performed: \(reason)")
+                } else {
+                    print("No change performed.")
+                }
+            case .changed:
+                break
+            }
         }
     }
     
-    func perform(operation: PDFOperation) throws {
+    func perform(operation: PDFOperation) throws -> PDFOperationResult {
         logger.info("Performing operation: \(operation.verboseDescription)")
         
         switch operation {
         case .filterPages(let filter):
-            try performFilterPages(filter: filter)
+            return try performFilterPages(filter: filter)
             
         case .reversePageOrder:
-            try performReversePageOrder()
+            return try performReversePageOrder()
             
         case .replacePages(let fromFile1, let toFile2):
-            try performReplacePages(fromFile1: fromFile1, toFile2: toFile2)
+            return try performReplacePages(fromFile1: fromFile1, toFile2: toFile2)
         }
-    }
-    
-    func performFilterPages(filter: PDFPageFilter) throws {
-        #warning("> not done yet")
-    }
-    
-    func performReversePageOrder() throws {
-        #warning("> not done yet")
-    }
-    
-    func performReplacePages(fromFile1: PDFPageFilter, toFile2: PDFPageFilter) throws {
-        #warning("> not done yet")
     }
     
     func saveOutputPDFs() throws {
