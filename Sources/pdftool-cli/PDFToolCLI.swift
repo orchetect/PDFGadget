@@ -7,7 +7,7 @@
 import Foundation
 import ArgumentParser
 import Logging
-import PDFTool
+import PDFToolLib
 
 struct PDFToolCLI: ParsableCommand {
     // MARK: - Config

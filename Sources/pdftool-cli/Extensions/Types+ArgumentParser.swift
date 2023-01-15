@@ -5,7 +5,7 @@
 //
 
 import ArgumentParser
-import PDFTool
+import PDFToolLib
 
 // Export
 

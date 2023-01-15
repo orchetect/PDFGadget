@@ -4,7 +4,7 @@
 //  Licensed under MIT License
 //
 
-import PDFTool
+import PDFToolLib
 
 func main() {
     do {

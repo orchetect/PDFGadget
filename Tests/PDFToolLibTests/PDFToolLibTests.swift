@@ -5,9 +5,9 @@
 //
 
 import XCTest
-@testable import PDFTool
+@testable import PDFToolLib
 
-final class PDFToolTests: XCTestCase {
+final class PDFToolLibTests: XCTestCase {
     func testEmpty() throws {
         // empty
     }

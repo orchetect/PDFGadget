@@ -77,7 +77,7 @@ extension PDFPageSet: Hashable {
 }
 
 extension PDFPageSet {
-    func apply(to pageNumbers: [Int], explicit: Bool) -> [Int] {
+    public func apply(to pageNumbers: [Int], explicit: Bool) -> [Int] {
         var pageNumbers = pageNumbers
         
         switch self {
@@ -103,5 +103,16 @@ extension PDFPageSet {
         
         pageNumbers.sort()
         return pageNumbers
+    }
+    
+    public func containsSamePages(as other: Self) -> Bool {
+        switch self {
+        case let .pages(lhsArray):
+            guard case let .pages(rhsArray) = other else { return false }
+            return Set(lhsArray) == Set(rhsArray)
+            
+        default:
+            return Set([self, other]).count == 1
+        }
     }
 }

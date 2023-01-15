@@ -10,9 +10,9 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "PDFTool",
+            name: "PDFToolLib",
             type: .static,
-            targets: ["PDFTool"]
+            targets: ["PDFToolLib"]
         ),
         .executable(
             name: "pdftool",
@@ -27,7 +27,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "PDFTool",
+            name: "PDFToolLib",
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
                 // .product(name: "Collections", package: "swift-collections"),
@@ -35,13 +35,13 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "PDFToolTests",
-            dependencies: ["PDFTool"]
+            name: "PDFToolLibTests",
+            dependencies: ["PDFToolLib"]
         ),
         .executableTarget(
             name: "pdftool-cli",
             dependencies: [
-                "PDFTool",
+                "PDFToolLib",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
         )
