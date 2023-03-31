@@ -116,10 +116,10 @@ extension PDFPagesDescriptor {
     public var verboseDescription: String {
         switch self {
         case .odd:
-            return "odd pages"
+            return "odd page numbers"
             
         case .even:
-            return "even pages"
+            return "even page numbers"
             
         case let .every(nthPage, includeFirst):
             // TODO: implement localized ordinal number string "1st page", "2nd page"
@@ -128,19 +128,21 @@ extension PDFPagesDescriptor {
         case let .range(range):
             let bounds = range.getAbsoluteBounds()
             
-            return "page indexes \(bounds.min?.string ?? "")...\(bounds.max?.string ?? "")"
+            let fromNum = bounds.min != nil ? (bounds.min! + 1).string : ""
+            let toNum = bounds.max != nil ? (bounds.max! + 1).string : ""
+            return "page numbers \(fromNum)...\(toNum)"
             
         case let .openRange(start):
-            return "from page index \(start)"
+            return "from page number \(start + 1)"
             
         case let .first(pageCount):
-            return "first \(pageCount) pages"
+            return "first \(pageCount) page\(pageCount == 1 ? "" : "s")"
             
         case let .last(pageCount):
-            return "last \(pageCount) pages"
+            return "last \(pageCount) page\(pageCount == 1 ? "" : "s")"
             
         case let .pages(intArray):
-            return "page indexes \(intArray.map { "\($0)" }.joined(separator: ", "))"
+            return "page numbers \(intArray.map { "\($0 + 1)" }.joined(separator: ", "))"
         }
     }
 }
