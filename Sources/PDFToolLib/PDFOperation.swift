@@ -19,7 +19,7 @@ public enum PDFOperation: Equatable, Hashable {
     )
     
     // TODO: possible future features
-    // case rotate(pages: PDFPageFilter, degrees: Angle)
+    case rotate(fileIndex: Int, pages: PDFPageFilter, rotation: PDFPageRotation)
     // case flip(pages: PDFPageFilter, axis: Axis)
     // case crop(pages: PDFPageFilter, area: Rect)
     // case removeAnnotations(onPages: PDFPageFilter)
@@ -39,6 +39,9 @@ extension PDFOperation {
                                toFileIndex,
                                toFilter):
             return "Replace Pages \(toFilter.verboseDescription) in file index \(toFileIndex) with pages \(fromFilter.verboseDescription) from file index \(fromFileIndex)"
+            
+        case let .rotate(fileIndex: fileIndex, pages: pagesFilter, rotation: rotation):
+            return "Rotate Pages \(pagesFilter.verboseDescription) in file index \(fileIndex) \(rotation)"
         }
     }
 }

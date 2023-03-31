@@ -74,6 +74,35 @@ extension PDFTool {
         
         return .changed
     }
+    
+    /// Sets the rotation angle for the page in degrees.
+    func performRotatePages(
+        file: Int,
+        filter: PDFPageFilter,
+        rotation: PDFPageRotation
+    ) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(index: file)
+        
+        let pdfAIndexes = try pdf.pageIndexes(filter: filter)
+        
+        guard pdfAIndexes.isInclusive else {
+            throw PDFToolError.runtimeError(
+                "Page number descriptor is invalid or out of range."
+            )
+        }
+        
+        for index in pdfAIndexes.included {
+            guard let page = pdf.page(at: index) else {
+                throw PDFToolError.runtimeError(
+                    "Page number \(index + 1) of file index \(file) could not be read."
+                )
+            }
+            let sourceAngle = PDFPageRotation.Angle(degrees: page.rotation) ?? ._0degrees
+            page.rotation = rotation.degrees(offsetting: sourceAngle)
+        }
+        
+        return .changed
+    }
 }
 
 // MARK: - Helpers

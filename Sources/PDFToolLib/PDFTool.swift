@@ -99,6 +99,9 @@ extension PDFTool {
                 toFileIndex: toFileIndex,
                 toFilter: toFilter
             )
+            
+        case let .rotate(fileIndex, pages, rotation):
+            return try performRotatePages(file: fileIndex, filter: pages, rotation: rotation)
         }
     }
     

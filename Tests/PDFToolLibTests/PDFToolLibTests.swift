@@ -13,7 +13,7 @@ final class PDFToolLibTests: XCTestCase {
         // empty
     }
     
-    func testRunner() throws {
+    func testNewFeature() throws {
         let run = false // ⚠️ protection!!
         guard run else { return }
         
@@ -21,14 +21,43 @@ final class PDFToolLibTests: XCTestCase {
             .appendingPathComponent("Desktop")
         
         let sources: [URL] = [
-            desktop.appendingPathComponent("8A.pdf"),
-            desktop.appendingPathComponent("8B.pdf")
+            desktop.appendingPathComponent("Test.pdf")
         ]
         
         try PDFTool.process(
             settings: PDFTool.Settings(
                 sourcePDFs: sources,
                 outputDir: nil,
+                operations: [
+                    .rotate(
+                        fileIndex: 0,
+                        pages: .include([.first(count: 1)]),
+                        rotation: .init(angle: ._90degrees, process: .relative)
+                    )
+                ],
+                outputBaseFileNameWithoutExtension: nil
+            )
+        )
+    }
+    
+    func testRunner() throws {
+        let run = false // ⚠️ protection!!
+        guard run else { return }
+        
+        let desktop = FileManager.homeDirectoryForCurrentUserCompat
+            .appendingPathComponent("Desktop")
+        
+        let subDir = desktop.appendingPathComponent("Scans")
+        
+        let sources: [URL] = [
+            subDir.appendingPathComponent("1A.pdf"),
+            subDir.appendingPathComponent("1B.pdf")
+        ]
+        
+        try PDFTool.process(
+            settings: PDFTool.Settings(
+                sourcePDFs: sources,
+                outputDir: desktop,
                 operations: [
                     .reversePageOrder(fileIndex: 1),
                     .replacePages(
