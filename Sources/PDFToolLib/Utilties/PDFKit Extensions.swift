@@ -47,6 +47,16 @@ extension PDFDocument {
     
     // MARK: - Page Operations
     
+    public func append(page: PDFPage) {
+        self.insert(page, at: pageCount)
+    }
+    
+    public func append(pages: [PDFPage]) {
+        for page in pages {
+            append(page: page)
+        }
+    }
+    
     public func replaceAllPages<S: Collection>(
         with pages: S
     ) throws where S.Element == PDFPage {

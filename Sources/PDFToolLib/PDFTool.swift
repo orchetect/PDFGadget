@@ -84,6 +84,9 @@ extension PDFTool {
         case let .filterFiles(files):
             return try performFilterFiles(files: files)
             
+        case let .mergeFiles(files, target):
+            return try performMergeFiles(files: files, appendingTo: target)
+            
         case let .filterPages(file, filter):
             return try performFilterPages(file: file, pages: filter)
             

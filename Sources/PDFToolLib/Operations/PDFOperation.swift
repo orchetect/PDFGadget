@@ -9,6 +9,8 @@ import Foundation
 public enum PDFOperation: Equatable, Hashable {
     case filterFiles(_ files: PDFFilesDescriptor)
     
+    case mergeFiles(_ files: PDFFilesDescriptor = .all, appendingTo: PDFFileDescriptor? = nil)
+    
     // TODO: reorder or sort files
     
     case filterPages(file: PDFFileDescriptor, pages: PDFPageFilter)
@@ -28,9 +30,6 @@ public enum PDFOperation: Equatable, Hashable {
     
     case filterAnnotations(file: PDFFileDescriptor, pages: PDFPageFilter, annotations: PDFAnnotationFilter)
     
-    // TODO: merge file(s) by sequentially appending each file to the end and result in one file
-    // case mergeFiles
-    
     // --> nil out all annotations' `userName: String?` property etc.
     // case removeAnnotationAuthors(fileIndex: Int, pages: PDFPageFilter, for: PDFAnnotationFilter)
     
@@ -49,6 +48,9 @@ extension PDFOperation {
         switch self {
         case let .filterFiles(files):
             return "Filter \(files.verboseDescription)"
+            
+        case .mergeFiles:
+            return "Merge files"
             
         case let .filterPages(file, pages):
             return "Filter \(pages.verboseDescription) in \(file)"

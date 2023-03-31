@@ -14,7 +14,7 @@ final class PDFToolLibTests: XCTestCase {
     }
     
     func testNewFeature() throws {
-        let run = false // ⚠️ protection!!
+        let run = true // ⚠️ protection!!
         guard run else { return }
         
         let desktop = FileManager.homeDirectoryForCurrentUserCompat
@@ -30,13 +30,14 @@ final class PDFToolLibTests: XCTestCase {
                 sourcePDFs: sources,
                 outputDir: nil,
                 operations: [
-                    .filterFiles(.all)
+//                    .filterFiles(.all)
 //                    .filterFiles(.filename(.equals("Test2")))
 //                    .filterFiles(.introspecting(.init(description: "Test", closure: { pdf in
 //                        pdf.documentURL?.lastPathComponent == "Test2.pdf"
 //                    })))
+                    .mergeFiles(.first, appendingTo: .second)
                 ],
-                outputBaseFileNamesWithoutExtension: ["FooA", "FooB"] // nil
+                outputBaseFileNamesWithoutExtension: nil // ["FooA", "FooB"]
             )
         )
     }

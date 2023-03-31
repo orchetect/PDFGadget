@@ -25,6 +25,46 @@ extension PDFTool {
         }
     }
     
+    /// Merge all PDF file(s) sequentially into a single PDF file.
+    /// If target file is `nil`, the first file is used as the target and the contents of subsequent
+    /// files are appended to it.
+    /// - Note: The target file will always be removed from the set of source file(s).
+    ///   This then allows the use of `.all` input files without encountering an error condition.
+    /// - Note: Source file(s) not matching the input descriptor are discarded.
+    func performMergeFiles(
+        files: PDFFilesDescriptor,
+        appendingTo targetFile: PDFFileDescriptor? = nil
+    ) throws -> PDFOperationResult {
+        var filteredPDFs = try expectZeroOrMoreFiles(.all)
+        
+        guard filteredPDFs.count > 1 else {
+            return .noChange(reason: "Not enough source files to perform merge.")
+        }
+        
+        guard let targetPDF = targetFile != nil
+            ? try expectOneFile(targetFile!)
+            : filteredPDFs.first
+        else {
+            throw PDFToolError.runtimeError("Could not determine file to append to.")
+        }
+        
+        // ensure the target PDF is not a member of the source PDFs
+        filteredPDFs.removeAll(targetPDF)
+        
+        // check count again
+        guard filteredPDFs.count > 0 else {
+            return .noChange(reason: "Not enough source files to perform merge.")
+        }
+        
+        for pdf in filteredPDFs {
+            try targetPDF.append(pages: pdf.pages(for: .all).map { $0.copy() as! PDFPage })
+        }
+        
+        pdfs = [targetPDF]
+        
+        return .changed
+    }
+    
     /// Filter page(s).
     func performFilterPages(file: PDFFileDescriptor, pages: PDFPageFilter) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
@@ -88,9 +128,12 @@ extension PDFTool {
         
         try zip(pdfAPages, zip(pdfAIndexes.included, pdfBIndexes.included))
             .forEach { pdfAPage, indexes in
-                let pageCopy = pdfAPage.copy() as! PDFPage
-                try pdfB.exchangePage(at: indexes.1, withPage: pageCopy)
-                pdfA.removePage(at: indexes.0)
+                if pdfA == pdfB {
+                    pdfB.exchangePage(at: indexes.1, withPageAt: indexes.0)
+                } else {
+                    let pdfAPageCopy = pdfAPage.copy() as! PDFPage
+                    try pdfB.exchangePage(at: indexes.1, withPage: pdfAPageCopy)
+                }
             }
         
         pdfs = [pdfB]
