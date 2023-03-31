@@ -27,13 +27,13 @@ public enum PDFOperation: Equatable, Hashable {
     /// Copy page(s) within the same PDF file or from one file to another.
     case copyPages(
         fromFile: PDFFileDescriptor, fromPages: PDFPagesFilter,
-        toFile: PDFFileDescriptor, toPageIndex: Int
+        toFile: PDFFileDescriptor, toPageIndex: Int? = nil
     )
     
     /// Copy page(s) within the same PDF file or from one file to another.
     case movePages(
         fromFile: PDFFileDescriptor, fromPages: PDFPagesFilter,
-        toFile: PDFFileDescriptor, toPageIndex: Int
+        toFile: PDFFileDescriptor, toPageIndex: Int? = nil
     )
     
     /// Reverse the page order of a PDF file.
@@ -96,10 +96,16 @@ extension PDFOperation {
             return "Filter \(pages.verboseDescription) in \(file.verboseDescription)"
             
         case let .copyPages(fromFile, fromPages, toFile, toPageIndex):
-            return "Copy \(fromPages.verboseDescription) from \(fromFile.verboseDescription), inserting at page number \(toPageIndex + 1) in \(toFile.verboseDescription)"
+            let location = toPageIndex != nil
+                ? "inserting at page number \(toPageIndex! + 1) in"
+                : "appending to end of"
+            return "Copy \(fromPages.verboseDescription) from \(fromFile.verboseDescription), \(location) \(toFile.verboseDescription)"
             
         case let .movePages(fromFile, fromPages, toFile, toPageIndex):
-            return "Move \(fromPages.verboseDescription) from \(fromFile.verboseDescription), inserting at page number \(toPageIndex + 1) in \(toFile.verboseDescription)"
+            let location = toPageIndex != nil
+                ? "inserting at page number \(toPageIndex! + 1) in"
+                : "appending to end of"
+            return "Move \(fromPages.verboseDescription) from \(fromFile.verboseDescription), \(location) \(toFile.verboseDescription)"
             
         case let .reversePageOrder(file, pages):
             return "Reverse page order of \(pages.verboseDescription) in \(file.verboseDescription)"

@@ -38,7 +38,8 @@ final class PDFToolLibTests: XCTestCase {
 //                .cloneFile(file: .first)
 //                .reversePageOrder(file: .first, pages: .include([.range(indexes: 6...22)]))
                 .newFile,
-                .copyPages(fromFile: .first, fromPages: .include([.first(count: 3)]), toFile: .second, toPageIndex: 0),
+                .copyPages(fromFile: .first, fromPages: .include([.first(count: 3)]), toFile: .second),
+                .movePages(fromFile: .first, fromPages: .include([.last(count: 3)]), toFile: .second),
                 .filterFiles(.second)
             ],
             outputBaseFilenamesWithoutExtension: nil, // ["FooA", "FooB", "FooC"],
