@@ -11,6 +11,20 @@ import OTCore
 import PDFKit
 
 extension PDFTool {
+    /// Filter PDF file(s).
+    func performFilterFiles(files: PDFFilesDescriptor) throws -> PDFOperationResult {
+        let filteredPDFs = try expectZeroOrMoreFiles(files)
+        let sourcePDFs = pdfs
+        
+        pdfs = filteredPDFs
+        
+        if sourcePDFs != filteredPDFs {
+            return .changed
+        } else {
+            return .noChange(reason: "Filtered files are identical to input.")
+        }
+    }
+    
     /// Filter page(s).
     func performFilterPages(file: PDFFileDescriptor, pages: PDFPageFilter) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)

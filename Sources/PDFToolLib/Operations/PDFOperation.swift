@@ -7,6 +7,10 @@
 import Foundation
 
 public enum PDFOperation: Equatable, Hashable {
+    case filterFiles(_ files: PDFFilesDescriptor)
+    
+    // TODO: reorder or sort files
+    
     case filterPages(file: PDFFileDescriptor, pages: PDFPageFilter)
     
     case reversePageOrder(file: PDFFileDescriptor)
@@ -24,21 +28,24 @@ public enum PDFOperation: Equatable, Hashable {
     case filterAnnotations(file: PDFFileDescriptor, pages: PDFPageFilter, annotations: PDFAnnotationFilter)
     
     // --> nil out all annotations' `userName: String?` property etc.
-//    case removeAnnotationAuthors(fileIndex: Int, pages: PDFPageFilter, for: PDFAnnotationFilter)
+    // case removeAnnotationAuthors(fileIndex: Int, pages: PDFPageFilter, for: PDFAnnotationFilter)
     
-    // text/freeText annotation: removal based on text content, allowing regex matching
-    // text/freeText annotation: text search & replace, allowing regex matching
+    // TODO: text/freeText annotation: removal based on text content, allowing regex matching
+    // TODO: text/freeText annotation: text search & replace, allowing regex matching
     
-    // Title, Author, Subject, PDF Producer, Content creator, etc.
+    // TODO: Title, Author, Subject, PDF Producer, Content creator, etc.
     // case fileMetadata(property: PDFFileProperty, value: String)
     
-    // Draw text, shapes or images on page(s) - ie: a watermark or redaction
+    // TODO: Draw text, shapes or images on page(s) - ie: a watermark or redaction
     // case overlay(text: String, in: Rect)
 }
 
 extension PDFOperation {
     public var verboseDescription: String {
         switch self {
+        case let .filterFiles(files):
+            return "Filter \(files.verboseDescription)"
+            
         case let .filterPages(file, pages):
             return "Filter \(pages.verboseDescription) in \(file)"
             

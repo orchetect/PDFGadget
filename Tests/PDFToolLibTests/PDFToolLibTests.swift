@@ -14,14 +14,15 @@ final class PDFToolLibTests: XCTestCase {
     }
     
     func testNewFeature() throws {
-        let run = false // ⚠️ protection!!
+        let run = true // ⚠️ protection!!
         guard run else { return }
         
         let desktop = FileManager.homeDirectoryForCurrentUserCompat
             .appendingPathComponent("Desktop")
         
         let sources: [URL] = [
-            desktop.appendingPathComponent("Test.pdf")
+            desktop.appendingPathComponent("Test1.pdf"),
+            desktop.appendingPathComponent("Test2.pdf")
         ]
         
         try PDFTool.process(
@@ -29,11 +30,7 @@ final class PDFToolLibTests: XCTestCase {
                 sourcePDFs: sources,
                 outputDir: nil,
                 operations: [
-                    .filterAnnotations(
-                        file: .first,
-                        pages: .all, //.only([.pages(indexes: [1])]),
-                        annotations: .drop([.square]) // .drop([.text, .freeText])
-                    )
+                    .filterFiles(.filename(.equals("Test2")))
                 ],
                 outputBaseFileNameWithoutExtension: nil
             )
