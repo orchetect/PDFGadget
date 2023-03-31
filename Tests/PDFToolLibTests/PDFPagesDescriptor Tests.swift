@@ -413,7 +413,7 @@ final class PDFPagesDescriptorTests: XCTestCase {
     }
     
     func testFirst() throws {
-        let descriptor: PDFPagesDescriptor = .first(pageCount: 2)
+        let descriptor: PDFPagesDescriptor = .first(count: 2)
         
         XCTAssertEqual(
             descriptor.apply(to: []),
@@ -437,7 +437,7 @@ final class PDFPagesDescriptorTests: XCTestCase {
     }
     
     func testLast() throws {
-        let descriptor: PDFPagesDescriptor = .last(pageCount: 2)
+        let descriptor: PDFPagesDescriptor = .last(count: 2)
         
         XCTAssertEqual(
             descriptor.apply(to: []),

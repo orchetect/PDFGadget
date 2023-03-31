@@ -25,7 +25,7 @@ extension PDFTool {
         public var operations: [PDFOperation]
         public var outputBaseFileNameWithoutExtension: String?
         
-        /// Initialize with defaults for defaultable parameters.
+        /// Initialize with defaults for default-able parameters.
         public init(
             sourcePDFs: [URL]
         ) throws {

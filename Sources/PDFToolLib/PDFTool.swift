@@ -87,12 +87,7 @@ extension PDFTool {
         case let .reversePageOrder(file):
             return try performReversePageOrder(file: file)
             
-        case let .replacePages(
-            fromFileIndex,
-            fromFilter,
-            toFileIndex,
-            toFilter
-        ):
+        case let .replacePages(fromFileIndex, fromFilter, toFileIndex, toFilter):
             return try performReplacePages(
                 fromFileIndex: fromFileIndex,
                 fromFilter: fromFilter,
@@ -106,6 +101,7 @@ extension PDFTool {
     }
     
     func saveOutputPDFs() throws {
+        // TODO: this may need refactoring in future if some operations cause multiple output PDF files
         let pdf = try expectOneFile(
             index: 0,
             error: "Encountered more than one PDF while attempting to export. This is an error condition."

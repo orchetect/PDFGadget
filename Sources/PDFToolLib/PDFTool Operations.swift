@@ -11,6 +11,7 @@ import OTCore
 import PDFKit
 
 extension PDFTool {
+    /// Filter page(s).
     func performFilterPages(file: Int, filter: PDFPageFilter) throws -> PDFOperationResult {
         let pdf = try expectOneFile(index: file)
         
@@ -25,15 +26,23 @@ extension PDFTool {
         return .changed
     }
     
+    /// Reverse the pages in a file.
     func performReversePageOrder(file: Int) throws -> PDFOperationResult {
         let pdf = try expectOneFile(index: file)
         
-        let pages = try pdf.pages().reversed()
-        try pdf.replaceAllPages(with: pages)
+        let pages = try pdf.pages()
+        
+        guard pages.count > 1 else {
+            let plural = "page\(pages.count == 1 ? "" : "s")"
+            return .noChange(reason: "Reversing pages has no effect because file only has \(pages.count) \(plural).")
+        }
+        
+        try pdf.replaceAllPages(with: pages.reversed())
         
         return .changed
     }
     
+    /// Replace page(s) with other page(s).
     func performReplacePages(
         fromFileIndex: Int,
         fromFilter: PDFPageFilter,

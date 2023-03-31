@@ -7,7 +7,7 @@
 import Foundation
 
 public enum PDFOperation: Equatable, Hashable {
-    case filterPages(fileIndex: Int, PDFPageFilter)
+    case filterPages(fileIndex: Int, pages: PDFPageFilter)
     
     case reversePageOrder(fileIndex: Int)
     
@@ -23,13 +23,16 @@ public enum PDFOperation: Equatable, Hashable {
     // case flip(pages: PDFPageFilter, axis: Axis)
     // case crop(pages: PDFPageFilter, area: Rect)
     // case removeAnnotations(onPages: PDFPageFilter)
+    
+    // Title, Author, Subject, PDF Producer, Content creator, etc.
+    // case fileMetadata(property: PDFFileProperty, value: String)
 }
 
 extension PDFOperation {
     public var verboseDescription: String {
         switch self {
         case let .filterPages(fileIndex, filter):
-            return "Filter pages: \(filter.verboseDescription) in file index \(fileIndex)"
+            return "Filter Pages: \(filter.verboseDescription) in file index \(fileIndex)"
             
         case let .reversePageOrder(fileIndex):
             return "Reverse Page Order in file index \(fileIndex)"

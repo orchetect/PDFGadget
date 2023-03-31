@@ -24,10 +24,10 @@ public enum PDFPagesDescriptor {
     case openRange(startIndex: Int)
     
     /// First n number of pages.
-    case first(pageCount: Int)
+    case first(count: Int)
     
     /// Last n number of pages.
-    case last(pageCount: Int)
+    case last(count: Int)
     
     /// Individual pages.
     case pages(indexes: [Int])
