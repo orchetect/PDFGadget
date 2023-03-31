@@ -90,13 +90,22 @@ extension PDFTool {
         case let .filterPages(file, filter):
             return try performFilterPages(file: file, pages: filter)
             
-        case let .insertPages(fromFile, fromPages, toFile, atPageIndex, behavior):
+        case let .copyPages(fromFile, fromPages, toFile, toPageIndex):
             return try performInsertPages(
                 from: fromFile,
                 fromPages: fromPages,
                 to: toFile,
-                atPageIndex: atPageIndex,
-                behavior: behavior
+                toPageIndex: toPageIndex,
+                behavior: .copy
+            )
+            
+        case let .movePages(fromFile, fromPages, toFile, toPageIndex):
+            return try performInsertPages(
+                from: fromFile,
+                fromPages: fromPages,
+                to: toFile,
+                toPageIndex: toPageIndex,
+                behavior: .move
             )
             
         case let .reversePageOrder(file):

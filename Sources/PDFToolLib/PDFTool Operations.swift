@@ -85,7 +85,7 @@ extension PDFTool {
         from sourceFile: PDFFileDescriptor,
         fromPages: PDFPageFilter,
         to destFile: PDFFileDescriptor?,
-        atPageIndex: Int,
+        toPageIndex: Int,
         behavior: PDFOperation.InterchangeBehavior
     ) throws -> PDFOperationResult {
         let (pdfA, pdfB) = try expectSourceAndDestinationFiles(sourceFile, destFile ?? sourceFile)
@@ -101,9 +101,9 @@ extension PDFTool {
         let pdfAPages = try pdfA.pages(at: pdfAIndexes.included)
         
         if pdfA == pdfB {
-            try pdfB.insert(pdfAPages, at: atPageIndex)
+            try pdfB.insert(pdfAPages, at: toPageIndex)
         } else {
-            try pdfB.insert(pdfAPages.map { $0.copy() as! PDFPage }, at: atPageIndex)
+            try pdfB.insert(pdfAPages.map { $0.copy() as! PDFPage }, at: toPageIndex)
         }
         
         if behavior == .move {

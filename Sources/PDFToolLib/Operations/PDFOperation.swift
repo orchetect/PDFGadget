@@ -15,12 +15,15 @@ public enum PDFOperation: Equatable, Hashable {
     
     case filterPages(file: PDFFileDescriptor, pages: PDFPageFilter)
     
-    // TODO: copy pages
-     case insertPages(
-         fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
-         toFile: PDFFileDescriptor, atPageIndex: Int,
-         behavior: InterchangeBehavior
-     )
+    case copyPages(
+        fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
+        toFile: PDFFileDescriptor, toPageIndex: Int
+    )
+    
+    case movePages(
+        fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
+        toFile: PDFFileDescriptor, toPageIndex: Int
+    )
     
     case reversePageOrder(file: PDFFileDescriptor)
     
@@ -63,8 +66,11 @@ extension PDFOperation {
         case let .filterPages(file, pages):
             return "Filter \(pages.verboseDescription) in \(file.verboseDescription)"
             
-        case let .insertPages(fromFile, fromPages, toFile, atPageIndex, behavior):
-            return "Insert \(fromPages.verboseDescription) from \(fromFile.verboseDescription) at page number \(atPageIndex + 1) in \(toFile.verboseDescription) by \(behavior.verboseDescription)"
+        case let .copyPages(fromFile, fromPages, toFile, toPageIndex):
+            return "Copy \(fromPages.verboseDescription) from \(fromFile.verboseDescription), inserting at page number \(toPageIndex + 1) in \(toFile.verboseDescription)"
+            
+        case let .movePages(fromFile, fromPages, toFile, toPageIndex):
+            return "Move \(fromPages.verboseDescription) from \(fromFile.verboseDescription), inserting at page number \(toPageIndex + 1) in \(toFile.verboseDescription)"
             
         case let .reversePageOrder(file):
             return "Reverse page order in \(file.verboseDescription)"
