@@ -67,9 +67,9 @@ extension PDFTool {
             switch result {
             case let .noChange(reason):
                 if let reason {
-                    print("No change performed: \(reason)")
+                    logger.info("No change performed: \(reason)")
                 } else {
-                    print("No change performed.")
+                    logger.info("No change performed.")
                 }
             case .changed:
                 break
