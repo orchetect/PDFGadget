@@ -50,11 +50,7 @@ extension PDFTool {
         
         logger.info("Done.")
     }
-}
-
-// MARK: - Operations
-
-extension PDFTool {
+    
     /// Load PDFs from disk.
     ///
     /// - Parameters:
@@ -92,61 +88,6 @@ extension PDFTool {
             case .changed:
                 break
             }
-        }
-    }
-    
-    /// Internal utility to execute a single operation.
-    func perform(operation: PDFOperation) throws -> PDFOperationResult {
-        logger.info("Performing operation: \(operation.verboseDescription)")
-        
-        switch operation {
-        case let .cloneFile(file):
-            return try performCloneFile(file: file)
-            
-        case let .filterFiles(files):
-            return try performFilterFiles(files: files)
-            
-        case let .mergeFiles(files, target):
-            return try performMergeFiles(files: files, appendingTo: target)
-            
-        case let .filterPages(file, filter):
-            return try performFilterPages(file: file, pages: filter)
-            
-        case let .copyPages(fromFile, fromPages, toFile, toPageIndex):
-            return try performInsertPages(
-                from: fromFile,
-                fromPages: fromPages,
-                to: toFile,
-                toPageIndex: toPageIndex,
-                behavior: .copy
-            )
-            
-        case let .movePages(fromFile, fromPages, toFile, toPageIndex):
-            return try performInsertPages(
-                from: fromFile,
-                fromPages: fromPages,
-                to: toFile,
-                toPageIndex: toPageIndex,
-                behavior: .move
-            )
-            
-        case let .reversePageOrder(file):
-            return try performReversePageOrder(file: file)
-            
-        case let .replacePages(fromFile, fromPages, toFile, toPages, behavior):
-            return try performReplacePages(
-                from: fromFile,
-                fromPages: fromPages,
-                to: toFile,
-                toPages: toPages,
-                behavior: behavior
-            )
-            
-        case let .rotate(file, pages, rotation):
-            return try performRotatePages(file: file, pages: pages, rotation: rotation)
-            
-        case let .filterAnnotations(file, pages, annotations):
-            return try performFilterAnnotations(file: file, pages: pages, annotations: annotations)
         }
     }
     
@@ -207,8 +148,63 @@ extension PDFTool {
 // MARK: - Helpers
 
 extension PDFTool {
+    /// Internal utility to execute a single operation.
+    internal func perform(operation: PDFOperation) throws -> PDFOperationResult {
+        logger.info("Performing operation: \(operation.verboseDescription)")
+        
+        switch operation {
+        case let .cloneFile(file):
+            return try performCloneFile(file: file)
+            
+        case let .filterFiles(files):
+            return try performFilterFiles(files: files)
+            
+        case let .mergeFiles(files, target):
+            return try performMergeFiles(files: files, appendingTo: target)
+            
+        case let .filterPages(file, filter):
+            return try performFilterPages(file: file, pages: filter)
+            
+        case let .copyPages(fromFile, fromPages, toFile, toPageIndex):
+            return try performInsertPages(
+                from: fromFile,
+                fromPages: fromPages,
+                to: toFile,
+                toPageIndex: toPageIndex,
+                behavior: .copy
+            )
+            
+        case let .movePages(fromFile, fromPages, toFile, toPageIndex):
+            return try performInsertPages(
+                from: fromFile,
+                fromPages: fromPages,
+                to: toFile,
+                toPageIndex: toPageIndex,
+                behavior: .move
+            )
+            
+        case let .reversePageOrder(file):
+            return try performReversePageOrder(file: file)
+            
+        case let .replacePages(fromFile, fromPages, toFile, toPages, behavior):
+            return try performReplacePages(
+                from: fromFile,
+                fromPages: fromPages,
+                to: toFile,
+                toPages: toPages,
+                behavior: behavior
+            )
+            
+        case let .rotate(file, pages, rotation):
+            return try performRotatePages(file: file, pages: pages, rotation: rotation)
+            
+        case let .filterAnnotations(file, pages, annotations):
+            return try performFilterAnnotations(file: file, pages: pages, annotations: annotations)
+        }
+    }
+    
     /// Generates full output path including filename.
-    private func formOutputFilePath(
+    internal func formOutputFilePath(
         for pdf: PDFDocument,
         fileNameWithoutExtension: String,
         outputDir: URL?

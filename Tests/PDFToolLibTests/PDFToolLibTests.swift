@@ -5,20 +5,15 @@
 //
 
 import XCTest
-import PDFToolLib
+@testable import PDFToolLib
 import OTCore
 
 final class PDFToolLibTests: XCTestCase {
-    func testEmpty() throws {
-        // empty
-    }
-    
     func testNewFeature() throws {
         let run = false // ⚠️ protection!!
         guard run else { return }
         
-        let desktop = FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Desktop")
+        let desktop = URL.desktopDirectoryBackCompat
         
         let sources: [URL] = [
             desktop.appendingPathComponent("Test1.pdf"),
@@ -51,8 +46,7 @@ final class PDFToolLibTests: XCTestCase {
         let run = false // ⚠️ protection!!
         guard run else { return }
         
-        let desktop = FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Desktop")
+        let desktop = URL.desktopDirectoryBackCompat
         
         let subDir = desktop.appendingPathComponent("Scans")
         
