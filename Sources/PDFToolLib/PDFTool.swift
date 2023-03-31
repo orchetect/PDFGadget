@@ -97,6 +97,9 @@ extension PDFTool {
             
         case let .rotate(fileIndex, pages, rotation):
             return try performRotatePages(file: fileIndex, filter: pages, rotation: rotation)
+            
+        case let .removeAnnotations(fileIndex, pages):
+            return try performRemoveAnnotations(file: fileIndex, filter: pages)
         }
     }
     

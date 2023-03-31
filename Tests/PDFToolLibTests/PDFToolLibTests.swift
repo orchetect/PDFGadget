@@ -14,7 +14,7 @@ final class PDFToolLibTests: XCTestCase {
     }
     
     func testNewFeature() throws {
-        let run = false // ⚠️ protection!!
+        let run = true // ⚠️ protection!!
         guard run else { return }
         
         let desktop = FileManager.homeDirectoryForCurrentUserCompat
@@ -29,11 +29,7 @@ final class PDFToolLibTests: XCTestCase {
                 sourcePDFs: sources,
                 outputDir: nil,
                 operations: [
-                    .rotate(
-                        fileIndex: 0,
-                        pages: .include([.first(count: 1)]),
-                        rotation: .init(angle: ._90degrees, process: .relative)
-                    )
+                    .removeAnnotations(fileIndex: 0, pages: .all)
                 ],
                 outputBaseFileNameWithoutExtension: nil
             )

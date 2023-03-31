@@ -22,7 +22,8 @@ public enum PDFOperation: Equatable, Hashable {
     case rotate(fileIndex: Int, pages: PDFPageFilter, rotation: PDFPageRotation)
     // case flip(pages: PDFPageFilter, axis: Axis)
     // case crop(pages: PDFPageFilter, area: Rect)
-    // case removeAnnotations(onPages: PDFPageFilter)
+    
+    case removeAnnotations(fileIndex: Int, pages: PDFPageFilter)
     
     // Title, Author, Subject, PDF Producer, Content creator, etc.
     // case fileMetadata(property: PDFFileProperty, value: String)
@@ -43,11 +44,14 @@ extension PDFOperation {
         case let .replacePages(fromFileIndex,
                                fromPages,
                                toFileIndex,
-                               toFilter):
-            return "Replace Pages \(toFilter.verboseDescription) in file index \(toFileIndex) with pages \(fromFilter.verboseDescription) from file index \(fromFileIndex)"
+                               toPages):
+            return "Replace Pages \(toPages.verboseDescription) in file index \(toFileIndex) with pages \(fromPages.verboseDescription) from file index \(fromFileIndex)"
             
-        case let .rotate(fileIndex: fileIndex, pages: pagesFilter, rotation: rotation):
-            return "Rotate Pages \(pagesFilter.verboseDescription) in file index \(fileIndex) \(rotation)"
+        case let .rotate(fileIndex, pages, rotation):
+            return "Rotate Pages \(pages.verboseDescription) in file index \(fileIndex) \(rotation)"
+            
+        case let .removeAnnotations(fileIndex, pages):
+            return "Remove Annotations for Pages \(pages.verboseDescription) in file index \(fileIndex)"
         }
     }
 }

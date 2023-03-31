@@ -112,6 +112,41 @@ extension PDFTool {
         
         return .changed
     }
+    
+    func performRemoveAnnotations(
+        file: Int,
+        filter: PDFPageFilter
+    ) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(index: file)
+        
+        let pdfAIndexes = try pdf.pageIndexes(filter: filter)
+        
+        guard pdfAIndexes.isInclusive else {
+            throw PDFToolError.runtimeError(
+                "Page number descriptor is invalid or out of range."
+            )
+        }
+        
+        for index in pdfAIndexes.included {
+            guard let page = pdf.page(at: index) else {
+                throw PDFToolError.runtimeError(
+                    "Page number \(index + 1) of file index \(file) could not be read."
+                )
+            }
+            let annotations = page.annotations
+            for annotation in annotations {
+                page.removeAnnotation(annotation)
+            }
+            
+            guard page.annotations.isEmpty else {
+                throw PDFToolError.runtimeError(
+                    "Could not remove all annotations for page number \(index + 1) of file index \(file)."
+                )
+            }
+        }
+        
+        return .changed
+    }
 }
 
 // MARK: - Helpers
