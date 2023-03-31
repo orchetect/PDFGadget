@@ -74,7 +74,7 @@ extension PDFTool {
     }
     
     /// Filter page(s).
-    func performFilterPages(file: PDFFileDescriptor, pages: PDFPageFilter) throws -> PDFOperationResult {
+    func performFilterPages(file: PDFFileDescriptor, pages: PDFPagesFilter) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
         let diff = try pdf.pageIndexes(filter: pages)
@@ -91,7 +91,7 @@ extension PDFTool {
     /// Insert page(s) with a copy of other page(s) either within the same file or between two files.
     func performInsertPages(
         from sourceFile: PDFFileDescriptor,
-        fromPages: PDFPageFilter,
+        fromPages: PDFPagesFilter,
         to destFile: PDFFileDescriptor?,
         toPageIndex: Int,
         behavior: PDFOperation.InterchangeBehavior
@@ -124,7 +124,7 @@ extension PDFTool {
     /// Reverse the pages in a file.
     func performReversePageOrder(
         file: PDFFileDescriptor,
-        pages: PDFPageFilter
+        pages: PDFPagesFilter
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
@@ -140,7 +140,7 @@ extension PDFTool {
         
         guard indexesToReverse.count > 1 else {
             let plural = "page\(indexesToReverse.count == 1 ? " is" : "s are")"
-            return .noChange(reason: "Reversing pages has no effect because file only \(indexesToReverse.count) \(plural) selected for reversal.")
+            return .noChange(reason: "Reversing pages has no effect because file only has \(indexesToReverse.count) \(plural) selected for reversal.")
         }
         
         let pairs = zip(indexesToReverse, indexesToReverse.reversed())
@@ -156,9 +156,9 @@ extension PDFTool {
     /// Replace page(s) with a copy of other page(s) either within the same file or between two files.
     func performReplacePages(
         from sourceFile: PDFFileDescriptor,
-        fromPages: PDFPageFilter,
+        fromPages: PDFPagesFilter,
         to destFile: PDFFileDescriptor?,
-        toPages: PDFPageFilter,
+        toPages: PDFPagesFilter,
         behavior: PDFOperation.InterchangeBehavior
     ) throws -> PDFOperationResult {
         let (pdfA, pdfB) = try expectSourceAndDestinationFiles(sourceFile, destFile ?? sourceFile)
@@ -205,7 +205,7 @@ extension PDFTool {
     /// Sets the rotation angle for the page in degrees.
     func performRotatePages(
         file: PDFFileDescriptor,
-        pages: PDFPageFilter,
+        pages: PDFPagesFilter,
         rotation: PDFPageRotation
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
@@ -234,7 +234,7 @@ extension PDFTool {
     /// Filter annotations by type.
     func performFilterAnnotations(
         file: PDFFileDescriptor,
-        pages: PDFPageFilter,
+        pages: PDFPagesFilter,
         annotations: PDFAnnotationFilter
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)

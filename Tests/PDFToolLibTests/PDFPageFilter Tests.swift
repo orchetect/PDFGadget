@@ -1,5 +1,5 @@
 //
-//  PDFPageFilter Tests.swift
+//  PDFPagesFilter Tests.swift
 //  PDFTool • https://github.com/orchetect/PDFTool
 //  Licensed under MIT License
 //
@@ -9,7 +9,7 @@ import XCTest
 
 final class PDFPageFilterTests: XCTestCase {
     func testAll() throws {
-        let filter: PDFPageFilter = .all
+        let filter: PDFPagesFilter = .all
         
         do {
             let filtered = filter.filtering([])
@@ -27,7 +27,7 @@ final class PDFPageFilterTests: XCTestCase {
     }
     
     func testInclude_OddNumbers() throws {
-        let filter: PDFPageFilter = .only([.oddNumbers])
+        let filter: PDFPagesFilter = .include([.oddNumbers])
         
         do {
             let filtered = filter.filtering([])
@@ -45,7 +45,7 @@ final class PDFPageFilterTests: XCTestCase {
     }
     
     func testInclude_EvenNumbers() throws {
-        let filter: PDFPageFilter = .only([.evenNumbers])
+        let filter: PDFPagesFilter = .include([.evenNumbers])
         
         do {
             let filtered = filter.filtering([])
@@ -63,7 +63,7 @@ final class PDFPageFilterTests: XCTestCase {
     }
     
     func testInclude_Multiple_isInclusive() throws {
-        let filter: PDFPageFilter = .only([
+        let filter: PDFPagesFilter = .include([
             .pages(indexes: [0]),
             .range(indexes: 2...3)
         ])
@@ -84,7 +84,7 @@ final class PDFPageFilterTests: XCTestCase {
     }
     
     func testInclude_Multiple_isNotInclusive_FirstNotInclusive() throws {
-        let filter: PDFPageFilter = .only([
+        let filter: PDFPagesFilter = .include([
             .pages(indexes: [4]),
             .range(indexes: 2...3)
         ])
@@ -105,7 +105,7 @@ final class PDFPageFilterTests: XCTestCase {
     }
     
     func testInclude_Multiple_isNotInclusive_LastNotInclusive() throws {
-        let filter: PDFPageFilter = .only([
+        let filter: PDFPagesFilter = .include([
             .pages(indexes: [0]),
             .range(indexes: 2...3)
         ])
@@ -126,7 +126,7 @@ final class PDFPageFilterTests: XCTestCase {
     }
     
     func testExclude_OddNumbers() throws {
-        let filter: PDFPageFilter = .drop([.oddNumbers])
+        let filter: PDFPagesFilter = .exclude([.oddNumbers])
         
         do {
             let filtered = filter.filtering([])
@@ -144,7 +144,7 @@ final class PDFPageFilterTests: XCTestCase {
     }
     
     func testExclude_EvenNumbers() throws {
-        let filter: PDFPageFilter = .drop([.evenNumbers])
+        let filter: PDFPagesFilter = .exclude([.evenNumbers])
         
         do {
             let filtered = filter.filtering([])
@@ -162,7 +162,7 @@ final class PDFPageFilterTests: XCTestCase {
     }
     
     func testExclude_Multiple_isInclusive() throws {
-        let filter: PDFPageFilter = .drop([
+        let filter: PDFPagesFilter = .exclude([
             .pages(indexes: [0]),
             .range(indexes: 2...3)
         ])

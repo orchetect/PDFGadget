@@ -19,7 +19,7 @@ extension PDFDocument {
     }
     
     public func pageIndexes(
-        filter: PDFPageFilter
+        filter: PDFPagesFilter
     ) throws -> IndexesDiff {
         filter.filtering(pageIndexes())
     }
@@ -41,7 +41,7 @@ extension PDFDocument {
         return getPages
     }
     
-    public func pages(for filter: PDFPageFilter) throws -> [PDFPage] {
+    public func pages(for filter: PDFPagesFilter) throws -> [PDFPage] {
         try pages(at: pageIndexes(filter: filter).included)
     }
     

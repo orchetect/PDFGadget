@@ -11,4 +11,4 @@ import PDFToolLib
 
 //extension PDFOperation: ExpressibleByArgument { }
 //extension PDFPageSet: ExpressibleByArgument { }
-//extension PDFPageFilter: ExpressibleByArgument { }
+//extension PDFPagesFilter: ExpressibleByArgument { }

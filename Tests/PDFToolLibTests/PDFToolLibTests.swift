@@ -31,12 +31,12 @@ final class PDFToolLibTests: XCTestCase {
 //                })))
 //                .mergeFiles(.first, appendingTo: .second)
 //                .movePages(fromFile: .first,
-//                           fromPages: .only([.first(count: 3)]),
+//                           fromPages: .include([.first(count: 3)]),
 //                           toFile: .first,
 //                           toPageIndex: 5),
 //                .filterFiles(.first)
 //                .cloneFile(file: .first)
-                .reversePageOrder(file: .first, pages: .only([.range(indexes: 6...22)]))
+                .reversePageOrder(file: .first, pages: .include([.range(indexes: 6...22)]))
             ],
             outputBaseFilenamesWithoutExtension: nil, // ["FooA", "FooB", "FooC"],
             savePDFs: true
@@ -63,9 +63,9 @@ final class PDFToolLibTests: XCTestCase {
                 .reversePageOrder(file: .second, pages: .all),
                 .replacePages(
                     fromFile: .second,
-                    fromPages: .only([.evenNumbers]),
+                    fromPages: .include([.evenNumbers]),
                     toFile: .first,
-                    toPages: .only([.evenNumbers]),
+                    toPages: .include([.evenNumbers]),
                     behavior: .copy
                 ),
                 .filterFiles(.first)

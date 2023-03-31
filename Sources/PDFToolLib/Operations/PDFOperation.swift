@@ -23,43 +23,43 @@ public enum PDFOperation: Equatable, Hashable {
     // TODO: reorder or sort files
     
     /// Filter page(s) of PDF file(s).
-    case filterPages(file: PDFFileDescriptor, pages: PDFPageFilter)
+    case filterPages(file: PDFFileDescriptor, pages: PDFPagesFilter)
     
     /// Copy page(s) within the same PDF file or from one file to another.
     case copyPages(
-        fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
+        fromFile: PDFFileDescriptor, fromPages: PDFPagesFilter,
         toFile: PDFFileDescriptor, toPageIndex: Int
     )
     
     /// Copy page(s) within the same PDF file or from one file to another.
     case movePages(
-        fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
+        fromFile: PDFFileDescriptor, fromPages: PDFPagesFilter,
         toFile: PDFFileDescriptor, toPageIndex: Int
     )
     
     /// Reverse the page order of a PDF file.
-    case reversePageOrder(file: PDFFileDescriptor, pages: PDFPageFilter)
+    case reversePageOrder(file: PDFFileDescriptor, pages: PDFPagesFilter)
     
     /// Replace existing page(s) with other page(s).
     case replacePages(
-        fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
-        toFile: PDFFileDescriptor, toPages: PDFPageFilter,
+        fromFile: PDFFileDescriptor, fromPages: PDFPagesFilter,
+        toFile: PDFFileDescriptor, toPages: PDFPagesFilter,
         behavior: InterchangeBehavior
     )
     
     /// Rotate page(s) by a multiple of 90 degrees.
     /// Rotation can be absolute or relative to current page rotation (if any).
-    case rotate(file: PDFFileDescriptor, pages: PDFPageFilter, rotation: PDFPageRotation)
+    case rotate(file: PDFFileDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
     
-    // TODO: case crop(pages: PDFPageFilter, area: Rect)
+    // TODO: case crop(pages: PDFPagesFilter, area: Rect)
     
-    // TODO: case flip(pages: PDFPageFilter, axis: Axis) // -> use Quartz filter?
+    // TODO: case flip(pages: PDFPagesFilter, axis: Axis) // -> use Quartz filter?
     
     /// Filter annotation(s).
-    case filterAnnotations(file: PDFFileDescriptor, pages: PDFPageFilter, annotations: PDFAnnotationFilter)
+    case filterAnnotations(file: PDFFileDescriptor, pages: PDFPagesFilter, annotations: PDFAnnotationFilter)
     
     // --> nil out all annotations' `userName: String?` property etc.
-    // case removeAnnotationAuthors(fileIndex: Int, pages: PDFPageFilter, for: PDFAnnotationFilter)
+    // case removeAnnotationAuthors(fileIndex: Int, pages: PDFPagesFilter, for: PDFAnnotationFilter)
     
     // TODO: text/freeText annotation: removal based on text content, allowing regex matching
     // TODO: text/freeText annotation: text search & replace, allowing regex matching

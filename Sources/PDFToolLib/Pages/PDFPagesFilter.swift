@@ -1,5 +1,5 @@
 //
-//  PDFPageFilter.swift
+//  PDFPagesFilter.swift
 //  PDFTool • https://github.com/orchetect/PDFTool
 //  Licensed under MIT License
 //
@@ -7,14 +7,14 @@
 import Foundation
 import OTCore
 
-public enum PDFPageFilter: Equatable, Hashable {
+public enum PDFPagesFilter: Equatable, Hashable {
     case all
     // case none
-    case only(_ descriptors: [PDFPagesDescriptor])
-    case drop(_ descriptors: [PDFPagesDescriptor])
+    case include(_ descriptors: [PDFPagesDescriptor])
+    case exclude(_ descriptors: [PDFPagesDescriptor])
 }
 
-extension PDFPageFilter {
+extension PDFPagesFilter {
     func filtering(_ inputs: [Int], sort: Bool = true) -> IndexesDiff {
         var included = inputs
         var isInclusive = true
@@ -24,12 +24,12 @@ extension PDFPageFilter {
             // no logic needed, just keep all input indexes
             isInclusive = true
             
-        case let .only(descriptor):
+        case let .include(descriptor):
             let diffed = Self.diff(indexes: included, descriptor, include: true)
             included = diffed.indexes
             isInclusive = diffed.allAreInclusive
             
-        case let .drop(descriptor):
+        case let .exclude(descriptor):
             let diffed = Self.diff(indexes: included, descriptor, include: false)
             included = diffed.indexes
             isInclusive = diffed.allAreInclusive
@@ -73,17 +73,17 @@ extension PDFPageFilter {
     }
 }
 
-extension PDFPageFilter {
+extension PDFPagesFilter {
     public var verboseDescription: String {
         switch self {
         case .all:
             return "all pages"
             
-        case let .only(descriptors):
+        case let .include(descriptors):
             let pageSetsStr = descriptors.map(\.verboseDescription).joined(separator: ", ")
             return "pages including \(pageSetsStr)"
             
-        case let .drop(descriptors):
+        case let .exclude(descriptors):
             let pageSetsStr = descriptors.map(\.verboseDescription).joined(separator: ", ")
             return "pages excluding \(pageSetsStr)"
         }
