@@ -36,13 +36,14 @@ final class PDFToolLibTests: XCTestCase {
 //                        pdf.documentURL?.lastPathComponent == "Test2.pdf"
 //                    })))
 //                    .mergeFiles(.first, appendingTo: .second)
-                    .movePages(fromFile: .first,
-                               fromPages: .only([.first(count: 3)]),
-                               toFile: .first,
-                               toPageIndex: 5),
-                    .filterFiles(.first)
+//                    .movePages(fromFile: .first,
+//                               fromPages: .only([.first(count: 3)]),
+//                               toFile: .first,
+//                               toPageIndex: 5),
+//                    .filterFiles(.first)
+                    .cloneFile(file: .first)
                 ],
-                outputBaseFileNamesWithoutExtension: nil // ["FooA", "FooB"]
+                outputBaseFileNamesWithoutExtension: ["FooA", "FooB", "FooC"]
             )
         )
     }

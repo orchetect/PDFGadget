@@ -7,6 +7,8 @@
 import Foundation
 
 public enum PDFOperation: Equatable, Hashable {
+    case cloneFile(file: PDFFileDescriptor)
+    
     case filterFiles(_ files: PDFFilesDescriptor)
     
     case mergeFiles(_ files: PDFFilesDescriptor = .all, appendingTo: PDFFileDescriptor? = nil)
@@ -57,6 +59,9 @@ public enum PDFOperation: Equatable, Hashable {
 extension PDFOperation {
     public var verboseDescription: String {
         switch self {
+        case let .cloneFile(file):
+            return "Clone \(file.verboseDescription)"
+            
         case let .filterFiles(files):
             return "Filter \(files.verboseDescription)"
             
