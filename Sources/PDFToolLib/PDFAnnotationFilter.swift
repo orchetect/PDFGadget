@@ -10,8 +10,8 @@ import PDFKit
 public enum PDFAnnotationFilter: Equatable, Hashable {
     case all
     case none
-    case include(_ types: [PDFAnnotationSubtype])
-    case exclude(_ types: [PDFAnnotationSubtype])
+    case only(_ types: [PDFAnnotationSubtype])
+    case drop(_ types: [PDFAnnotationSubtype])
 }
 
 extension PDFAnnotationFilter {
@@ -25,12 +25,12 @@ extension PDFAnnotationFilter {
         case .none:
             return []
             
-        case let .include(types):
+        case let .only(types):
             return inputs.filter {
                 $0.type(containedIn: types)
             }
             
-        case let .exclude(types):
+        case let .drop(types):
             return inputs.filter {
                 !$0.type(containedIn: types)
             }
@@ -47,10 +47,10 @@ extension PDFAnnotationFilter {
         case .none:
             return false
             
-        case let .include(types):
+        case let .only(types):
             return input.type(containedIn: types)
             
-        case let .exclude(types):
+        case let .drop(types):
             return !input.type(containedIn: types)
         }
     }
@@ -65,11 +65,11 @@ extension PDFAnnotationFilter {
         case .none:
             return "no annotations"
             
-        case let .include(types):
+        case let .only(types):
             let typesStr = types.map(\.rawValue).joined(separator: ", ")
             return "including \(typesStr) annotations"
             
-        case let .exclude(types):
+        case let .drop(types):
             let typesStr = types.map(\.rawValue).joined(separator: ", ")
             return "excluding \(typesStr) annotations"
         }

@@ -9,9 +9,9 @@ import OTCore
 
 public enum PDFPageFilter: Equatable, Hashable {
     case all
-    //case none
-    case include(_ descriptors: [PDFPagesDescriptor])
-    case exclude(_ descriptors: [PDFPagesDescriptor])
+    // case none
+    case only(_ descriptors: [PDFPagesDescriptor])
+    case drop(_ descriptors: [PDFPagesDescriptor])
 }
 
 extension PDFPageFilter {
@@ -27,12 +27,12 @@ extension PDFPageFilter {
             // no logic needed, just keep all input indexes
             isInclusive = true
             
-        case let .include(descriptor):
+        case let .only(descriptor):
             let diffed = Self.diff(indexes: included, descriptor, include: true)
             included = diffed.indexes
             isInclusive = diffed.allAreInclusive
             
-        case let .exclude(descriptor):
+        case let .drop(descriptor):
             let diffed = Self.diff(indexes: included, descriptor, include: false)
             included = diffed.indexes
             isInclusive = diffed.allAreInclusive
@@ -82,11 +82,11 @@ extension PDFPageFilter {
         case .all:
             return "all pages"
             
-        case let .include(descriptors):
+        case let .only(descriptors):
             let pageSetsStr = descriptors.map(\.verboseDescription).joined(separator: ", ")
             return "pages including \(pageSetsStr)"
             
-        case let .exclude(descriptors):
+        case let .drop(descriptors):
             let pageSetsStr = descriptors.map(\.verboseDescription).joined(separator: ", ")
             return "pages excluding \(pageSetsStr)"
         }
