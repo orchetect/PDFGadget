@@ -56,6 +56,10 @@ extension PDFTool {
 
 extension PDFTool {
     /// Load PDFs from disk.
+    ///
+    /// - Parameters:
+    ///   - urls: File URLs for PDFS to load from disk.
+    ///   - removeExisting: Remove currently loaded PDFs first.
     public func load(pdfs urls: [URL], removeExisting: Bool = false) throws {
         if removeExisting {
             pdfs = []
@@ -71,6 +75,9 @@ extension PDFTool {
     }
     
     /// Perform one or more operations on the loaded PDFs.
+    ///
+    /// - Parameters:
+    ///   - operations: One or more sequential operations to perform on the loaded PDF(s).
     public func perform(operations: [PDFOperation]) throws {
         for operation in operations {
             let result = try perform(operation: operation)
@@ -144,6 +151,7 @@ extension PDFTool {
     }
     
     /// Save the PDFs to disk.
+    ///
     /// - Parameters:
     ///   - outputDir: Output directory. Must be a folder that exists on disk.
     ///     If `nil`, PDF file(s) are saved to the same directory they exist.
