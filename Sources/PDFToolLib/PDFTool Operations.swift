@@ -113,6 +113,7 @@ extension PDFTool {
         return .changed
     }
     
+    /// Filter annotations by type.
     func performFilterAnnotations(
         fileIndex: Int,
         pages: PDFPageFilter,
