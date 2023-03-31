@@ -20,12 +20,16 @@ public enum PDFOperation: Equatable, Hashable {
         toFile: PDFFileDescriptor, toPages: PDFPageFilter
     )
     
-    // TODO: possible future features
     case rotate(file: PDFFileDescriptor, pages: PDFPageFilter, rotation: PDFPageRotation)
-    // case crop(pages: PDFPageFilter, area: Rect)
-    // case flip(pages: PDFPageFilter, axis: Axis) // -> use Quartz filter?
+    
+    // TODO: case crop(pages: PDFPageFilter, area: Rect)
+    
+    // TODO: case flip(pages: PDFPageFilter, axis: Axis) // -> use Quartz filter?
     
     case filterAnnotations(file: PDFFileDescriptor, pages: PDFPageFilter, annotations: PDFAnnotationFilter)
+    
+    // TODO: merge file(s) by sequentially appending each file to the end and result in one file
+    // case mergeFiles
     
     // --> nil out all annotations' `userName: String?` property etc.
     // case removeAnnotationAuthors(fileIndex: Int, pages: PDFPageFilter, for: PDFAnnotationFilter)

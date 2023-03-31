@@ -14,7 +14,7 @@ final class PDFToolLibTests: XCTestCase {
     }
     
     func testNewFeature() throws {
-        let run = true // ⚠️ protection!!
+        let run = false // ⚠️ protection!!
         guard run else { return }
         
         let desktop = FileManager.homeDirectoryForCurrentUserCompat
@@ -30,9 +30,13 @@ final class PDFToolLibTests: XCTestCase {
                 sourcePDFs: sources,
                 outputDir: nil,
                 operations: [
-                    .filterFiles(.filename(.equals("Test2")))
+                    .filterFiles(.all)
+//                    .filterFiles(.filename(.equals("Test2")))
+//                    .filterFiles(.introspecting(.init(description: "Test", closure: { pdf in
+//                        pdf.documentURL?.lastPathComponent == "Test2.pdf"
+//                    })))
                 ],
-                outputBaseFileNameWithoutExtension: nil
+                outputBaseFileNamesWithoutExtension: ["FooA", "FooB"] // nil
             )
         )
     }
@@ -64,7 +68,7 @@ final class PDFToolLibTests: XCTestCase {
                         toPages: .only([.evenNumbers])
                     )
                 ],
-                outputBaseFileNameWithoutExtension: nil
+                outputBaseFileNamesWithoutExtension: nil
             )
         )
     }

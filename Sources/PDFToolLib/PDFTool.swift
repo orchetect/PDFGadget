@@ -107,25 +107,41 @@ extension PDFTool {
     }
     
     func saveOutputPDFs() throws {
-        // TODO: this may need refactoring in future if some operations cause multiple output PDF files
-        let pdf = try expectOneFile(
-            .first,
-            error: "Encountered more than one PDF while attempting to export. This is an error condition."
-        )
-                
-        let outFilePath = try getOutputFilePath(from: settings)
+        let filenames = settings.outputBaseFileNamesWithoutExtension
+            ?? pdfs.map { $0.filenameWithoutExtension?.appending("-processed") ?? "File" }
         
-        guard !outFilePath.fileExists else {
+        // ensure there are exactly the right number of filenames
+        guard filenames.count == pdfs.count else {
             throw PDFToolError.runtimeError(
-                "Output file already exists: \(outFilePath.path.quoted)"
+                "Failed to prepare output filenames."
             )
         }
         
-        logger.info("Saving to file \(outFilePath.path.quoted)...")
-        if !pdf.write(to: outFilePath) {
+        // ensure there are no duplicate filenames
+        guard Set(filenames.map({ $0.lowercased() })).count
+                == filenames.map({ $0.lowercased() }).count
+        else {
             throw PDFToolError.runtimeError(
-                "An error occurred while attempting to save the PDF file."
+                "Output filenames are not unique."
             )
+        }
+        
+        for (filename, pdf) in zip(filenames, pdfs) {
+            let outFilePath = try formOutputFilePath(for: pdf, fileNameWithoutExtension: filename)
+            
+            // TODO: allow overwriting by way of Settings flag
+            guard !outFilePath.fileExists else {
+                throw PDFToolError.runtimeError(
+                    "Output file already exists: \(outFilePath.path.quoted)"
+                )
+            }
+            
+            logger.info("Saving to file \(outFilePath.path.quoted)...")
+            if !pdf.write(to: outFilePath) {
+                throw PDFToolError.runtimeError(
+                    "An error occurred while attempting to save the PDF file."
+                )
+            }
         }
     }
 }
@@ -135,25 +151,20 @@ extension PDFTool {
 extension PDFTool {
     /// Used when output path is not specified.
     /// Generates output path based on input path.
-    private func getOutputFilePath(
-        from settings: Settings,
-        fileNameWithoutExtension: String? = nil
+    private func formOutputFilePath(
+        for pdf: PDFDocument,
+        fileNameWithoutExtension: String
     ) throws -> URL {
         guard let folderPath = settings.outputDir
-            ?? settings.sourcePDFs.first?.deletingLastPathComponent()
+                ?? pdf.documentURL?.deletingLastPathComponent()
         else {
             throw PDFToolError.runtimeError(
                 "Could not determine output path. Output path is either not a folder or does not exist."
             )
         }
         
-        let baseFileName = fileNameWithoutExtension
-            ?? settings.sourcePDFs.first?.deletingPathExtension().lastPathComponent
-            .appending("-processed")
-            ?? "Processed"
-        
         return folderPath
-            .appendingPathComponent(baseFileName)
+            .appendingPathComponent(fileNameWithoutExtension)
             .appendingPathExtension("pdf")
     }
 }

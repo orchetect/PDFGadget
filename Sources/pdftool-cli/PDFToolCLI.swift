@@ -59,7 +59,7 @@ struct PDFToolCLI: ParsableCommand {
                 sourcePDFs: source,
                 outputDir: outputDir,
                 operations: [], // TODO: implement
-                outputBaseFileNameWithoutExtension: nil // TODO: implement
+                outputBaseFileNamesWithoutExtension: nil // TODO: implement
                 // ...
             )
         } catch let PDFToolError.validationError(error) {
