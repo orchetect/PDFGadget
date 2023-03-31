@@ -101,7 +101,8 @@ extension PDFTool {
         from sourceFile: PDFFileDescriptor,
         fromPages: PDFPageFilter,
         to destFile: PDFFileDescriptor?,
-        toPages: PDFPageFilter
+        toPages: PDFPageFilter,
+        behavior: PDFOperation.InterchangeBehavior
     ) throws -> PDFOperationResult {
         let (pdfA, pdfB) = try expectSourceAndDestinationFiles(sourceFile, destFile ?? sourceFile)
         
@@ -129,6 +130,7 @@ extension PDFTool {
         try zip(pdfAPages, zip(pdfAIndexes.included, pdfBIndexes.included))
             .forEach { pdfAPage, indexes in
                 if pdfA == pdfB {
+                    // behavior has no effect for same-file operations
                     pdfB.exchangePage(at: indexes.1, withPageAt: indexes.0)
                 } else {
                     let pdfAPageCopy = pdfAPage.copy() as! PDFPage
@@ -136,7 +138,9 @@ extension PDFTool {
                 }
             }
         
-        pdfs = [pdfB]
+        if behavior == .move {
+            try pdfA.removePages(at: pdfAIndexes.included)
+        }
         
         return .changed
     }

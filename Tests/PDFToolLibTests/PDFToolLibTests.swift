@@ -14,7 +14,7 @@ final class PDFToolLibTests: XCTestCase {
     }
     
     func testNewFeature() throws {
-        let run = true // ⚠️ protection!!
+        let run = false // ⚠️ protection!!
         guard run else { return }
         
         let desktop = FileManager.homeDirectoryForCurrentUserCompat
@@ -66,8 +66,10 @@ final class PDFToolLibTests: XCTestCase {
                         fromFile: .second,
                         fromPages: .only([.evenNumbers]),
                         toFile: .first,
-                        toPages: .only([.evenNumbers])
-                    )
+                        toPages: .only([.evenNumbers]),
+                        behavior: .copy
+                    ),
+                    .filterFiles(.first)
                 ],
                 outputBaseFileNamesWithoutExtension: nil
             )

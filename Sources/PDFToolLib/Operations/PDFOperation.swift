@@ -15,11 +15,21 @@ public enum PDFOperation: Equatable, Hashable {
     
     case filterPages(file: PDFFileDescriptor, pages: PDFPageFilter)
     
+    // TODO: copy pages
+    // case insertPages(
+    //     fromFile: PDFFileDescriptor,
+    //     fromPages: PDFPageFilter,
+    //     toFile: PDFFileDescriptor,
+    //     atPageIndex: Int
+    //     behavior: InterchangeBehavior
+    // )
+    
     case reversePageOrder(file: PDFFileDescriptor)
     
     case replacePages(
         fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
-        toFile: PDFFileDescriptor, toPages: PDFPageFilter
+        toFile: PDFFileDescriptor, toPages: PDFPageFilter,
+        behavior: InterchangeBehavior
     )
     
     case rotate(file: PDFFileDescriptor, pages: PDFPageFilter, rotation: PDFPageRotation)
@@ -53,19 +63,37 @@ extension PDFOperation {
             return "Merge files"
             
         case let .filterPages(file, pages):
-            return "Filter \(pages.verboseDescription) in \(file)"
+            return "Filter \(pages.verboseDescription) in \(file.verboseDescription)"
             
         case let .reversePageOrder(file):
-            return "Reverse page order in \(file)"
+            return "Reverse page order in \(file.verboseDescription)"
             
-        case let .replacePages(fromFile, fromPages, toFile, toPages):
-            return "Replace \(toPages.verboseDescription) of \(toFile) with \(fromPages.verboseDescription) from \(fromFile)"
+        case let .replacePages(fromFile, fromPages, toFile, toPages, behavior):
+            return "Replace \(toPages.verboseDescription) of \(toFile.verboseDescription) with \(fromPages.verboseDescription) from \(fromFile.verboseDescription) by \(behavior.verboseDescription)"
             
         case let .rotate(file, pages, rotation):
-            return "Rotate \(pages.verboseDescription) in \(file) \(rotation)"
+            return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation)"
             
         case let .filterAnnotations(file, pages, annotations):
-            return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file)"
+            return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"
+        }
+    }
+}
+
+extension PDFOperation {
+    public enum InterchangeBehavior: Equatable, Hashable {
+        case copy
+        case move
+    }
+}
+
+extension PDFOperation.InterchangeBehavior {
+    public var verboseDescription: String {
+        switch self {
+        case .copy:
+            return "copying"
+        case .move:
+            return "moving"
         }
     }
 }

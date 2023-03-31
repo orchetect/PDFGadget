@@ -93,12 +93,13 @@ extension PDFTool {
         case let .reversePageOrder(file):
             return try performReversePageOrder(file: file)
             
-        case let .replacePages(fromFile, fromPages, toFile, toPages):
+        case let .replacePages(fromFile, fromPages, toFile, toPages, behavior):
             return try performReplacePages(
                 from: fromFile,
                 fromPages: fromPages,
                 to: toFile,
-                toPages: toPages
+                toPages: toPages,
+                behavior: behavior
             )
             
         case let .rotate(file, pages, rotation):
