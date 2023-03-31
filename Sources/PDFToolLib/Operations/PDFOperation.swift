@@ -77,6 +77,41 @@ public enum PDFOperation: Equatable, Hashable {
     // case expect(file: PDFFileDescriptor, pageCount: Int) // could use enum: equals(), greaterThan(), lessThan()
 }
 
+// MARK: - Static Constructors
+
+extension PDFOperation {
+    public static func copyPages(
+        file: PDFFileDescriptor,
+        from fromPages: PDFPagesFilter,
+        toPageIndex: Int? = nil
+    ) -> Self {
+        .copyPages(fromFile: file, fromPages: fromPages, toFile: file, toPageIndex: toPageIndex)
+    }
+    
+    public static func movePages(
+        file: PDFFileDescriptor,
+        from fromPages: PDFPagesFilter,
+        toPageIndex: Int? = nil
+    ) -> Self {
+        .movePages(fromFile: file, fromPages: fromPages, toFile: file, toPageIndex: toPageIndex)
+    }
+    
+    public static func replacePages(
+        file: PDFFileDescriptor,
+        from fromPages: PDFPagesFilter,
+        to toPages: PDFPagesFilter,
+        behavior: InterchangeBehavior
+    ) -> Self {
+        .replacePages(
+            fromFile: file,
+            fromPages: fromPages,
+            toFile: file,
+            toPages: toPages,
+            behavior: behavior
+        )
+    }
+}
+
 extension PDFOperation {
     public var verboseDescription: String {
         switch self {
