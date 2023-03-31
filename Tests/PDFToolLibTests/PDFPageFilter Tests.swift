@@ -26,8 +26,8 @@ final class PDFPageFilterTests: XCTestCase {
         }
     }
     
-    func testInclude_Odd() throws {
-        let filter: PDFPageFilter = .only([.odd])
+    func testInclude_OddNumbers() throws {
+        let filter: PDFPageFilter = .only([.oddNumbers])
         
         do {
             let filtered = filter.apply(to: [])
@@ -44,8 +44,8 @@ final class PDFPageFilterTests: XCTestCase {
         }
     }
     
-    func testInclude_Even() throws {
-        let filter: PDFPageFilter = .only([.even])
+    func testInclude_EvenNumbers() throws {
+        let filter: PDFPageFilter = .only([.evenNumbers])
         
         do {
             let filtered = filter.apply(to: [])
@@ -125,8 +125,8 @@ final class PDFPageFilterTests: XCTestCase {
         }
     }
     
-    func testExclude_Odd() throws {
-        let filter: PDFPageFilter = .drop([.odd])
+    func testExclude_OddNumbers() throws {
+        let filter: PDFPageFilter = .drop([.oddNumbers])
         
         do {
             let filtered = filter.apply(to: [])
@@ -143,8 +143,8 @@ final class PDFPageFilterTests: XCTestCase {
         }
     }
     
-    func testExclude_Even() throws {
-        let filter: PDFPageFilter = .drop([.even])
+    func testExclude_EvenNumbers() throws {
+        let filter: PDFPageFilter = .drop([.evenNumbers])
         
         do {
             let filtered = filter.apply(to: [])

@@ -8,19 +8,19 @@ import Foundation
 import OTCore
 
 public enum PDFPagesDescriptor {
-    /// Page number is explicitly an odd integer.
-    case odd
+    /// Page number (not index) is explicitly an odd integer.
+    case oddNumbers
     
-    /// Page number is explicitly an even integer.
-    case even
+    /// Page number (not index) is explicitly an even integer.
+    case evenNumbers
     
     /// Every n number of pages.
     case every(nthPage: Int, includeFirst: Bool)
     
-    /// A defined range of pages.
+    /// A defined range of page indexes.
     case range(indexes: any RangeExpression<Int>)
     
-    /// An open-ended range of pages with a starting point.
+    /// An open-ended range of pages with a starting page index.
     case openRange(startIndex: Int)
     
     /// First n number of pages.
@@ -36,12 +36,12 @@ public enum PDFPagesDescriptor {
 extension PDFPagesDescriptor: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         switch lhs {
-        case .odd:
-            guard case .odd = rhs else { return false }
+        case .oddNumbers:
+            guard case .oddNumbers = rhs else { return false }
             return true
             
-        case .even:
-            guard case .even = rhs else { return false }
+        case .evenNumbers:
+            guard case .evenNumbers = rhs else { return false }
             return true
             
         case let .every(lhsnthPage, lhsincludeFirst):
@@ -76,10 +76,10 @@ extension PDFPagesDescriptor: Equatable {
 extension PDFPagesDescriptor: Hashable {
     public func hash(into hasher: inout Hasher) {
         switch self {
-        case .odd:
+        case .oddNumbers:
             hasher.combine(100000)
             
-        case .even:
+        case .evenNumbers:
             hasher.combine(200000)
             
         case let .every(nthPage, includeFirst):
@@ -115,10 +115,10 @@ extension PDFPagesDescriptor: Hashable {
 extension PDFPagesDescriptor {
     public var verboseDescription: String {
         switch self {
-        case .odd:
+        case .oddNumbers:
             return "odd page numbers"
             
-        case .even:
+        case .evenNumbers:
             return "even page numbers"
             
         case let .every(nthPage, includeFirst):
@@ -161,11 +161,11 @@ extension PDFPagesDescriptor {
         var isInclusive: Bool
         
         switch self {
-        case .odd:
+        case .oddNumbers:
             isInclusive = arrayIndices.count > 0
             arrayIndices = arrayIndices.filter { $0 % 2 == 0 }
             
-        case .even:
+        case .evenNumbers:
             isInclusive = arrayIndices.count > 1
             arrayIndices = arrayIndices.filter { $0 % 2 == 1 }
             

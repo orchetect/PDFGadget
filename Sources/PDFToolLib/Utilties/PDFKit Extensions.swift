@@ -1,5 +1,5 @@
 //
-//  PDF Utils.swift
+//  PDFKit Extensions.swift
 //  PDFTool • https://github.com/orchetect/PDFTool
 //  Licensed under MIT License
 //

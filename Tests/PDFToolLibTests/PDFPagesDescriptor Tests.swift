@@ -10,11 +10,11 @@ import XCTest
 final class PDFPagesDescriptorTests: XCTestCase {
     func testHashable() throws {
         let descriptors: Set<PDFPagesDescriptor> = [
-            .odd,
-            .odd,
+            .oddNumbers,
+            .oddNumbers,
             
-            .even,
-            .even,
+            .evenNumbers,
+            .evenNumbers,
             
             .every(nthPage: 1, includeFirst: true),
             .every(nthPage: 1, includeFirst: true),
@@ -62,8 +62,8 @@ final class PDFPagesDescriptorTests: XCTestCase {
         // baseline cases
         
         let sets = [PDFPagesDescriptor]([
-            .odd,
-            .even,
+            .oddNumbers,
+            .evenNumbers,
             .every(nthPage: 1, includeFirst: true),
             .range(indexes: 1 ... 5),
             .openRange(startIndex: 1),
@@ -78,11 +78,11 @@ final class PDFPagesDescriptorTests: XCTestCase {
         
         // false conditions
         
-        XCTAssertFalse(PDFPagesDescriptor.odd.containsSamePages(as: .even))
+        XCTAssertFalse(PDFPagesDescriptor.oddNumbers.containsSamePages(as: .evenNumbers))
     }
     
-    func testOdd() throws {
-        let descriptor: PDFPagesDescriptor = .odd
+    func testOddNumbers() throws {
+        let descriptor: PDFPagesDescriptor = .oddNumbers
         
         XCTAssertEqual(
             descriptor.apply(to: []),
@@ -110,8 +110,8 @@ final class PDFPagesDescriptorTests: XCTestCase {
         )
     }
     
-    func testEven() throws {
-        let descriptor: PDFPagesDescriptor = .even
+    func testEvenNumbers() throws {
+        let descriptor: PDFPagesDescriptor = .evenNumbers
         
         XCTAssertEqual(
             descriptor.apply(to: []),

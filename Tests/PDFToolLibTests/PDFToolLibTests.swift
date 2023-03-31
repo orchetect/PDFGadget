@@ -14,7 +14,7 @@ final class PDFToolLibTests: XCTestCase {
     }
     
     func testNewFeature() throws {
-        let run = true // ⚠️ protection!!
+        let run = false // ⚠️ protection!!
         guard run else { return }
         
         let desktop = FileManager.homeDirectoryForCurrentUserCompat
@@ -62,9 +62,9 @@ final class PDFToolLibTests: XCTestCase {
                     .reversePageOrder(fileIndex: 1),
                     .replacePages(
                         fromFileIndex: 1,
-                        fromPages: .only([.even]),
+                        fromPages: .only([.evenNumbers]),
                         toFileIndex: 0,
-                        toPages: .only([.even])
+                        toPages: .only([.evenNumbers])
                     )
                 ],
                 outputBaseFileNameWithoutExtension: nil
