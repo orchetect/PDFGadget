@@ -12,29 +12,36 @@ import PDFKit
 
 public final class PDFTool {
     let logger = Logger(label: "\(PDFTool.self)")
-    let settings: Settings
     
-    var pdfs: [PDFDocument] = []
+    public var pdfs: [PDFDocument] = []
     
-    init(settings: Settings) {
-        self.settings = settings
+    public init() { }
+    
+    public init(pdfs: [PDFDocument]) {
+        self.pdfs = pdfs
+    }
+    
+    public init(pdfs: [URL]) throws {
+        try load(pdfs: pdfs)
     }
 }
 
 // MARK: - Run
 
 extension PDFTool {
-    public static func process(settings: Settings) throws {
-        try self.init(settings: settings).run()
-    }
-    
-    func run() throws {
+    /// Runs the batch job using supplied settings. (Load PDFs, run operations, and save PDFs)
+    public func run(using settings: Settings) throws {
         logger.info("Processing...")
         
         do {
-            try loadInputPDFs()
-            try performOperations()
-            try saveOutputPDFs()
+            try load(pdfs: settings.sourcePDFs, removeExisting: true)
+            try perform(operations: settings.operations)
+            if settings.savePDFs {
+                try self.savePDFs(
+                    outputDir: settings.outputDir,
+                    baseFilenames: settings.outputBaseFilenamesWithoutExtension
+                )
+            }
         } catch {
             throw PDFToolError.runtimeError(
                 "Failed to export: \(error.localizedDescription)"
@@ -48,9 +55,12 @@ extension PDFTool {
 // MARK: - Operations
 
 extension PDFTool {
-    func loadInputPDFs() throws {
-        pdfs = []
-        for url in settings.sourcePDFs {
+    /// Load PDFs from disk.
+    public func load(pdfs urls: [URL], removeExisting: Bool = false) throws {
+        if removeExisting {
+            pdfs = []
+        }
+        for url in urls {
             guard let doc = PDFDocument(url: url) else {
                 throw PDFToolError.runtimeError(
                     "Failed to read PDF file contents: \(url.path.quoted)"
@@ -60,8 +70,9 @@ extension PDFTool {
         }
     }
     
-    func performOperations() throws {
-        for operation in settings.operations {
+    /// Perform one or more operations on the loaded PDFs.
+    public func perform(operations: [PDFOperation]) throws {
+        for operation in operations {
             let result = try perform(operation: operation)
             
             switch result {
@@ -77,6 +88,7 @@ extension PDFTool {
         }
     }
     
+    /// Internal utility to execute a single operation.
     func perform(operation: PDFOperation) throws -> PDFOperationResult {
         logger.info("Performing operation: \(operation.verboseDescription)")
         
@@ -131,14 +143,23 @@ extension PDFTool {
         }
     }
     
-    func saveOutputPDFs() throws {
-        let filenames = settings.outputBaseFileNamesWithoutExtension
+    /// Save the PDFs to disk.
+    /// - Parameters:
+    ///   - outputDir: Output directory. Must be a folder that exists on disk.
+    ///     If `nil`, PDF file(s) are saved to the same directory they exist.
+    ///   - baseFilenames: Array of filenames (excluding .pdf file extension) to use.
+    ///     If `nil`, the current filename with a '-processed' suffix is used.
+    public func savePDFs(
+        outputDir: URL?,
+        baseFilenames: [String]?
+    ) throws {
+        let filenames = baseFilenames
             ?? pdfs.map { $0.filenameWithoutExtension?.appending("-processed") ?? "File" }
         
         // ensure there are exactly the right number of filenames
         guard filenames.count == pdfs.count else {
             throw PDFToolError.runtimeError(
-                "Failed to prepare output filenames."
+                "Incorrect number of output filenames supplied."
             )
         }
         
@@ -152,7 +173,11 @@ extension PDFTool {
         }
         
         for (filename, pdf) in zip(filenames, pdfs) {
-            let outFilePath = try formOutputFilePath(for: pdf, fileNameWithoutExtension: filename)
+            let outFilePath = try formOutputFilePath(
+                for: pdf,
+                fileNameWithoutExtension: filename,
+                outputDir: outputDir
+            )
             
             // TODO: allow overwriting by way of Settings flag
             guard !outFilePath.fileExists else {
@@ -174,14 +199,18 @@ extension PDFTool {
 // MARK: - Helpers
 
 extension PDFTool {
-    /// Used when output path is not specified.
-    /// Generates output path based on input path.
+    /// Generates full output path including filename.
     private func formOutputFilePath(
         for pdf: PDFDocument,
-        fileNameWithoutExtension: String
+        fileNameWithoutExtension: String,
+        outputDir: URL?
     ) throws -> URL {
-        guard let folderPath = settings.outputDir
-                ?? pdf.documentURL?.deletingLastPathComponent()
+        let folderPath = outputDir
+            ?? pdf.documentURL?.deletingLastPathComponent()
+            ?? URL.desktopDirectoryBackCompat
+        
+        guard folderPath.fileExists,
+            folderPath.isFolder == true
         else {
             throw PDFToolError.runtimeError(
                 "Could not determine output path. Output path is either not a folder or does not exist."

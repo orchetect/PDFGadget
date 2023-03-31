@@ -12,8 +12,9 @@ extension PDFTool {
     public struct Settings {
         public enum Defaults {
             public static let operations: [PDFOperation] = []
-            public static let outputBaseFileNamesWithoutExtension: [String]? = nil
+            public static let outputBaseFilenamesWithoutExtension: [String]? = nil
             public static let outputDir: URL? = nil
+            public static let savePDFs: Bool = true
         }
         
         public enum Validation {
@@ -23,7 +24,8 @@ extension PDFTool {
         public var sourcePDFs: [URL]
         public var outputDir: URL?
         public var operations: [PDFOperation]
-        public var outputBaseFileNamesWithoutExtension: [String]?
+        public var outputBaseFilenamesWithoutExtension: [String]?
+        public var savePDFs: Bool
         
         /// Initialize with defaults for default-able parameters.
         public init(
@@ -33,7 +35,8 @@ extension PDFTool {
             
             self.outputDir = Defaults.outputDir
             self.operations = Defaults.operations
-            self.outputBaseFileNamesWithoutExtension = Defaults.outputBaseFileNamesWithoutExtension
+            self.outputBaseFilenamesWithoutExtension = Defaults.outputBaseFilenamesWithoutExtension
+            self.savePDFs = Defaults.savePDFs
             
             try validate()
         }
@@ -42,12 +45,14 @@ extension PDFTool {
             sourcePDFs: [URL],
             outputDir: URL?,
             operations: [PDFOperation],
-            outputBaseFileNamesWithoutExtension: [String]?
+            outputBaseFilenamesWithoutExtension: [String]?,
+            savePDFs: Bool
         ) throws {
             self.operations = operations
             self.sourcePDFs = sourcePDFs
             self.outputDir = outputDir
-            self.outputBaseFileNamesWithoutExtension = outputBaseFileNamesWithoutExtension
+            self.outputBaseFilenamesWithoutExtension = outputBaseFilenamesWithoutExtension
+            self.savePDFs = savePDFs
             
             try validate()
         }

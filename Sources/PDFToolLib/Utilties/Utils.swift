@@ -24,3 +24,14 @@ extension RangeExpression where Bound: Strideable {
         }
     }
 }
+
+extension URL {
+    static var desktopDirectoryBackCompat: URL {
+        if #available(macOS 13, *) {
+            return .desktopDirectory
+        } else {
+            return FileManager.default.homeDirectoryForCurrentUser
+                .appendingPathComponent("Desktop")
+        }
+    }
+}

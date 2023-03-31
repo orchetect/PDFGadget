@@ -54,6 +54,13 @@ public enum PDFOperation: Equatable, Hashable {
     
     // TODO: Draw text, shapes or images on page(s) - ie: a watermark or redaction
     // case overlay(text: String, in: Rect)
+    
+    // TODO: Modify style of existing text/freeText annotations
+    
+    // TODO: Logic operations or assertions
+    // perhaps these could be nesting blocks using a result builder; might need to rethink the whole library API?
+    // case expect(fileCount: Int)
+    // case expect(file: PDFFileDescriptor, pageCount: Int) // could use enum: equals(), greaterThan(), lessThan()
 }
 
 extension PDFOperation {

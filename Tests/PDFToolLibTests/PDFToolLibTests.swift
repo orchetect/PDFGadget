@@ -5,7 +5,7 @@
 //
 
 import XCTest
-@testable import PDFToolLib
+import PDFToolLib
 import OTCore
 
 final class PDFToolLibTests: XCTestCase {
@@ -17,7 +17,7 @@ final class PDFToolLibTests: XCTestCase {
         let run = false // ⚠️ protection!!
         guard run else { return }
         
-        let desktop = FileManager.homeDirectoryForCurrentUserCompat
+        let desktop = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent("Desktop")
         
         let sources: [URL] = [
@@ -25,34 +25,33 @@ final class PDFToolLibTests: XCTestCase {
             desktop.appendingPathComponent("Test2.pdf")
         ]
         
-        try PDFTool.process(
-            settings: PDFTool.Settings(
-                sourcePDFs: sources,
-                outputDir: nil,
-                operations: [
-//                    .filterFiles(.all)
-//                    .filterFiles(.filename(.equals("Test2")))
-//                    .filterFiles(.introspecting(.init(description: "Test", closure: { pdf in
-//                        pdf.documentURL?.lastPathComponent == "Test2.pdf"
-//                    })))
-//                    .mergeFiles(.first, appendingTo: .second)
-//                    .movePages(fromFile: .first,
-//                               fromPages: .only([.first(count: 3)]),
-//                               toFile: .first,
-//                               toPageIndex: 5),
-//                    .filterFiles(.first)
-                    .cloneFile(file: .first)
-                ],
-                outputBaseFileNamesWithoutExtension: ["FooA", "FooB", "FooC"]
-            )
-        )
+        try PDFTool().run(using: PDFTool.Settings(
+            sourcePDFs: sources,
+            outputDir: nil,
+            operations: [
+//                .filterFiles(.all)
+//                .filterFiles(.filename(.equals("Test2")))
+//                .filterFiles(.introspecting(.init(description: "Test", closure: { pdf in
+//                    pdf.documentURL?.lastPathComponent == "Test2.pdf"
+//                })))
+//                .mergeFiles(.first, appendingTo: .second)
+//                .movePages(fromFile: .first,
+//                           fromPages: .only([.first(count: 3)]),
+//                           toFile: .first,
+//                           toPageIndex: 5),
+//                .filterFiles(.first)
+                .cloneFile(file: .first)
+            ],
+            outputBaseFilenamesWithoutExtension: ["FooA", "FooB", "FooC"],
+            savePDFs: true
+        ))
     }
     
     func testRunner() throws {
         let run = false // ⚠️ protection!!
         guard run else { return }
         
-        let desktop = FileManager.homeDirectoryForCurrentUserCompat
+        let desktop = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent("Desktop")
         
         let subDir = desktop.appendingPathComponent("Scans")
@@ -62,23 +61,22 @@ final class PDFToolLibTests: XCTestCase {
             subDir.appendingPathComponent("1B.pdf")
         ]
         
-        try PDFTool.process(
-            settings: PDFTool.Settings(
-                sourcePDFs: sources,
-                outputDir: desktop,
-                operations: [
-                    .reversePageOrder(file: .second),
-                    .replacePages(
-                        fromFile: .second,
-                        fromPages: .only([.evenNumbers]),
-                        toFile: .first,
-                        toPages: .only([.evenNumbers]),
-                        behavior: .copy
-                    ),
-                    .filterFiles(.first)
-                ],
-                outputBaseFileNamesWithoutExtension: nil
-            )
-        )
+        try PDFTool().run(using: PDFTool.Settings(
+            sourcePDFs: sources,
+            outputDir: desktop,
+            operations: [
+                .reversePageOrder(file: .second),
+                .replacePages(
+                    fromFile: .second,
+                    fromPages: .only([.evenNumbers]),
+                    toFile: .first,
+                    toPages: .only([.evenNumbers]),
+                    behavior: .copy
+                ),
+                .filterFiles(.first)
+            ],
+            outputBaseFilenamesWithoutExtension: nil,
+            savePDFs: true
+        ))
     }
 }
