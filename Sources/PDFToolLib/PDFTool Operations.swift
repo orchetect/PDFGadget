@@ -139,7 +139,7 @@ extension PDFTool {
     ) throws -> PDFOperationResult {
         let (pdfA, pdfB) = try expectSourceAndDestinationFiles(sourceFile, destFile ?? sourceFile)
         
-        let pdfAIndexes = try pdfA.pageIndexes(filter: toPages)
+        let pdfAIndexes = try pdfA.pageIndexes(filter: fromPages)
         let pdfBIndexes = try pdfB.pageIndexes(filter: toPages)
         
         // TODO: could have an exception for when toFilter is .all to always allow it
