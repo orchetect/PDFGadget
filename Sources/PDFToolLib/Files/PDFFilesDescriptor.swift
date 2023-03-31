@@ -13,12 +13,60 @@ public enum PDFFilesDescriptor {
     case first
     case second
     case last
-    case index(Int)
-    case indexes([Int])
-    case indexRange(ClosedRange<Int>)
-    case filename(PDFFilenameDescriptor)
+    case index(_ idx: Int)
+    case indexes(_ indexes: [Int])
+    case indexRange(_ indexRange: ClosedRange<Int>)
+    case filename(_ filenameDescriptor: PDFFilenameDescriptor)
     case introspecting(description: String,
-                       _ closure: (_ pdf: PDFDocument) -> Bool)
+                       closure: (_ pdf: PDFDocument) -> Bool)
+}
+
+extension PDFFilesDescriptor {
+    /// Returns `nil` in the event of an error.
+    func filtering(
+        _ inputs: [PDFDocument]
+    ) -> [PDFDocument]? {
+        switch self {
+        case .all:
+            return inputs
+            
+        case .first:
+            if let f = inputs.first { return [f] } else { return nil }
+            
+        case .second:
+            guard inputs.count > 1 else { return nil}
+            return [inputs[1]]
+            
+        case .last:
+            if let l = inputs.last { return [l] } else { return nil }
+            
+        case .index(let idx):
+            guard inputs.indices.contains(idx) else { return nil}
+            return [inputs[idx]]
+            
+        case .indexes(let indexes):
+            guard indexes.allSatisfy({ inputs.indices.contains($0) }) else { return nil }
+            return indexes.reduce(into: []) { base, idx in
+                base.append(inputs[idx])
+            }
+            
+        case .indexRange(let indexRange):
+            guard indexRange.allSatisfy({ inputs.indices.contains($0) }) else { return nil }
+            return indexRange.reduce(into: []) { base, idx in
+                base.append(inputs[idx])
+            }
+            
+        case .filename(let filenameDescriptor):
+            return inputs.filter { doc in
+                guard let baseFilename = doc.filenameWithoutExtension else { return false }
+                return filenameDescriptor.matches(baseFilename)
+            }
+            
+        case .introspecting(_, let closure):
+            return inputs.filter { closure($0) }
+            
+        }
+    }
 }
 
 extension PDFFilesDescriptor {

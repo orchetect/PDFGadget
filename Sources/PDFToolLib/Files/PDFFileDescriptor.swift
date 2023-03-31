@@ -12,10 +12,42 @@ public enum PDFFileDescriptor {
     case first
     case second
     case last
-    case index(Int)
-    case filename(PDFFilenameDescriptor)
+    case index(_ idx: Int)
+    case filename(_ filenameDescriptor: PDFFilenameDescriptor)
     case introspecting(description: String,
-                       _ closure: (_ pdf: PDFDocument) -> Bool)
+                       closure: (_ pdf: PDFDocument) -> Bool)
+}
+
+extension PDFFileDescriptor {
+    func first(
+        in inputs: [PDFDocument]
+    ) -> PDFDocument? {
+        switch self {
+        case .first:
+            return inputs.first
+            
+        case .second:
+            guard inputs.count > 1 else { return nil }
+            return inputs[1]
+            
+        case .last:
+            return inputs.last
+            
+        case .index(let idx):
+            guard inputs.indices.contains(idx) else { return nil }
+            return inputs[idx]
+            
+        case .filename(let filenameDescriptor):
+            return inputs.first { doc in
+                guard let baseFilename = doc.filenameWithoutExtension else { return false }
+                return filenameDescriptor.matches(baseFilename)
+            }
+            
+        case .introspecting(_, let closure):
+            return inputs.first(where: { closure($0) })
+            
+        }
+    }
 }
 
 extension PDFFileDescriptor {

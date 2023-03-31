@@ -103,6 +103,12 @@ extension PDFDocument {
         removePage(at: index)
         insert(other, at: index)
     }
+    
+    // MARK: - File Info
+    
+    public var filenameWithoutExtension: String? {
+        self.documentURL?.deletingPathExtension().lastPathComponent
+    }
 }
 
 extension PDFAnnotation {
