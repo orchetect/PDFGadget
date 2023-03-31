@@ -29,7 +29,11 @@ final class PDFToolLibTests: XCTestCase {
                 sourcePDFs: sources,
                 outputDir: nil,
                 operations: [
-                    .removeAnnotations(fileIndex: 0, pages: .all)
+                    .filterAnnotations(
+                        fileIndex: 0,
+                        pages: .all, //.include([.pages(indexes: [1])]),
+                        annotations: .exclude([.square]) // .exclude([.text, .freeText])
+                    )
                 ],
                 outputBaseFileNameWithoutExtension: nil
             )

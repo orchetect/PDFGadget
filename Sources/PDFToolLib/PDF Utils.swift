@@ -104,3 +104,19 @@ extension PDFDocument {
         insert(other, at: index)
     }
 }
+
+extension PDFAnnotation {
+    func matches(subType: PDFAnnotationSubtype) -> Bool {
+        guard let annoType = type else { return false }
+        
+        // includes a workaround for an inexplicable issue where
+        // PDFAnnotationSubtype.rawValue adds a forward-slash character
+        
+        return subType.rawValue == annoType ||
+            subType.rawValue == "/" + annoType
+    }
+    
+    func type(containedIn subTypes: [PDFAnnotationSubtype]) -> Bool {
+        subTypes.contains { matches(subType: $0) }
+    }
+}

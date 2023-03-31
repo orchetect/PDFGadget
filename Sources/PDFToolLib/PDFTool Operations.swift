@@ -87,12 +87,12 @@ extension PDFTool {
     /// Sets the rotation angle for the page in degrees.
     func performRotatePages(
         fileIndex: Int,
-        filter: PDFPageFilter,
+        pages: PDFPageFilter,
         rotation: PDFPageRotation
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(index: fileIndex)
         
-        let pdfAIndexes = try pdf.pageIndexes(filter: filter)
+        let pdfAIndexes = try pdf.pageIndexes(filter: pages)
         
         guard pdfAIndexes.isInclusive else {
             throw PDFToolError.runtimeError(
@@ -113,13 +113,14 @@ extension PDFTool {
         return .changed
     }
     
-    func performRemoveAnnotations(
+    func performFilterAnnotations(
         fileIndex: Int,
-        filter: PDFPageFilter
+        pages: PDFPageFilter,
+        annotations: PDFAnnotationFilter
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(index: fileIndex)
         
-        let pdfAIndexes = try pdf.pageIndexes(filter: filter)
+        let pdfAIndexes = try pdf.pageIndexes(filter: pages)
         
         guard pdfAIndexes.isInclusive else {
             throw PDFToolError.runtimeError(
@@ -133,14 +134,20 @@ extension PDFTool {
                     "Page number \(index + 1) of file index \(fileIndex) could not be read."
                 )
             }
-            let annotations = page.annotations
-            for annotation in annotations {
-                page.removeAnnotation(annotation)
-            }
             
-            guard page.annotations.isEmpty else {
+            let preCount = page.annotations.count
+            var filteredCount = preCount
+            for annotation in page.annotations {
+                if !annotations.contains(annotation) {
+                    filteredCount -= 1
+                    page.removeAnnotation(annotation)
+                }
+            }
+            let postCount = page.annotations.count
+            
+            guard postCount == filteredCount else {
                 throw PDFToolError.runtimeError(
-                    "Could not remove all annotations for page number \(index + 1) of file index \(file)."
+                    "Could not remove \(annotations) annotations for page number \(index + 1) of file index \(fileIndex)."
                 )
             }
         }

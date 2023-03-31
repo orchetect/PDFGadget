@@ -20,10 +20,16 @@ public enum PDFOperation: Equatable, Hashable {
     
     // TODO: possible future features
     case rotate(fileIndex: Int, pages: PDFPageFilter, rotation: PDFPageRotation)
-    // case flip(pages: PDFPageFilter, axis: Axis)
     // case crop(pages: PDFPageFilter, area: Rect)
+    // case flip(pages: PDFPageFilter, axis: Axis) // -> use Quartz filter?
     
-    case removeAnnotations(fileIndex: Int, pages: PDFPageFilter)
+    case filterAnnotations(fileIndex: Int, pages: PDFPageFilter, annotations: PDFAnnotationFilter)
+    
+    // --> nil out all annotations' `userName: String?` property etc.
+//    case removeAnnotationAuthors(fileIndex: Int, pages: PDFPageFilter, for: PDFAnnotationFilter)
+    
+    // text/freeText annotation: removal based on text content, allowing regex matching
+    // text/freeText annotation: text search & replace, allowing regex matching
     
     // Title, Author, Subject, PDF Producer, Content creator, etc.
     // case fileMetadata(property: PDFFileProperty, value: String)
@@ -36,22 +42,22 @@ extension PDFOperation {
     public var verboseDescription: String {
         switch self {
         case let .filterPages(fileIndex, pages):
-            return "Filter Pages: \(pages.verboseDescription) in file index \(fileIndex)"
+            return "Filter \(pages.verboseDescription) in file index \(fileIndex)"
             
         case let .reversePageOrder(fileIndex):
-            return "Reverse Page Order in file index \(fileIndex)"
+            return "Reverse page order in file index \(fileIndex)"
             
         case let .replacePages(fromFileIndex,
                                fromPages,
                                toFileIndex,
                                toPages):
-            return "Replace Pages \(toPages.verboseDescription) in file index \(toFileIndex) with pages \(fromPages.verboseDescription) from file index \(fromFileIndex)"
+            return "Replace \(toPages.verboseDescription) in file index \(toFileIndex) with \(fromPages.verboseDescription) from file index \(fromFileIndex)"
             
         case let .rotate(fileIndex, pages, rotation):
-            return "Rotate Pages \(pages.verboseDescription) in file index \(fileIndex) \(rotation)"
+            return "Rotate \(pages.verboseDescription) in file index \(fileIndex) \(rotation)"
             
-        case let .removeAnnotations(fileIndex, pages):
-            return "Remove Annotations for Pages \(pages.verboseDescription) in file index \(fileIndex)"
+        case let .filterAnnotations(fileIndex, pages, annotations):
+            return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in file index \(fileIndex)"
         }
     }
 }

@@ -116,31 +116,31 @@ extension PDFPagesDescriptor {
     public var verboseDescription: String {
         switch self {
         case .odd:
-            return "Odd pages"
+            return "odd pages"
             
         case .even:
-            return "Even pages"
+            return "even pages"
             
         case let .every(nthPage, includeFirst):
             // TODO: implement localized ordinal number string "1st page", "2nd page"
-            return "Every \(nthPage) pages,\(includeFirst ? "" : " not") including the first page"
+            return "every \(nthPage) pages,\(includeFirst ? "" : " not") including the first page"
             
         case let .range(range):
             let bounds = range.getAbsoluteBounds()
             
-            return "Page indexes \(bounds.min?.string ?? "")...\(bounds.max?.string ?? "")"
+            return "page indexes \(bounds.min?.string ?? "")...\(bounds.max?.string ?? "")"
             
         case let .openRange(start):
-            return "From page index \(start)"
+            return "from page index \(start)"
             
         case let .first(pageCount):
-            return "First \(pageCount) pages"
+            return "first \(pageCount) pages"
             
         case let .last(pageCount):
-            return "Last \(pageCount) pages"
+            return "last \(pageCount) pages"
             
         case let .pages(intArray):
-            return "Page indexes \(intArray.map { "\($0)" }.joined(separator: ", "))"
+            return "page indexes \(intArray.map { "\($0)" }.joined(separator: ", "))"
         }
     }
 }

@@ -9,16 +9,17 @@ import OTCore
 
 public enum PDFPageFilter: Equatable, Hashable {
     case all
+    //case none
     case include(_ descriptors: [PDFPagesDescriptor])
     case exclude(_ descriptors: [PDFPagesDescriptor])
 }
 
 extension PDFPageFilter {
     func apply(
-        to input: [Int],
+        to inputs: [Int],
         sort: Bool = true
     ) -> IndexesDiff {
-        var included = input
+        var included = inputs
         var isInclusive = true
         
         switch self {
@@ -41,12 +42,12 @@ extension PDFPageFilter {
             included.sort()
         }
         
-        let excluded = input.filter {
+        let excluded = inputs.filter {
             !included.contains($0)
         }
         
         return IndexesDiff(
-            original: input,
+            original: inputs,
             included: included,
             excluded: excluded,
             isInclusive: isInclusive
@@ -79,15 +80,15 @@ extension PDFPageFilter {
     public var verboseDescription: String {
         switch self {
         case .all:
-            return "All"
+            return "all pages"
             
         case let .include(descriptors):
             let pageSetsStr = descriptors.map(\.verboseDescription).joined(separator: ", ")
-            return "Including \(pageSetsStr)"
+            return "pages including \(pageSetsStr)"
             
         case let .exclude(descriptors):
             let pageSetsStr = descriptors.map(\.verboseDescription).joined(separator: ", ")
-            return "Including \(pageSetsStr)"
+            return "pages excluding \(pageSetsStr)"
         }
     }
 }
