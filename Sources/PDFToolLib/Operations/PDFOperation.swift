@@ -16,13 +16,11 @@ public enum PDFOperation: Equatable, Hashable {
     case filterPages(file: PDFFileDescriptor, pages: PDFPageFilter)
     
     // TODO: copy pages
-    // case insertPages(
-    //     fromFile: PDFFileDescriptor,
-    //     fromPages: PDFPageFilter,
-    //     toFile: PDFFileDescriptor,
-    //     atPageIndex: Int
-    //     behavior: InterchangeBehavior
-    // )
+     case insertPages(
+         fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
+         toFile: PDFFileDescriptor, atPageIndex: Int,
+         behavior: InterchangeBehavior
+     )
     
     case reversePageOrder(file: PDFFileDescriptor)
     
@@ -64,6 +62,9 @@ extension PDFOperation {
             
         case let .filterPages(file, pages):
             return "Filter \(pages.verboseDescription) in \(file.verboseDescription)"
+            
+        case let .insertPages(fromFile, fromPages, toFile, atPageIndex, behavior):
+            return "Insert \(fromPages.verboseDescription) from \(fromFile.verboseDescription) at page number \(atPageIndex + 1) in \(toFile.verboseDescription) by \(behavior.verboseDescription)"
             
         case let .reversePageOrder(file):
             return "Reverse page order in \(file.verboseDescription)"

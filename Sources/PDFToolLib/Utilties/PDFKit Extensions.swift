@@ -57,6 +57,18 @@ extension PDFDocument {
         }
     }
     
+    public func insert(_ pages: [PDFPage], at index: Int) throws {
+        guard pageRange.contains(index) || pageCount == index else {
+            throw PDFToolError.runtimeError(
+                "Page index is out of range."
+            )
+        }
+        
+        for page in pages.reversed() {
+            insert(page, at: index)
+        }
+    }
+    
     public func replaceAllPages<S: Collection>(
         with pages: S
     ) throws where S.Element == PDFPage {

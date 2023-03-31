@@ -80,6 +80,39 @@ extension PDFTool {
         return .changed
     }
     
+    /// Insert page(s) with a copy of other page(s) either within the same file or between two files.
+    func performInsertPages(
+        from sourceFile: PDFFileDescriptor,
+        fromPages: PDFPageFilter,
+        to destFile: PDFFileDescriptor?,
+        atPageIndex: Int,
+        behavior: PDFOperation.InterchangeBehavior
+    ) throws -> PDFOperationResult {
+        let (pdfA, pdfB) = try expectSourceAndDestinationFiles(sourceFile, destFile ?? sourceFile)
+        
+        let pdfAIndexes = try pdfA.pageIndexes(filter: fromPages)
+        
+        guard pdfAIndexes.isInclusive else {
+            throw PDFToolError.runtimeError(
+                "Page number descriptors are invalid or out of range."
+            )
+        }
+        
+        let pdfAPages = try pdfA.pages(at: pdfAIndexes.included)
+        
+        if pdfA == pdfB {
+            try pdfB.insert(pdfAPages, at: atPageIndex)
+        } else {
+            try pdfB.insert(pdfAPages.map { $0.copy() as! PDFPage }, at: atPageIndex)
+        }
+        
+        if behavior == .move {
+            try pdfA.removePages(at: pdfAIndexes.included)
+        }
+        
+        return .changed
+    }
+    
     /// Reverse the pages in a file.
     func performReversePageOrder(file: PDFFileDescriptor) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)

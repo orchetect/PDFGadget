@@ -90,6 +90,15 @@ extension PDFTool {
         case let .filterPages(file, filter):
             return try performFilterPages(file: file, pages: filter)
             
+        case let .insertPages(fromFile, fromPages, toFile, atPageIndex, behavior):
+            return try performInsertPages(
+                from: fromFile,
+                fromPages: fromPages,
+                to: toFile,
+                atPageIndex: atPageIndex,
+                behavior: behavior
+            )
+            
         case let .reversePageOrder(file):
             return try performReversePageOrder(file: file)
             

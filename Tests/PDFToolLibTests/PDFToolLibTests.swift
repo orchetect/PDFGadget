@@ -35,7 +35,12 @@ final class PDFToolLibTests: XCTestCase {
 //                    .filterFiles(.introspecting(.init(description: "Test", closure: { pdf in
 //                        pdf.documentURL?.lastPathComponent == "Test2.pdf"
 //                    })))
-                    .mergeFiles(.first, appendingTo: .second)
+//                    .mergeFiles(.first, appendingTo: .second)
+                    .insertPages(fromFile: .first,
+                                 fromPages: .only([.first(count: 3)]),
+                                 toFile: .second,
+                                 atPageIndex: 25,
+                                 behavior: .move)
                 ],
                 outputBaseFileNamesWithoutExtension: nil // ["FooA", "FooB"]
             )
