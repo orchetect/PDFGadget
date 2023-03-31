@@ -7,23 +7,21 @@
 import Foundation
 
 public enum PDFOperation: Equatable, Hashable {
-    case filterPages(fileIndex: Int, pages: PDFPageFilter)
+    case filterPages(file: PDFFileDescriptor, pages: PDFPageFilter)
     
-    case reversePageOrder(fileIndex: Int)
+    case reversePageOrder(file: PDFFileDescriptor)
     
     case replacePages(
-        fromFileIndex: Int,
-        fromPages: PDFPageFilter,
-        toFileIndex: Int,
-        toPages: PDFPageFilter
+        fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
+        toFile: PDFFileDescriptor, toPages: PDFPageFilter
     )
     
     // TODO: possible future features
-    case rotate(fileIndex: Int, pages: PDFPageFilter, rotation: PDFPageRotation)
+    case rotate(file: PDFFileDescriptor, pages: PDFPageFilter, rotation: PDFPageRotation)
     // case crop(pages: PDFPageFilter, area: Rect)
     // case flip(pages: PDFPageFilter, axis: Axis) // -> use Quartz filter?
     
-    case filterAnnotations(fileIndex: Int, pages: PDFPageFilter, annotations: PDFAnnotationFilter)
+    case filterAnnotations(file: PDFFileDescriptor, pages: PDFPageFilter, annotations: PDFAnnotationFilter)
     
     // --> nil out all annotations' `userName: String?` property etc.
 //    case removeAnnotationAuthors(fileIndex: Int, pages: PDFPageFilter, for: PDFAnnotationFilter)
@@ -41,23 +39,20 @@ public enum PDFOperation: Equatable, Hashable {
 extension PDFOperation {
     public var verboseDescription: String {
         switch self {
-        case let .filterPages(fileIndex, pages):
-            return "Filter \(pages.verboseDescription) in file index \(fileIndex)"
+        case let .filterPages(file, pages):
+            return "Filter \(pages.verboseDescription) in \(file)"
             
-        case let .reversePageOrder(fileIndex):
-            return "Reverse page order in file index \(fileIndex)"
+        case let .reversePageOrder(file):
+            return "Reverse page order in \(file)"
             
-        case let .replacePages(fromFileIndex,
-                               fromPages,
-                               toFileIndex,
-                               toPages):
-            return "Replace \(toPages.verboseDescription) in file index \(toFileIndex) with \(fromPages.verboseDescription) from file index \(fromFileIndex)"
+        case let .replacePages(fromFile, fromPages, toFile, toPages):
+            return "Replace \(toPages.verboseDescription) of \(toFile) with \(fromPages.verboseDescription) from \(fromFile)"
             
-        case let .rotate(fileIndex, pages, rotation):
-            return "Rotate \(pages.verboseDescription) in file index \(fileIndex) \(rotation)"
+        case let .rotate(file, pages, rotation):
+            return "Rotate \(pages.verboseDescription) in \(file) \(rotation)"
             
-        case let .filterAnnotations(fileIndex, pages, annotations):
-            return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in file index \(fileIndex)"
+        case let .filterAnnotations(file, pages, annotations):
+            return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file)"
         }
     }
 }

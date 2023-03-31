@@ -8,7 +8,7 @@ import Foundation
 import PDFKit
 
 /// Criteria to match an arbitrary number of PDF files.
-public enum PDFFilesDescriptor {
+public enum PDFFilesDescriptor: Equatable, Hashable {
     case all
     case first
     case second
@@ -17,8 +17,7 @@ public enum PDFFilesDescriptor {
     case indexes(_ indexes: [Int])
     case indexRange(_ indexRange: ClosedRange<Int>)
     case filename(_ filenameDescriptor: PDFFilenameDescriptor)
-    case introspecting(description: String,
-                       closure: (_ pdf: PDFDocument) -> Bool)
+    case introspecting(_ introspection: PDFFileIntrospection)
 }
 
 extension PDFFilesDescriptor {
@@ -60,8 +59,8 @@ extension PDFFilesDescriptor {
                 return filenameDescriptor.matches(baseFilename)
             }
             
-        case .introspecting(_, let closure):
-            return inputs.filter { closure($0) }
+        case .introspecting(let introspection):
+            return inputs.filter { introspection.closure($0) }
             
         }
     }
@@ -84,10 +83,10 @@ extension PDFFilesDescriptor {
             return "files with indexes \(idxes.map { String($0) }.joined(separator: ", "))"
         case .indexRange(let range):
             return "files with index range \(range.lowerBound)-\(range.upperBound))"
-        case .filename(_):
-            return "file with filename criteria"
-        case .introspecting(let description, _):
-            return "file matching \(description)"
+        case .filename(let filenameDescriptor):
+            return "files with filename \(filenameDescriptor.verboseDescription)"
+        case .introspecting(let introspection):
+            return "files matching \(introspection.description)"
         }
     }
 }

@@ -8,14 +8,13 @@ import Foundation
 import PDFKit
 
 /// Criteria to match a single PDF file.
-public enum PDFFileDescriptor {
+public enum PDFFileDescriptor: Equatable, Hashable {
     case first
     case second
     case last
     case index(_ idx: Int)
     case filename(_ filenameDescriptor: PDFFilenameDescriptor)
-    case introspecting(description: String,
-                       closure: (_ pdf: PDFDocument) -> Bool)
+    case introspecting(_ introspection: PDFFileIntrospection)
 }
 
 extension PDFFileDescriptor {
@@ -41,8 +40,8 @@ extension PDFFileDescriptor {
                 return filenameDescriptor.matches(baseFilename)
             }
             
-        case .introspecting(_, let closure):
-            return inputs.first(where: { closure($0) })
+        case .introspecting(let introspection):
+            return inputs.first(where: { introspection.closure($0) })
             
         }
     }
@@ -59,10 +58,10 @@ extension PDFFileDescriptor {
             return "last file"
         case .index(let idx):
             return "file with index \(idx)"
-        case .filename(_):
-            return "file with filename criteria"
-        case .introspecting(let description, _):
-            return "file matching \(description)"
+        case .filename(let filenameDescriptor):
+            return "file with filename \(filenameDescriptor.verboseDescription)"
+        case .introspecting(let introspection):
+            return "file matching \(introspection.description)"
         }
     }
 }

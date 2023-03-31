@@ -81,32 +81,32 @@ extension PDFTool {
         logger.info("Performing operation: \(operation.verboseDescription)")
         
         switch operation {
-        case let .filterPages(fileIndex, filter):
-            return try performFilterPages(fileIndex: fileIndex, pages: filter)
+        case let .filterPages(file, filter):
+            return try performFilterPages(file: file, pages: filter)
             
-        case let .reversePageOrder(fileIndex):
-            return try performReversePageOrder(fileIndex: fileIndex)
+        case let .reversePageOrder(file):
+            return try performReversePageOrder(file: file)
             
-        case let .replacePages(fromFileIndex, fromPages, toFileIndex, toPages):
+        case let .replacePages(fromFile, fromPages, toFile, toPages):
             return try performReplacePages(
-                fromFileIndex: fromFileIndex,
+                from: fromFile,
                 fromPages: fromPages,
-                toFileIndex: toFileIndex,
+                to: toFile,
                 toPages: toPages
             )
             
-        case let .rotate(fileIndex, pages, rotation):
-            return try performRotatePages(fileIndex: fileIndex, pages: pages, rotation: rotation)
+        case let .rotate(file, pages, rotation):
+            return try performRotatePages(file: file, pages: pages, rotation: rotation)
             
-        case let .filterAnnotations(fileIndex, pages, annotations):
-            return try performFilterAnnotations(fileIndex: fileIndex, pages: pages, annotations: annotations)
+        case let .filterAnnotations(file, pages, annotations):
+            return try performFilterAnnotations(file: file, pages: pages, annotations: annotations)
         }
     }
     
     func saveOutputPDFs() throws {
         // TODO: this may need refactoring in future if some operations cause multiple output PDF files
         let pdf = try expectOneFile(
-            index: 0,
+            .first,
             error: "Encountered more than one PDF while attempting to export. This is an error condition."
         )
                 

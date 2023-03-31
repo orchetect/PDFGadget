@@ -30,7 +30,7 @@ final class PDFToolLibTests: XCTestCase {
                 outputDir: nil,
                 operations: [
                     .filterAnnotations(
-                        fileIndex: 0,
+                        file: .first,
                         pages: .all, //.only([.pages(indexes: [1])]),
                         annotations: .drop([.square]) // .drop([.text, .freeText])
                     )
@@ -59,11 +59,11 @@ final class PDFToolLibTests: XCTestCase {
                 sourcePDFs: sources,
                 outputDir: desktop,
                 operations: [
-                    .reversePageOrder(fileIndex: 1),
+                    .reversePageOrder(file: .second),
                     .replacePages(
-                        fromFileIndex: 1,
+                        fromFile: .second,
                         fromPages: .only([.evenNumbers]),
-                        toFileIndex: 0,
+                        toFile: .first,
                         toPages: .only([.evenNumbers])
                     )
                 ],
