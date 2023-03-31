@@ -12,10 +12,10 @@ import PDFKit
 
 extension PDFTool {
     /// Filter page(s).
-    func performFilterPages(file: Int, filter: PDFPageFilter) throws -> PDFOperationResult {
-        let pdf = try expectOneFile(index: file)
+    func performFilterPages(fileIndex: Int, pages: PDFPageFilter) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(index: fileIndex)
         
-        let diff = try pdf.pageIndexes(filter: filter)
+        let diff = try pdf.pageIndexes(filter: pages)
         
         guard !diff.isIdentical else {
             return .noChange(reason: "Filtered page numbers are identical to input.")
@@ -27,8 +27,8 @@ extension PDFTool {
     }
     
     /// Reverse the pages in a file.
-    func performReversePageOrder(file: Int) throws -> PDFOperationResult {
-        let pdf = try expectOneFile(index: file)
+    func performReversePageOrder(fileIndex: Int) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(index: fileIndex)
         
         let pages = try pdf.pages()
         
@@ -45,14 +45,14 @@ extension PDFTool {
     /// Replace page(s) with other page(s).
     func performReplacePages(
         fromFileIndex: Int,
-        fromFilter: PDFPageFilter,
+        fromPages: PDFPageFilter,
         toFileIndex: Int,
-        toFilter: PDFPageFilter
+        toPages: PDFPageFilter
     ) throws -> PDFOperationResult {
         let (pdfA, pdfB) = try expectTwoFiles(indexA: fromFileIndex, indexB: toFileIndex)
         
-        let pdfAIndexes = try pdfA.pageIndexes(filter: toFilter)
-        let pdfBIndexes = try pdfB.pageIndexes(filter: toFilter)
+        let pdfAIndexes = try pdfA.pageIndexes(filter: toPages)
+        let pdfBIndexes = try pdfB.pageIndexes(filter: toPages)
         
         // TODO: could have an exception for when toFilter is .all to always allow it
         
@@ -86,11 +86,11 @@ extension PDFTool {
     
     /// Sets the rotation angle for the page in degrees.
     func performRotatePages(
-        file: Int,
+        fileIndex: Int,
         filter: PDFPageFilter,
         rotation: PDFPageRotation
     ) throws -> PDFOperationResult {
-        let pdf = try expectOneFile(index: file)
+        let pdf = try expectOneFile(index: fileIndex)
         
         let pdfAIndexes = try pdf.pageIndexes(filter: filter)
         
@@ -103,7 +103,7 @@ extension PDFTool {
         for index in pdfAIndexes.included {
             guard let page = pdf.page(at: index) else {
                 throw PDFToolError.runtimeError(
-                    "Page number \(index + 1) of file index \(file) could not be read."
+                    "Page number \(index + 1) of file index \(fileIndex) could not be read."
                 )
             }
             let sourceAngle = PDFPageRotation.Angle(degrees: page.rotation) ?? ._0degrees
@@ -114,10 +114,10 @@ extension PDFTool {
     }
     
     func performRemoveAnnotations(
-        file: Int,
+        fileIndex: Int,
         filter: PDFPageFilter
     ) throws -> PDFOperationResult {
-        let pdf = try expectOneFile(index: file)
+        let pdf = try expectOneFile(index: fileIndex)
         
         let pdfAIndexes = try pdf.pageIndexes(filter: filter)
         
@@ -130,7 +130,7 @@ extension PDFTool {
         for index in pdfAIndexes.included {
             guard let page = pdf.page(at: index) else {
                 throw PDFToolError.runtimeError(
-                    "Page number \(index + 1) of file index \(file) could not be read."
+                    "Page number \(index + 1) of file index \(fileIndex) could not be read."
                 )
             }
             let annotations = page.annotations

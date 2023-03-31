@@ -81,25 +81,25 @@ extension PDFTool {
         logger.info("Performing operation: \(operation.verboseDescription)")
         
         switch operation {
-        case let .filterPages(file, filter):
-            return try performFilterPages(file: file, filter: filter)
+        case let .filterPages(fileIndex, filter):
+            return try performFilterPages(fileIndex: fileIndex, pages: filter)
             
-        case let .reversePageOrder(file):
-            return try performReversePageOrder(file: file)
+        case let .reversePageOrder(fileIndex):
+            return try performReversePageOrder(fileIndex: fileIndex)
             
-        case let .replacePages(fromFileIndex, fromFilter, toFileIndex, toFilter):
+        case let .replacePages(fromFileIndex, fromPages, toFileIndex, toPages):
             return try performReplacePages(
                 fromFileIndex: fromFileIndex,
-                fromFilter: fromFilter,
+                fromPages: fromPages,
                 toFileIndex: toFileIndex,
-                toFilter: toFilter
+                toPages: toPages
             )
             
         case let .rotate(fileIndex, pages, rotation):
-            return try performRotatePages(file: fileIndex, filter: pages, rotation: rotation)
+            return try performRotatePages(fileIndex: fileIndex, filter: pages, rotation: rotation)
             
         case let .removeAnnotations(fileIndex, pages):
-            return try performRemoveAnnotations(file: fileIndex, filter: pages)
+            return try performRemoveAnnotations(fileIndex: fileIndex, filter: pages)
         }
     }
     
