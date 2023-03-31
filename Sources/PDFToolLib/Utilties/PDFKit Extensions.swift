@@ -21,7 +21,7 @@ extension PDFDocument {
     public func pageIndexes(
         filter: PDFPageFilter
     ) throws -> IndexesDiff {
-        filter.apply(to: pageIndexes())
+        filter.filtering(pageIndexes())
     }
     
     // MARK: - Page Access

@@ -15,8 +15,8 @@ public enum PDFAnnotationFilter: Equatable, Hashable {
 }
 
 extension PDFAnnotationFilter {
-    func apply(
-        to inputs: [PDFAnnotation]
+    func filtering(
+        _ inputs: [PDFAnnotation]
     ) -> [PDFAnnotation] {
         switch self {
         case .all:

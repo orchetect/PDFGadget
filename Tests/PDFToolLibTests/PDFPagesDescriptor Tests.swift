@@ -85,27 +85,27 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .oddNumbers
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0]),
+            descriptor.filtering([0]),
             .init(indexes: [0], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0, 1]),
+            descriptor.filtering([0, 1]),
             .init(indexes: [0], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [1], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0, 1, 2, 3, 4]),
+            descriptor.filtering([0, 1, 2, 3, 4]),
             .init(indexes: [0, 2, 4], isInclusive: true)
         )
     }
@@ -114,27 +114,27 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .evenNumbers
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0]),
+            descriptor.filtering([0]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0, 1]),
+            descriptor.filtering([0, 1]),
             .init(indexes: [1], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0, 1, 2, 3, 4]),
+            descriptor.filtering([0, 1, 2, 3, 4]),
             .init(indexes: [1, 3], isInclusive: true)
         )
     }
@@ -143,27 +143,27 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .every(nthPage: 1, includeFirst: true)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0]),
+            descriptor.filtering([0]),
             .init(indexes: [0], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0, 1]),
+            descriptor.filtering([0, 1]),
             .init(indexes: [0, 1], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [1], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0, 1, 2, 3, 4]),
+            descriptor.filtering([0, 1, 2, 3, 4]),
             .init(indexes: [0, 1, 2, 3, 4], isInclusive: true)
         )
     }
@@ -172,27 +172,27 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .every(nthPage: 2, includeFirst: true)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0]),
+            descriptor.filtering([0]),
             .init(indexes: [0], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0, 1]),
+            descriptor.filtering([0, 1]),
             .init(indexes: [0], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [1], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0, 1, 2, 3, 4]),
+            descriptor.filtering([0, 1, 2, 3, 4]),
             .init(indexes: [0, 2, 4], isInclusive: true)
         )
     }
@@ -201,27 +201,27 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .every(nthPage: 2, includeFirst: false)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0]),
+            descriptor.filtering([0]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0, 1]),
+            descriptor.filtering([0, 1]),
             .init(indexes: [1], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [0, 1, 2, 3, 4]),
+            descriptor.filtering([0, 1, 2, 3, 4]),
             .init(indexes: [1, 3], isInclusive: true)
         )
     }
@@ -231,27 +231,27 @@ final class PDFPagesDescriptorTests: XCTestCase {
         print(descriptor.verboseDescription)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6]),
+            descriptor.filtering([5, 6]),
             .init(indexes: [6], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7]),
+            descriptor.filtering([5, 6, 7]),
             .init(indexes: [6, 7], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7, 8]),
+            descriptor.filtering([5, 6, 7, 8]),
             .init(indexes: [6, 7], isInclusive: true)
         )
     }
@@ -261,32 +261,32 @@ final class PDFPagesDescriptorTests: XCTestCase {
         print(descriptor.verboseDescription)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6]),
+            descriptor.filtering([5, 6]),
             .init(indexes: [6], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7]),
+            descriptor.filtering([5, 6, 7]),
             .init(indexes: [6, 7], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7, 8]),
+            descriptor.filtering([5, 6, 7, 8]),
             .init(indexes: [6, 7, 8], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7, 8, 9]),
+            descriptor.filtering([5, 6, 7, 8, 9]),
             .init(indexes: [6, 7, 8], isInclusive: true)
         )
     }
@@ -295,32 +295,32 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .range(indexes: 1...)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6]),
+            descriptor.filtering([5, 6]),
             .init(indexes: [6], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7]),
+            descriptor.filtering([5, 6, 7]),
             .init(indexes: [6, 7], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7, 8]),
+            descriptor.filtering([5, 6, 7, 8]),
             .init(indexes: [6, 7, 8], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7, 8, 9]),
+            descriptor.filtering([5, 6, 7, 8, 9]),
             .init(indexes: [6, 7, 8, 9], isInclusive: true)
         )
     }
@@ -329,22 +329,22 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .range(indexes: ..<2)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [1], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6]),
+            descriptor.filtering([5, 6]),
             .init(indexes: [5, 6], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7]),
+            descriptor.filtering([5, 6, 7]),
             .init(indexes: [5, 6], isInclusive: true)
         )
     }
@@ -353,27 +353,27 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .range(indexes: ...2)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [1], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6]),
+            descriptor.filtering([5, 6]),
             .init(indexes: [5, 6], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7]),
+            descriptor.filtering([5, 6, 7]),
             .init(indexes: [5, 6, 7], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7, 8]),
+            descriptor.filtering([5, 6, 7, 8]),
             .init(indexes: [5, 6, 7], isInclusive: true)
         )
     }
@@ -382,32 +382,32 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .openRange(startIndex: 1)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [1]),
+            descriptor.filtering([1]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6]),
+            descriptor.filtering([5, 6]),
             .init(indexes: [6], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7]),
+            descriptor.filtering([5, 6, 7]),
             .init(indexes: [6, 7], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7, 8]),
+            descriptor.filtering([5, 6, 7, 8]),
             .init(indexes: [6, 7, 8], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7, 8, 9]),
+            descriptor.filtering([5, 6, 7, 8, 9]),
             .init(indexes: [6, 7, 8, 9], isInclusive: true)
         )
     }
@@ -416,22 +416,22 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .first(count: 2)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5]),
+            descriptor.filtering([5]),
             .init(indexes: [5], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6]),
+            descriptor.filtering([5, 6]),
             .init(indexes: [5, 6], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7]),
+            descriptor.filtering([5, 6, 7]),
             .init(indexes: [5, 6], isInclusive: true)
         )
     }
@@ -440,22 +440,22 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .last(count: 2)
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5]),
+            descriptor.filtering([5]),
             .init(indexes: [5], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6]),
+            descriptor.filtering([5, 6]),
             .init(indexes: [5, 6], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7]),
+            descriptor.filtering([5, 6, 7]),
             .init(indexes: [6, 7], isInclusive: true)
         )
     }
@@ -464,27 +464,27 @@ final class PDFPagesDescriptorTests: XCTestCase {
         let descriptor: PDFPagesDescriptor = .pages(indexes: [1, 3, 4])
         
         XCTAssertEqual(
-            descriptor.apply(to: []),
+            descriptor.filtering([]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5]),
+            descriptor.filtering([5]),
             .init(indexes: [], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6]),
+            descriptor.filtering([5, 6]),
             .init(indexes: [6], isInclusive: false)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7, 8, 9]),
+            descriptor.filtering([5, 6, 7, 8, 9]),
             .init(indexes: [6, 8, 9], isInclusive: true)
         )
         
         XCTAssertEqual(
-            descriptor.apply(to: [5, 6, 7, 8, 9, 10]),
+            descriptor.filtering([5, 6, 7, 8, 9, 10]),
             .init(indexes: [6, 8, 9], isInclusive: true)
         )
     }

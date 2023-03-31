@@ -23,9 +23,7 @@ public enum PDFFilesDescriptor {
 
 extension PDFFilesDescriptor {
     /// Returns `nil` in the event of an error.
-    func filtering(
-        _ inputs: [PDFDocument]
-    ) -> [PDFDocument]? {
+    func filtering(_ inputs: [PDFDocument]) -> [PDFDocument]? {
         switch self {
         case .all:
             return inputs

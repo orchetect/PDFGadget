@@ -15,10 +15,7 @@ public enum PDFPageFilter: Equatable, Hashable {
 }
 
 extension PDFPageFilter {
-    func apply(
-        to inputs: [Int],
-        sort: Bool = true
-    ) -> IndexesDiff {
+    func filtering(_ inputs: [Int], sort: Bool = true) -> IndexesDiff {
         var included = inputs
         var isInclusive = true
         
@@ -61,7 +58,7 @@ extension PDFPageFilter {
     ) -> (indexes: [Int], allAreInclusive: Bool) {
         let filtered: (results: Set<Int>, isInclusive: Bool) = pagesDescriptors
             .reduce(into: (results: [], isInclusive: true)) { base, pagesDescriptor in
-                let result = pagesDescriptor.apply(to: indexes)
+                let result = pagesDescriptor.filtering(indexes)
                 if result.isInclusive == false { base.isInclusive = false }
                 base.results.formUnion(result.indexes)
             }

@@ -19,9 +19,7 @@ public enum PDFFileDescriptor {
 }
 
 extension PDFFileDescriptor {
-    func first(
-        in inputs: [PDFDocument]
-    ) -> PDFDocument? {
+    func first(in inputs: [PDFDocument]) -> PDFDocument? {
         switch self {
         case .first:
             return inputs.first

@@ -149,15 +149,15 @@ extension PDFPagesDescriptor {
 }
 
 extension PDFPagesDescriptor {
-    public struct ApplyResult: Equatable {
+    public struct FilterResult: Equatable {
         let indexes: [Int]
         let isInclusive: Bool
     }
     
-    public func apply(
-        to pageNumbers: [Int],
+    public func filtering(
+        _ pageNumbers: [Int],
         sort: Bool = true
-    ) -> ApplyResult {
+    ) -> FilterResult {
         var arrayIndices = Array(pageNumbers.indices)
         var isInclusive: Bool
         
@@ -217,7 +217,7 @@ extension PDFPagesDescriptor {
         if sort {
             indexNumbers.sort()
         }
-        return ApplyResult(indexes: indexNumbers, isInclusive: isInclusive)
+        return FilterResult(indexes: indexNumbers, isInclusive: isInclusive)
     }
     
     public func containsSamePages(as other: Self) -> Bool {

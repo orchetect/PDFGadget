@@ -12,14 +12,14 @@ final class PDFPageFilterTests: XCTestCase {
         let filter: PDFPageFilter = .all
         
         do {
-            let filtered = filter.apply(to: [])
+            let filtered = filter.filtering([])
             XCTAssertEqual(filtered.included, [])
             XCTAssertEqual(filtered.excluded, [])
             XCTAssertEqual(filtered.isInclusive, true)
         }
         
         do {
-            let filtered = filter.apply(to: [1, 3, 4, 5])
+            let filtered = filter.filtering([1, 3, 4, 5])
             XCTAssertEqual(filtered.included, [1, 3, 4, 5])
             XCTAssertEqual(filtered.excluded, [])
             XCTAssertEqual(filtered.isInclusive, true)
@@ -30,14 +30,14 @@ final class PDFPageFilterTests: XCTestCase {
         let filter: PDFPageFilter = .only([.oddNumbers])
         
         do {
-            let filtered = filter.apply(to: [])
+            let filtered = filter.filtering([])
             XCTAssertEqual(filtered.included, [])
             XCTAssertEqual(filtered.excluded, [])
             XCTAssertEqual(filtered.isInclusive, false)
         }
         
         do {
-            let filtered = filter.apply(to: [1, 3, 4, 5])
+            let filtered = filter.filtering([1, 3, 4, 5])
             XCTAssertEqual(filtered.included, [1, 4])
             XCTAssertEqual(filtered.excluded, [3, 5])
             XCTAssertEqual(filtered.isInclusive, true)
@@ -48,14 +48,14 @@ final class PDFPageFilterTests: XCTestCase {
         let filter: PDFPageFilter = .only([.evenNumbers])
         
         do {
-            let filtered = filter.apply(to: [])
+            let filtered = filter.filtering([])
             XCTAssertEqual(filtered.included, [])
             XCTAssertEqual(filtered.excluded, [])
             XCTAssertEqual(filtered.isInclusive, false)
         }
         
         do {
-            let filtered = filter.apply(to: [1, 3, 4, 5])
+            let filtered = filter.filtering([1, 3, 4, 5])
             XCTAssertEqual(filtered.included, [3, 5])
             XCTAssertEqual(filtered.excluded, [1, 4])
             XCTAssertEqual(filtered.isInclusive, true)
@@ -69,14 +69,14 @@ final class PDFPageFilterTests: XCTestCase {
         ])
         
         do {
-            let filtered = filter.apply(to: [])
+            let filtered = filter.filtering([])
             XCTAssertEqual(filtered.included, [])
             XCTAssertEqual(filtered.excluded, [])
             XCTAssertEqual(filtered.isInclusive, false)
         }
         
         do {
-            let filtered = filter.apply(to: [1, 3, 4, 5, 6])
+            let filtered = filter.filtering([1, 3, 4, 5, 6])
             XCTAssertEqual(filtered.included, [1, 4, 5])
             XCTAssertEqual(filtered.excluded, [3, 6])
             XCTAssertEqual(filtered.isInclusive, true)
@@ -90,14 +90,14 @@ final class PDFPageFilterTests: XCTestCase {
         ])
         
         do {
-            let filtered = filter.apply(to: [])
+            let filtered = filter.filtering([])
             XCTAssertEqual(filtered.included, [])
             XCTAssertEqual(filtered.excluded, [])
             XCTAssertEqual(filtered.isInclusive, false)
         }
         
         do {
-            let filtered = filter.apply(to: [1, 3, 4, 5])
+            let filtered = filter.filtering([1, 3, 4, 5])
             XCTAssertEqual(filtered.included, [4, 5])
             XCTAssertEqual(filtered.excluded, [1, 3])
             XCTAssertEqual(filtered.isInclusive, false)
@@ -111,14 +111,14 @@ final class PDFPageFilterTests: XCTestCase {
         ])
         
         do {
-            let filtered = filter.apply(to: [])
+            let filtered = filter.filtering([])
             XCTAssertEqual(filtered.included, [])
             XCTAssertEqual(filtered.excluded, [])
             XCTAssertEqual(filtered.isInclusive, false)
         }
         
         do {
-            let filtered = filter.apply(to: [1, 3, 4])
+            let filtered = filter.filtering([1, 3, 4])
             XCTAssertEqual(filtered.included, [1, 4])
             XCTAssertEqual(filtered.excluded, [3])
             XCTAssertEqual(filtered.isInclusive, false)
@@ -129,14 +129,14 @@ final class PDFPageFilterTests: XCTestCase {
         let filter: PDFPageFilter = .drop([.oddNumbers])
         
         do {
-            let filtered = filter.apply(to: [])
+            let filtered = filter.filtering([])
             XCTAssertEqual(filtered.included, [])
             XCTAssertEqual(filtered.excluded, [])
             XCTAssertEqual(filtered.isInclusive, false)
         }
         
         do {
-            let filtered = filter.apply(to: [1, 3, 4, 5])
+            let filtered = filter.filtering([1, 3, 4, 5])
             XCTAssertEqual(filtered.included, [3, 5])
             XCTAssertEqual(filtered.excluded, [1, 4])
             XCTAssertEqual(filtered.isInclusive, true)
@@ -147,14 +147,14 @@ final class PDFPageFilterTests: XCTestCase {
         let filter: PDFPageFilter = .drop([.evenNumbers])
         
         do {
-            let filtered = filter.apply(to: [])
+            let filtered = filter.filtering([])
             XCTAssertEqual(filtered.included, [])
             XCTAssertEqual(filtered.excluded, [])
             XCTAssertEqual(filtered.isInclusive, false)
         }
         
         do {
-            let filtered = filter.apply(to: [1, 3, 4, 5])
+            let filtered = filter.filtering([1, 3, 4, 5])
             XCTAssertEqual(filtered.included, [1, 4])
             XCTAssertEqual(filtered.excluded, [3, 5])
             XCTAssertEqual(filtered.isInclusive, true)
@@ -168,14 +168,14 @@ final class PDFPageFilterTests: XCTestCase {
         ])
         
         do {
-            let filtered = filter.apply(to: [])
+            let filtered = filter.filtering([])
             XCTAssertEqual(filtered.included, [])
             XCTAssertEqual(filtered.excluded, [])
             XCTAssertEqual(filtered.isInclusive, false)
         }
         
         do {
-            let filtered = filter.apply(to: [1, 3, 4, 5, 6])
+            let filtered = filter.filtering([1, 3, 4, 5, 6])
             XCTAssertEqual(filtered.included, [3, 6])
             XCTAssertEqual(filtered.excluded, [1, 4, 5])
             XCTAssertEqual(filtered.isInclusive, true)
