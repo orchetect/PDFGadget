@@ -13,9 +13,9 @@ public enum PDFOperation: Equatable, Hashable {
     
     case replacePages(
         fromFileIndex: Int,
-        fromFilter: PDFPageFilter,
+        fromPages: PDFPageFilter,
         toFileIndex: Int,
-        toFilter: PDFPageFilter
+        toPages: PDFPageFilter
     )
     
     // TODO: possible future features
@@ -26,19 +26,22 @@ public enum PDFOperation: Equatable, Hashable {
     
     // Title, Author, Subject, PDF Producer, Content creator, etc.
     // case fileMetadata(property: PDFFileProperty, value: String)
+    
+    // Draw text, shapes or images on page(s) - ie: a watermark or redaction
+    // case overlay(text: String, in: Rect)
 }
 
 extension PDFOperation {
     public var verboseDescription: String {
         switch self {
-        case let .filterPages(fileIndex, filter):
-            return "Filter Pages: \(filter.verboseDescription) in file index \(fileIndex)"
+        case let .filterPages(fileIndex, pages):
+            return "Filter Pages: \(pages.verboseDescription) in file index \(fileIndex)"
             
         case let .reversePageOrder(fileIndex):
             return "Reverse Page Order in file index \(fileIndex)"
             
         case let .replacePages(fromFileIndex,
-                               fromFilter,
+                               fromPages,
                                toFileIndex,
                                toFilter):
             return "Replace Pages \(toFilter.verboseDescription) in file index \(toFileIndex) with pages \(fromFilter.verboseDescription) from file index \(fromFileIndex)"

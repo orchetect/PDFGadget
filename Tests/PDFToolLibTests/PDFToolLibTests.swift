@@ -62,9 +62,9 @@ final class PDFToolLibTests: XCTestCase {
                     .reversePageOrder(fileIndex: 1),
                     .replacePages(
                         fromFileIndex: 1,
-                        fromFilter: .include([.even]),
+                        fromPages: .include([.even]),
                         toFileIndex: 0,
-                        toFilter: .include([.even])
+                        toPages: .include([.even])
                     )
                 ],
                 outputBaseFileNameWithoutExtension: nil
