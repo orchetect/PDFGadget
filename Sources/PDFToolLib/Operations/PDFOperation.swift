@@ -7,9 +7,8 @@
 import Foundation
 
 public enum PDFOperation: Equatable, Hashable {
-    // TODO: create a new empty file
-    // /// New empty PDF file.
-    // case newFile
+    /// New empty PDF file.
+    case newFile
     
     /// Clone (duplicate) a loaded PDF file.
     case cloneFile(file: PDFFileDescriptor)
@@ -81,6 +80,9 @@ public enum PDFOperation: Equatable, Hashable {
 extension PDFOperation {
     public var verboseDescription: String {
         switch self {
+        case .newFile:
+            return "New empty file"
+            
         case let .cloneFile(file):
             return "Clone \(file.verboseDescription)"
             

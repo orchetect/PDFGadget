@@ -36,7 +36,10 @@ final class PDFToolLibTests: XCTestCase {
 //                           toPageIndex: 5),
 //                .filterFiles(.first)
 //                .cloneFile(file: .first)
-                .reversePageOrder(file: .first, pages: .include([.range(indexes: 6...22)]))
+//                .reversePageOrder(file: .first, pages: .include([.range(indexes: 6...22)]))
+                .newFile,
+                .copyPages(fromFile: .first, fromPages: .include([.first(count: 3)]), toFile: .second, toPageIndex: 0),
+                .filterFiles(.second)
             ],
             outputBaseFilenamesWithoutExtension: nil, // ["FooA", "FooB", "FooC"],
             savePDFs: true

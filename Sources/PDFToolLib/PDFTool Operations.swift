@@ -11,6 +11,12 @@ import OTCore
 import PDFKit
 
 extension PDFTool {
+    /// New empty PDF files.
+    func performNewFile() throws -> PDFOperationResult {
+        pdfs.append(PDFDocument())
+        return .changed
+    }
+    
     /// Clone PDF file.
     func performCloneFile(file: PDFFileDescriptor) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)

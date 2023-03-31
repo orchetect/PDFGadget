@@ -153,6 +153,9 @@ extension PDFTool {
         logger.info("Performing operation: \(operation.verboseDescription)")
         
         switch operation {
+        case .newFile:
+            return try performNewFile()
+            
         case let .cloneFile(file):
             return try performCloneFile(file: file)
             
