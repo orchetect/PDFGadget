@@ -122,17 +122,33 @@ extension PDFTool {
     }
     
     /// Reverse the pages in a file.
-    func performReversePageOrder(file: PDFFileDescriptor) throws -> PDFOperationResult {
+    func performReversePageOrder(
+        file: PDFFileDescriptor,
+        pages: PDFPageFilter
+    ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
-        let pages = try pdf.pages()
+        let pageIndexes = try pdf.pageIndexes(filter: pages)
         
-        guard pages.count > 1 else {
-            let plural = "page\(pages.count == 1 ? "" : "s")"
-            return .noChange(reason: "Reversing pages has no effect because file only has \(pages.count) \(plural).")
+        guard pageIndexes.isInclusive else {
+            throw PDFToolError.runtimeError(
+                "Page number descriptors are invalid or out of range."
+            )
         }
         
-        try pdf.replaceAllPages(with: pages.reversed())
+        let indexesToReverse = pageIndexes.included
+        
+        guard indexesToReverse.count > 1 else {
+            let plural = "page\(indexesToReverse.count == 1 ? " is" : "s are")"
+            return .noChange(reason: "Reversing pages has no effect because file only \(indexesToReverse.count) \(plural) selected for reversal.")
+        }
+        
+        let pairs = zip(indexesToReverse, indexesToReverse.reversed())
+            .prefix(indexesToReverse.count / 2)
+        
+        for (srcIndex, destIndex) in pairs {
+            pdf.exchangePage(at: srcIndex, withPageAt: destIndex)
+        }
         
         return .changed
     }

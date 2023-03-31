@@ -16,8 +16,8 @@ final class PDFToolLibTests: XCTestCase {
         let desktop = URL.desktopDirectoryBackCompat
         
         let sources: [URL] = [
-            desktop.appendingPathComponent("Test1.pdf"),
-            desktop.appendingPathComponent("Test2.pdf")
+            desktop.appendingPathComponent("Test1.pdf") //,
+//            desktop.appendingPathComponent("Test2.pdf")
         ]
         
         try PDFTool().run(using: PDFTool.Settings(
@@ -35,9 +35,10 @@ final class PDFToolLibTests: XCTestCase {
 //                           toFile: .first,
 //                           toPageIndex: 5),
 //                .filterFiles(.first)
-                .cloneFile(file: .first)
+//                .cloneFile(file: .first)
+                .reversePageOrder(file: .first, pages: .only([.range(indexes: 6...22)]))
             ],
-            outputBaseFilenamesWithoutExtension: ["FooA", "FooB", "FooC"],
+            outputBaseFilenamesWithoutExtension: nil, // ["FooA", "FooB", "FooC"],
             savePDFs: true
         ))
     }
@@ -59,7 +60,7 @@ final class PDFToolLibTests: XCTestCase {
             sourcePDFs: sources,
             outputDir: desktop,
             operations: [
-                .reversePageOrder(file: .second),
+                .reversePageOrder(file: .second, pages: .all),
                 .replacePages(
                     fromFile: .second,
                     fromPages: .only([.evenNumbers]),

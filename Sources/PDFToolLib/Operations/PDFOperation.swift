@@ -38,7 +38,7 @@ public enum PDFOperation: Equatable, Hashable {
     )
     
     /// Reverse the page order of a PDF file.
-    case reversePageOrder(file: PDFFileDescriptor)
+    case reversePageOrder(file: PDFFileDescriptor, pages: PDFPageFilter)
     
     /// Replace existing page(s) with other page(s).
     case replacePages(
@@ -99,8 +99,8 @@ extension PDFOperation {
         case let .movePages(fromFile, fromPages, toFile, toPageIndex):
             return "Move \(fromPages.verboseDescription) from \(fromFile.verboseDescription), inserting at page number \(toPageIndex + 1) in \(toFile.verboseDescription)"
             
-        case let .reversePageOrder(file):
-            return "Reverse page order in \(file.verboseDescription)"
+        case let .reversePageOrder(file, pages):
+            return "Reverse page order of \(pages.verboseDescription) in \(file.verboseDescription)"
             
         case let .replacePages(fromFile, fromPages, toFile, toPages, behavior):
             return "Replace \(toPages.verboseDescription) of \(toFile.verboseDescription) with \(fromPages.verboseDescription) from \(fromFile.verboseDescription) by \(behavior.verboseDescription)"

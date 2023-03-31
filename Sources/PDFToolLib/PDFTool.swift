@@ -183,8 +183,8 @@ extension PDFTool {
                 behavior: .move
             )
             
-        case let .reversePageOrder(file):
-            return try performReversePageOrder(file: file)
+        case let .reversePageOrder(file, pages):
+            return try performReversePageOrder(file: file, pages: pages)
             
         case let .replacePages(fromFile, fromPages, toFile, toPages, behavior):
             return try performReplacePages(
