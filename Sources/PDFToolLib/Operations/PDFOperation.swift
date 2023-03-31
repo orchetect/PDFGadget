@@ -7,40 +7,55 @@
 import Foundation
 
 public enum PDFOperation: Equatable, Hashable {
+    // TODO: create a new empty file
+    // /// New empty PDF file.
+    // case newFile
+    
+    /// Clone (duplicate) a loaded PDF file.
     case cloneFile(file: PDFFileDescriptor)
     
+    /// Filter loaded PDF files.
     case filterFiles(_ files: PDFFilesDescriptor)
     
+    /// Merge loaded PDF files.
     case mergeFiles(_ files: PDFFilesDescriptor = .all, appendingTo: PDFFileDescriptor? = nil)
     
     // TODO: reorder or sort files
     
+    /// Filter page(s) of PDF file(s).
     case filterPages(file: PDFFileDescriptor, pages: PDFPageFilter)
     
+    /// Copy page(s) within the same PDF file or from one file to another.
     case copyPages(
         fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
         toFile: PDFFileDescriptor, toPageIndex: Int
     )
     
+    /// Copy page(s) within the same PDF file or from one file to another.
     case movePages(
         fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
         toFile: PDFFileDescriptor, toPageIndex: Int
     )
     
+    /// Reverse the page order of a PDF file.
     case reversePageOrder(file: PDFFileDescriptor)
     
+    /// Replace existing page(s) with other page(s).
     case replacePages(
         fromFile: PDFFileDescriptor, fromPages: PDFPageFilter,
         toFile: PDFFileDescriptor, toPages: PDFPageFilter,
         behavior: InterchangeBehavior
     )
     
+    /// Rotate page(s) by a multiple of 90 degrees.
+    /// Rotation can be absolute or relative to current page rotation (if any).
     case rotate(file: PDFFileDescriptor, pages: PDFPageFilter, rotation: PDFPageRotation)
     
     // TODO: case crop(pages: PDFPageFilter, area: Rect)
     
     // TODO: case flip(pages: PDFPageFilter, axis: Axis) // -> use Quartz filter?
     
+    /// Filter annotation(s).
     case filterAnnotations(file: PDFFileDescriptor, pages: PDFPageFilter, annotations: PDFAnnotationFilter)
     
     // --> nil out all annotations' `userName: String?` property etc.
