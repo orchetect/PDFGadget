@@ -26,6 +26,9 @@ public enum PDFOperation: Equatable, Hashable {
     /// Filter page(s) of PDF file(s).
     case filterPages(file: PDFFileDescriptor, pages: PDFPagesFilter)
     
+    /// Set new filename for a PDF file.
+    case setFilename(file: PDFFileDescriptor, filename: String)
+    
     /// Copy page(s) within the same PDF file or from one file to another.
     case copyPages(
         fromFile: PDFFileDescriptor, fromPages: PDFPagesFilter,
@@ -132,6 +135,9 @@ extension PDFOperation {
             
         case .mergeFiles:
             return "Merge files"
+            
+        case let .setFilename(file, filename):
+            return "Set filename for \(file.verboseDescription) to \(filename.quoted)"
             
         case let .filterPages(file, pages):
             return "Filter \(pages.verboseDescription) in \(file.verboseDescription)"

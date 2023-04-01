@@ -79,6 +79,22 @@ extension PDFTool {
         return .changed
     }
     
+    /// Set new filename for a PDF file.
+    func performSetFilename(
+        file: PDFFileDescriptor,
+        filename: String
+    ) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(file)
+        
+        let oldFilename = pdf.filenameForExport
+        
+        pdf.set(filenameForExport: filename)
+        
+        return filename == oldFilename
+            ? .noChange(reason: "New filename is identical to old filename.")
+            : .changed
+    }
+    
     /// Filter page(s).
     func performFilterPages(file: PDFFileDescriptor, pages: PDFPagesFilter) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
