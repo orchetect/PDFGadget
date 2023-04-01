@@ -24,7 +24,7 @@ final class PDFToolLibTests: XCTestCase {
             sourcePDFs: sources,
             outputDir: nil,
             operations: [
-                .filterFiles(.all)
+                .filterFiles(.all),
 //                .filterFiles(.filename(.equals("Test2")))
 //                .filterFiles(.introspecting(.init(description: "Test", closure: { pdf in
 //                    pdf.documentURL?.lastPathComponent == "Test2.pdf"
@@ -45,10 +45,9 @@ final class PDFToolLibTests: XCTestCase {
 //                      pages: .include([.first(count: 3)]),
 //                      area: .scale(factor: 0.5),
 //                      process: .relative)
-                .setFilename(file: .first, filename: "first"),
+//                .setFilename(file: .first, filename: "first"),
                 .setFilename(file: .second, filename: "second")
             ],
-            outputBaseFilenamesWithoutExtension: nil, // ["FooA", "FooB", "FooC"],
             savePDFs: true
         ))
     }
@@ -80,7 +79,6 @@ final class PDFToolLibTests: XCTestCase {
                 ),
                 .filterFiles(.first)
             ],
-            outputBaseFilenamesWithoutExtension: nil,
             savePDFs: true
         ))
     }
@@ -103,7 +101,6 @@ final class PDFToolLibTests: XCTestCase {
             operations: [
                 .mergeFiles()
             ],
-            outputBaseFilenamesWithoutExtension: nil,
             savePDFs: true
         ))
     }

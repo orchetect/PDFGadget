@@ -59,7 +59,6 @@ struct PDFToolCLI: ParsableCommand {
                 sourcePDFs: source,
                 outputDir: outputDir,
                 operations: [], // TODO: implement
-                outputBaseFilenamesWithoutExtension: nil, // TODO: implement
                 savePDFs: true
                 // ...
             )

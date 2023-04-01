@@ -12,7 +12,6 @@ extension PDFTool {
     public struct Settings {
         public enum Defaults {
             public static let operations: [PDFOperation] = []
-            public static let outputBaseFilenamesWithoutExtension: [String]? = nil
             public static let outputDir: URL? = nil
             public static let savePDFs: Bool = true
         }
@@ -24,7 +23,6 @@ extension PDFTool {
         public var sourcePDFs: [URL]
         public var outputDir: URL?
         public var operations: [PDFOperation]
-        public var outputBaseFilenamesWithoutExtension: [String]?
         public var savePDFs: Bool
         
         /// Initialize with defaults for default-able parameters.
@@ -35,7 +33,6 @@ extension PDFTool {
             
             self.outputDir = Defaults.outputDir
             self.operations = Defaults.operations
-            self.outputBaseFilenamesWithoutExtension = Defaults.outputBaseFilenamesWithoutExtension
             self.savePDFs = Defaults.savePDFs
             
             try validate()
@@ -45,13 +42,11 @@ extension PDFTool {
             sourcePDFs: [URL],
             outputDir: URL?,
             operations: [PDFOperation],
-            outputBaseFilenamesWithoutExtension: [String]?,
             savePDFs: Bool
         ) throws {
             self.operations = operations
             self.sourcePDFs = sourcePDFs
             self.outputDir = outputDir
-            self.outputBaseFilenamesWithoutExtension = outputBaseFilenamesWithoutExtension
             self.savePDFs = savePDFs
             
             try validate()

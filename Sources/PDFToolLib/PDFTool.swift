@@ -42,8 +42,7 @@ extension PDFTool {
             try perform(operations: settings.operations)
             if settings.savePDFs {
                 try self.savePDFs(
-                    outputDir: settings.outputDir,
-                    baseFilenames: settings.outputBaseFilenamesWithoutExtension
+                    outputDir: settings.outputDir
                 )
             }
         } catch {
@@ -103,13 +102,9 @@ extension PDFTool {
     ///   - baseFilenames: Array of filenames (excluding .pdf file extension) to use.
     ///     If `nil`, a smart default is used.
     public func savePDFs(
-        outputDir: URL?,
-        baseFilenames: [String]?
+        outputDir: URL?
     ) throws {
-        let filenames = baseFilenames
-            ?? pdfs.map {
-                $0.filenameForExport
-            }
+        let filenames = pdfs.map(\.filenameForExport)
         
         // ensure there are exactly the right number of filenames
         guard filenames.count == pdfs.count else {

@@ -82,7 +82,7 @@ extension PDFTool {
     /// Set new filename for a PDF file.
     func performSetFilename(
         file: PDFFileDescriptor,
-        filename: String
+        filename: String?
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
