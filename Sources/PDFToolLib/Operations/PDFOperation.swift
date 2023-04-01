@@ -170,7 +170,7 @@ extension PDFOperation {
             return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation)"
             
         case let .splitFile(file, splits):
-            return "Split \(file.verboseDescription) into \(splits.verboseDescription) files"
+            return "Split \(file.verboseDescription) \(splits.verboseDescription)"
             
         case let .filterAnnotations(file, pages, annotations):
             return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"

@@ -13,7 +13,7 @@ import PDFKit
 extension PDFTool {
     /// New empty PDF files.
     func performNewFile() throws -> PDFOperationResult {
-        pdfs.append(PDFFile(doc: PDFDocument()))
+        pdfs.append(newEmptyPDFFile())
         return .changed
     }
     
@@ -240,15 +240,29 @@ extension PDFTool {
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
-        #warning("> finish this")
+        let newSplits = splits.splits(source: pdf)
         
-//        guard pdfIndexes.isInclusive else {
-//            throw PDFToolError.runtimeError(
-//                "Page number descriptor is invalid or out of range."
-//            )
-//        }
+        guard !newSplits.isEmpty else {
+            return .noChange(reason: "Split descriptor does not result in multiple files.")
+        }
         
-        // pdfIndexes.included
+        var dedupeFilenameCount = 0
+        for (pageRange, filename) in newSplits {
+            let pages = try pdf.doc.pages(at: pageRange, copy: true)
+            let newFile = newEmptyPDFFile()
+            
+            if let filename {
+                newFile.set(filenameForExport: filename)
+            } else {
+                newFile.set(filenameForExport: newFile.filenameForExport + "-split\(dedupeFilenameCount)")
+                dedupeFilenameCount += 1
+            }
+            newFile.doc.append(pages: pages)
+            pdfs.append(newFile)
+        }
+        
+        // remove source file
+        pdfs.removeAll(pdf)
         
         return .changed // TODO: ?
     }
@@ -282,6 +296,10 @@ extension PDFTool {
 // MARK: - Helpers
 
 extension PDFTool {
+    func newEmptyPDFFile() -> PDFFile {
+        PDFFile(doc: PDFDocument())
+    }
+    
     func expectOneFile(
         _ descriptor: PDFFileDescriptor,
         error: String? = nil

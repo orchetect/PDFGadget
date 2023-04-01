@@ -16,15 +16,15 @@ final class PDFToolLibTests: XCTestCase {
         let desktop = URL.desktopDirectoryBackCompat
         
         let sources: [URL] = [
-            desktop.appendingPathComponent("Test1.pdf"),
-            desktop.appendingPathComponent("Test2.pdf")
+            desktop.appendingPathComponent("Test1.pdf") //,
+//            desktop.appendingPathComponent("Test2.pdf")
         ]
         
         try PDFTool().run(using: PDFTool.Settings(
             sourcePDFs: sources,
             outputDir: nil,
             operations: [
-                .filterFiles(.all),
+//                .filterFiles(.all),
 //                .filterFiles(.filename(.equals("Test2")))
 //                .filterFiles(.introspecting(.init(description: "Test", closure: { pdf in
 //                    pdf.documentURL?.lastPathComponent == "Test2.pdf"
@@ -46,7 +46,14 @@ final class PDFToolLibTests: XCTestCase {
 //                      area: .scale(factor: 0.5),
 //                      process: .relative)
 //                .setFilename(file: .first, filename: "first"),
-                .setFilename(file: .second, filename: "second")
+//                .setFilename(file: .second, filename: "second")
+//                .splitFile(file: .first, .at(pageIndexes: [4, 20, 22]))
+//                ,
+//                .splitFile(file: .first, .every(pageCount: 10))
+//                ,
+//                .splitFile(file: .first, .pageIndexesAndFilenames([0...4: "one", 5...20: "two", 21...22: "three", 23...24: "four"]))
+                .splitFile(file: .first, .pageNumbersAndFilenames([1...5: "one", 6...21: "two", 22...23: "three", 24...25: "four"]))
+                
             ],
             savePDFs: true
         ))
