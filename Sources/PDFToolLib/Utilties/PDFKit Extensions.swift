@@ -26,11 +26,11 @@ extension PDFDocument {
     
     // MARK: - Page Access
     
-    public func pages(at range: Range<Int>) throws -> [PDFPage] {
-        try pages(at: pageIndexes(at: range))
+    public func pages(at range: Range<Int>, copy: Bool = false) throws -> [PDFPage] {
+        try pages(at: pageIndexes(at: range), copy: copy)
     }
     
-    public func pages(at indexes: [Int]? = nil) throws -> [PDFPage] {
+    public func pages(at indexes: [Int]? = nil, copy: Bool = false) throws -> [PDFPage] {
         let i = indexes ?? pageIndexes()
         let getPages = i.compactMap { page(at: $0) }
         guard i.count == getPages.count else {
@@ -38,11 +38,11 @@ extension PDFDocument {
                 "Error while enumerating pages."
             )
         }
-        return getPages
+        return copy ? getPages.map { $0.copy() as! PDFPage } : getPages
     }
     
-    public func pages(for filter: PDFPagesFilter) throws -> [PDFPage] {
-        try pages(at: pageIndexes(filter: filter).included)
+    public func pages(for filter: PDFPagesFilter, copy: Bool = false) throws -> [PDFPage] {
+        try pages(at: pageIndexes(filter: filter).included, copy: copy)
     }
     
     // MARK: - Page Operations
@@ -116,14 +116,17 @@ extension PDFDocument {
         }
     }
     
-    public func exchangePage(at index: Int, withPage other: PDFPage) throws {
+    public func exchangePage(at index: Int, withPage other: PDFPage, copy: Bool = false) throws {
         guard pageIndexes().contains(index) else {
             throw PDFToolError.runtimeError(
                 "Failed to replace page. Index is out of bounds: \(index)."
             )
         }
+        
+        let newPage = copy ? other.copy() as! PDFPage : other
+        
         removePage(at: index)
-        insert(other, at: index)
+        insert(newPage, at: index)
     }
     
     // MARK: - File Info

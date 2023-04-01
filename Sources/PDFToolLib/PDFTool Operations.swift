@@ -71,7 +71,7 @@ extension PDFTool {
         }
         
         for pdf in filteredPDFs {
-            try targetPDF.doc.append(pages: pdf.doc.pages(for: .all).map { $0.copy() as! PDFPage })
+            try targetPDF.doc.append(pages: pdf.doc.pages(for: .all, copy: true))
         }
         
         pdfs = [targetPDF]
@@ -128,16 +128,11 @@ extension PDFTool {
             )
         }
         
-        let pdfAPages = try pdfA.doc.pages(at: pdfAIndexes.included)
-        
         // append to end of file if index is nil
         let targetPageIndex = toPageIndex ?? pdfB.doc.pageCount
         
-        if pdfA == pdfB {
-            try pdfB.doc.insert(pdfAPages, at: targetPageIndex)
-        } else {
-            try pdfB.doc.insert(pdfAPages.map { $0.copy() as! PDFPage }, at: targetPageIndex)
-        }
+        let pdfAPages = try pdfA.doc.pages(at: pdfAIndexes.included, copy: pdfA != pdfB)
+        try pdfB.doc.insert(pdfAPages, at: targetPageIndex)
         
         if behavior == .move {
             try pdfA.doc.removePages(at: pdfAIndexes.included)
@@ -215,8 +210,7 @@ extension PDFTool {
                     // behavior has no effect for same-file operations
                     pdfB.doc.exchangePage(at: indexes.1, withPageAt: indexes.0)
                 } else {
-                    let pdfAPageCopy = pdfAPage.copy() as! PDFPage
-                    try pdfB.doc.exchangePage(at: indexes.1, withPage: pdfAPageCopy)
+                    try pdfB.doc.exchangePage(at: indexes.1, withPage: pdfAPage, copy: true)
                 }
             }
         
