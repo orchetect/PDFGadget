@@ -11,14 +11,18 @@ import OTCore
 import PDFKit
 
 public final class PDFTool {
-    let logger = Logger(label: "\(PDFTool.self)")
+    internal let logger = Logger(label: "\(PDFTool.self)")
     
-    public var pdfs: [PDFDocument] = []
+    internal var pdfs: [PDFFile] = []
+    
+    public var pdfDocuments: [PDFDocument] {
+        pdfs.map(\.doc)
+    }
     
     public init() { }
     
     public init(pdfs: [PDFDocument]) {
-        self.pdfs = pdfs
+        self.pdfs = pdfs.map { PDFFile(doc: $0) }
     }
     
     public init(pdfs: [URL]) throws {
@@ -66,7 +70,7 @@ extension PDFTool {
                     "Failed to read PDF file contents: \(url.path.quoted)"
                 )
             }
-            pdfs.append(doc)
+            pdfs.append(PDFFile(doc: doc))
         }
     }
     
@@ -97,13 +101,15 @@ extension PDFTool {
     ///   - outputDir: Output directory. Must be a folder that exists on disk.
     ///     If `nil`, PDF file(s) are saved to the same directory they exist.
     ///   - baseFilenames: Array of filenames (excluding .pdf file extension) to use.
-    ///     If `nil`, the current filename with a '-processed' suffix is used.
+    ///     If `nil`, a smart default is used.
     public func savePDFs(
         outputDir: URL?,
         baseFilenames: [String]?
     ) throws {
         let filenames = baseFilenames
-            ?? pdfs.map { $0.filenameWithoutExtension?.appending("-processed") ?? "File" }
+            ?? pdfs.map {
+                $0.filenameForExport
+            }
         
         // ensure there are exactly the right number of filenames
         guard filenames.count == pdfs.count else {
@@ -136,7 +142,7 @@ extension PDFTool {
             }
             
             logger.info("Saving to file \(outFilePath.path.quoted)...")
-            if !pdf.write(to: outFilePath) {
+            if !pdf.doc.write(to: outFilePath) {
                 throw PDFToolError.runtimeError(
                     "An error occurred while attempting to save the PDF file."
                 )
@@ -201,6 +207,9 @@ extension PDFTool {
         case let .rotate(file, pages, rotation):
             return try performRotatePages(file: file, pages: pages, rotation: rotation)
             
+        case let .splitFile(file, splits):
+            return try performSplitFile(file: file, splits: splits)
+            
         case let .filterAnnotations(file, pages, annotations):
             return try performFilterAnnotations(file: file, pages: pages, annotations: annotations)
         }
@@ -208,12 +217,12 @@ extension PDFTool {
     
     /// Generates full output path including filename.
     internal func formOutputFilePath(
-        for pdf: PDFDocument,
+        for pdf: PDFFile,
         fileNameWithoutExtension: String,
         outputDir: URL?
     ) throws -> URL {
         let folderPath = outputDir
-            ?? pdf.documentURL?.deletingLastPathComponent()
+            ?? pdf.doc.documentURL?.deletingLastPathComponent()
             ?? URL.desktopDirectoryBackCompat
         
         guard folderPath.fileExists,

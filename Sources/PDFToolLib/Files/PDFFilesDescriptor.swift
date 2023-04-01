@@ -22,7 +22,7 @@ public enum PDFFilesDescriptor: Equatable, Hashable {
 
 extension PDFFilesDescriptor {
     /// Returns `nil` in the event of an error.
-    func filtering(_ inputs: [PDFDocument]) -> [PDFDocument]? {
+    func filtering(_ inputs: [PDFFile]) -> [PDFFile]? {
         switch self {
         case .all:
             return inputs
@@ -54,13 +54,12 @@ extension PDFFilesDescriptor {
             }
             
         case .filename(let filenameDescriptor):
-            return inputs.filter { doc in
-                guard let baseFilename = doc.filenameWithoutExtension else { return false }
-                return filenameDescriptor.matches(baseFilename)
+            return inputs.filter { pdf in
+                return filenameDescriptor.matches(pdf.filenameForMatching)
             }
             
         case .introspecting(let introspection):
-            return inputs.filter { introspection.closure($0) }
+            return inputs.filter { introspection.closure($0.doc) }
             
         }
     }

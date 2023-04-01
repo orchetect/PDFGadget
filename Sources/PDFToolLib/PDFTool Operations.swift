@@ -13,14 +13,14 @@ import PDFKit
 extension PDFTool {
     /// New empty PDF files.
     func performNewFile() throws -> PDFOperationResult {
-        pdfs.append(PDFDocument())
+        pdfs.append(PDFFile(doc: PDFDocument()))
         return .changed
     }
     
     /// Clone PDF file.
     func performCloneFile(file: PDFFileDescriptor) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
-        pdfs.append(pdf.copy() as! PDFDocument)
+        pdfs.append(pdf.copy() as! PDFFile)
         
         return .changed
     }
@@ -71,7 +71,7 @@ extension PDFTool {
         }
         
         for pdf in filteredPDFs {
-            try targetPDF.append(pages: pdf.pages(for: .all).map { $0.copy() as! PDFPage })
+            try targetPDF.doc.append(pages: pdf.doc.pages(for: .all).map { $0.copy() as! PDFPage })
         }
         
         pdfs = [targetPDF]
@@ -83,13 +83,13 @@ extension PDFTool {
     func performFilterPages(file: PDFFileDescriptor, pages: PDFPagesFilter) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
-        let diff = try pdf.pageIndexes(filter: pages)
+        let diff = try pdf.doc.pageIndexes(filter: pages)
         
         guard !diff.isIdentical else {
             return .noChange(reason: "Filtered page numbers are identical to input.")
         }
         
-        try pdf.removePages(at: diff.excluded)
+        try pdf.doc.removePages(at: diff.excluded)
         
         return .changed
     }
@@ -104,7 +104,7 @@ extension PDFTool {
     ) throws -> PDFOperationResult {
         let (pdfA, pdfB) = try expectSourceAndDestinationFiles(sourceFile, destFile ?? sourceFile)
         
-        let pdfAIndexes = try pdfA.pageIndexes(filter: fromPages)
+        let pdfAIndexes = try pdfA.doc.pageIndexes(filter: fromPages)
         
         guard pdfAIndexes.isInclusive else {
             throw PDFToolError.runtimeError(
@@ -112,19 +112,19 @@ extension PDFTool {
             )
         }
         
-        let pdfAPages = try pdfA.pages(at: pdfAIndexes.included)
+        let pdfAPages = try pdfA.doc.pages(at: pdfAIndexes.included)
         
         // append to end of file if index is nil
-        let targetPageIndex = toPageIndex ?? pdfB.pageCount
+        let targetPageIndex = toPageIndex ?? pdfB.doc.pageCount
         
         if pdfA == pdfB {
-            try pdfB.insert(pdfAPages, at: targetPageIndex)
+            try pdfB.doc.insert(pdfAPages, at: targetPageIndex)
         } else {
-            try pdfB.insert(pdfAPages.map { $0.copy() as! PDFPage }, at: targetPageIndex)
+            try pdfB.doc.insert(pdfAPages.map { $0.copy() as! PDFPage }, at: targetPageIndex)
         }
         
         if behavior == .move {
-            try pdfA.removePages(at: pdfAIndexes.included)
+            try pdfA.doc.removePages(at: pdfAIndexes.included)
         }
         
         return .changed
@@ -137,7 +137,7 @@ extension PDFTool {
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
-        let pageIndexes = try pdf.pageIndexes(filter: pages)
+        let pageIndexes = try pdf.doc.pageIndexes(filter: pages)
         
         guard pageIndexes.isInclusive else {
             throw PDFToolError.runtimeError(
@@ -156,7 +156,7 @@ extension PDFTool {
             .prefix(indexesToReverse.count / 2)
         
         for (srcIndex, destIndex) in pairs {
-            pdf.exchangePage(at: srcIndex, withPageAt: destIndex)
+            pdf.doc.exchangePage(at: srcIndex, withPageAt: destIndex)
         }
         
         return .changed
@@ -172,8 +172,8 @@ extension PDFTool {
     ) throws -> PDFOperationResult {
         let (pdfA, pdfB) = try expectSourceAndDestinationFiles(sourceFile, destFile ?? sourceFile)
         
-        let pdfAIndexes = try pdfA.pageIndexes(filter: fromPages)
-        let pdfBIndexes = try pdfB.pageIndexes(filter: toPages)
+        let pdfAIndexes = try pdfA.doc.pageIndexes(filter: fromPages)
+        let pdfBIndexes = try pdfB.doc.pageIndexes(filter: toPages)
         
         // TODO: could have an exception for when toFilter is .all to always allow it
         
@@ -191,21 +191,21 @@ extension PDFTool {
             )
         }
         
-        let pdfAPages = try pdfA.pages(at: pdfAIndexes.included)
+        let pdfAPages = try pdfA.doc.pages(at: pdfAIndexes.included)
         
         try zip(pdfAPages, zip(pdfAIndexes.included, pdfBIndexes.included))
             .forEach { pdfAPage, indexes in
                 if pdfA == pdfB {
                     // behavior has no effect for same-file operations
-                    pdfB.exchangePage(at: indexes.1, withPageAt: indexes.0)
+                    pdfB.doc.exchangePage(at: indexes.1, withPageAt: indexes.0)
                 } else {
                     let pdfAPageCopy = pdfAPage.copy() as! PDFPage
-                    try pdfB.exchangePage(at: indexes.1, withPage: pdfAPageCopy)
+                    try pdfB.doc.exchangePage(at: indexes.1, withPage: pdfAPageCopy)
                 }
             }
         
         if behavior == .move {
-            try pdfA.removePages(at: pdfAIndexes.included)
+            try pdfA.doc.removePages(at: pdfAIndexes.included)
         }
         
         return .changed
@@ -221,6 +221,26 @@ extension PDFTool {
             let sourceAngle = PDFPageRotation.Angle(degrees: page.rotation) ?? ._0degrees
             page.rotation = rotation.degrees(offsetting: sourceAngle)
         }
+    }
+    
+    /// Split a single PDF file into multiple files.
+    func performSplitFile(
+        file: PDFFileDescriptor,
+        splits: PDFFileSplitDescriptor
+    ) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(file)
+        
+        #warning("> finish this")
+        
+//        guard pdfIndexes.isInclusive else {
+//            throw PDFToolError.runtimeError(
+//                "Page number descriptor is invalid or out of range."
+//            )
+//        }
+        
+        // pdfIndexes.included
+        
+        return .changed // TODO: ?
     }
     
     /// Filter annotations by type.
@@ -255,7 +275,7 @@ extension PDFTool {
     func expectOneFile(
         _ descriptor: PDFFileDescriptor,
         error: String? = nil
-    ) throws -> PDFDocument {
+    ) throws -> PDFFile {
         guard let file = descriptor.first(in: pdfs) else {
             throw PDFToolError.runtimeError(
                 error ?? "Missing input PDF file: \(descriptor.verboseDescription)."
@@ -269,7 +289,7 @@ extension PDFTool {
         _ descriptorA: PDFFileDescriptor,
         _ descriptorB: PDFFileDescriptor,
         error: String? = nil
-    ) throws -> (pdfA: PDFDocument, pdfB: PDFDocument) {
+    ) throws -> (pdfA: PDFFile, pdfB: PDFFile) {
         guard let fileA = descriptorA.first(in: pdfs) else {
             throw PDFToolError.runtimeError(
                 error ?? "Missing input PDF file: \(descriptorA)."
@@ -287,7 +307,7 @@ extension PDFTool {
     func expectZeroOrMoreFiles(
         _ descriptor: PDFFilesDescriptor,
         error: String? = nil
-    ) throws -> [PDFDocument] {
+    ) throws -> [PDFFile] {
         guard let files = descriptor.filtering(pdfs) else {
             throw PDFToolError.runtimeError(
                 error ?? "Missing input PDF files: \(descriptor.verboseDescription)."
@@ -305,7 +325,7 @@ extension PDFTool {
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
-        let pdfIndexes = try pdf.pageIndexes(filter: pages)
+        let pdfIndexes = try pdf.doc.pageIndexes(filter: pages)
         
         guard pdfIndexes.isInclusive else {
             throw PDFToolError.runtimeError(
@@ -314,7 +334,7 @@ extension PDFTool {
         }
         
         for index in pdfIndexes.included {
-            guard let page = pdf.page(at: index) else {
+            guard let page = pdf.doc.page(at: index) else {
                 throw PDFToolError.runtimeError(
                     "Page number \(index + 1) of \(file) could not be read."
                 )

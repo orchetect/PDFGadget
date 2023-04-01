@@ -52,6 +52,10 @@ public enum PDFOperation: Equatable, Hashable {
     /// Rotation can be absolute or relative to current page rotation (if any).
     case rotate(file: PDFFileDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
     
+    /// Split file at certain page points into multiple files.
+    /// The original file is discarded.
+    case splitFile(file: PDFFileDescriptor, _ splits: PDFFileSplitDescriptor)
+    
     // TODO: case crop(pages: PDFPagesFilter, area: Rect)
     
     // TODO: case flip(pages: PDFPagesFilter, axis: Axis) // -> use Quartz filter?
@@ -153,50 +157,11 @@ extension PDFOperation {
         case let .rotate(file, pages, rotation):
             return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation)"
             
+        case let .splitFile(file, splits):
+            return "Split \(file.verboseDescription) into \(splits.verboseDescription) files"
+            
         case let .filterAnnotations(file, pages, annotations):
             return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"
-        }
-    }
-}
-
-// MARK: - Qualifier Types
-
-extension PDFOperation {
-    public enum InterchangeBehavior: Equatable, Hashable {
-        case copy
-        case move
-    }
-}
-
-extension PDFOperation.InterchangeBehavior {
-    public var verboseDescription: String {
-        switch self {
-        case .copy:
-            return "copying"
-        case .move:
-            return "moving"
-        }
-    }
-}
-
-extension PDFOperation {
-    public enum ValueModification: Equatable, Hashable {
-        /// Set absolute page rotation value, replacing existing rotation if any.
-        case absolute
-        
-        /// Relative to current page rotation, if any.
-        /// If current page rotation is 0 degrees, this is identical to ``absolute``.
-        case relative
-    }
-}
-
-extension PDFOperation.ValueModification {
-    public var verboseDescription: String {
-        switch self {
-        case .absolute:
-            return "absolute"
-        case .relative:
-            return "relative"
         }
     }
 }

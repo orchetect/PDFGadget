@@ -18,7 +18,7 @@ public enum PDFFileDescriptor: Equatable, Hashable {
 }
 
 extension PDFFileDescriptor {
-    func first(in inputs: [PDFDocument]) -> PDFDocument? {
+    func first(in inputs: [PDFFile]) -> PDFFile? {
         switch self {
         case .first:
             return inputs.first
@@ -35,13 +35,12 @@ extension PDFFileDescriptor {
             return inputs[idx]
             
         case .filename(let filenameDescriptor):
-            return inputs.first { doc in
-                guard let baseFilename = doc.filenameWithoutExtension else { return false }
-                return filenameDescriptor.matches(baseFilename)
+            return inputs.first { pdf in
+                return filenameDescriptor.matches(pdf.filenameForMatching)
             }
             
         case .introspecting(let introspection):
-            return inputs.first(where: { introspection.closure($0) })
+            return inputs.first(where: { introspection.closure($0.doc) })
             
         }
     }
