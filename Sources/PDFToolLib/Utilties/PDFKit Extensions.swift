@@ -14,8 +14,26 @@ extension PDFDocument {
         0 ..< pageCount
     }
     
-    public func pageIndexes(at range: Range<Int>? = nil) -> [Int] {
-        Array(range ?? pageRange)
+    public func pageIndexes() -> [Int] {
+        Array(pageRange)
+    }
+    
+    public func pageIndexes(at range: Range<Int>) throws -> [Int] {
+        guard pageRange.contains(range) else {
+            throw PDFToolError.runtimeError(
+                "Page index out of range."
+            )
+        }
+        return Array(range)
+    }
+    
+    public func pageIndexes(at range: ClosedRange<Int>) throws -> [Int] {
+        guard pageRange.contains(range) else {
+            throw PDFToolError.runtimeError(
+                "Page index out of range."
+            )
+        }
+        return Array(range)
     }
     
     public func pageIndexes(
@@ -27,6 +45,10 @@ extension PDFDocument {
     // MARK: - Page Access
     
     public func pages(at range: Range<Int>, copy: Bool = false) throws -> [PDFPage] {
+        try pages(at: pageIndexes(at: range), copy: copy)
+    }
+    
+    public func pages(at range: ClosedRange<Int>, copy: Bool = false) throws -> [PDFPage] {
         try pages(at: pageIndexes(at: range), copy: copy)
     }
     
