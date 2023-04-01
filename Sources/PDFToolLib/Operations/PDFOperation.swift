@@ -157,6 +157,8 @@ extension PDFOperation {
     }
 }
 
+// MARK: - Qualifier Types
+
 extension PDFOperation {
     public enum InterchangeBehavior: Equatable, Hashable {
         case copy
@@ -171,6 +173,28 @@ extension PDFOperation.InterchangeBehavior {
             return "copying"
         case .move:
             return "moving"
+        }
+    }
+}
+
+extension PDFOperation {
+    public enum ValueModification: Equatable, Hashable {
+        /// Set absolute page rotation value, replacing existing rotation if any.
+        case absolute
+        
+        /// Relative to current page rotation, if any.
+        /// If current page rotation is 0 degrees, this is identical to ``absolute``.
+        case relative
+    }
+}
+
+extension PDFOperation.ValueModification {
+    public var verboseDescription: String {
+        switch self {
+        case .absolute:
+            return "absolute"
+        case .relative:
+            return "relative"
         }
     }
 }

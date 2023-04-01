@@ -8,9 +8,9 @@ import Foundation
 
 public struct PDFPageRotation: Equatable, Hashable {
     public var angle: Angle
-    public var process: Process
+    public var process: PDFOperation.ValueModification
     
-    public init(angle: Angle, process: Process = .relative) {
+    public init(angle: Angle, process: PDFOperation.ValueModification = .relative) {
         self.angle = angle
         self.process = process
     }
@@ -65,18 +65,5 @@ extension PDFPageRotation.Angle {
     
     public static func - (lhs: Self, rhs: Self) -> Self {
         Self.init(degrees: lhs.degrees - rhs.degrees) ?? ._0degrees
-    }
-}
-
-// MARK: - Process
-
-extension PDFPageRotation {
-    public enum Process: Equatable, Hashable {
-        /// Set absolute page rotation value, replacing existing rotation if any.
-        case absolute
-        
-        /// Relative to current page rotation, if any.
-        /// If current page rotation is 0 degrees, this is identical to ``absolute``.
-        case relative
     }
 }
