@@ -217,27 +217,10 @@ extension PDFTool {
         pages: PDFPagesFilter,
         rotation: PDFPageRotation
     ) throws -> PDFOperationResult {
-        let pdf = try expectOneFile(file)
-        
-        let pdfAIndexes = try pdf.pageIndexes(filter: pages)
-        
-        guard pdfAIndexes.isInclusive else {
-            throw PDFToolError.runtimeError(
-                "Page number descriptor is invalid or out of range."
-            )
-        }
-        
-        for index in pdfAIndexes.included {
-            guard let page = pdf.page(at: index) else {
-                throw PDFToolError.runtimeError(
-                    "Page number \(index + 1) of \(file) could not be read."
-                )
-            }
+        try performPagesTransform(file: file, pages: pages) { page, _ in
             let sourceAngle = PDFPageRotation.Angle(degrees: page.rotation) ?? ._0degrees
             page.rotation = rotation.degrees(offsetting: sourceAngle)
         }
-        
-        return .changed
     }
     
     /// Filter annotations by type.
@@ -246,23 +229,7 @@ extension PDFTool {
         pages: PDFPagesFilter,
         annotations: PDFAnnotationFilter
     ) throws -> PDFOperationResult {
-        let pdf = try expectOneFile(file)
-        
-        let pdfAIndexes = try pdf.pageIndexes(filter: pages)
-        
-        guard pdfAIndexes.isInclusive else {
-            throw PDFToolError.runtimeError(
-                "Page number descriptor is invalid or out of range."
-            )
-        }
-        
-        for index in pdfAIndexes.included {
-            guard let page = pdf.page(at: index) else {
-                throw PDFToolError.runtimeError(
-                    "Page number \(index + 1) of \(file) could not be read."
-                )
-            }
-            
+        try performPagesTransform(file: file, pages: pages) { page, pageDescription in
             let preCount = page.annotations.count
             var filteredCount = preCount
             for annotation in page.annotations {
@@ -275,12 +242,10 @@ extension PDFTool {
             
             guard postCount == filteredCount else {
                 throw PDFToolError.runtimeError(
-                    "Could not remove \(annotations) annotations for page number \(index + 1) of \(file)."
+                    "Could not remove \(annotations) annotations for \(pageDescription)."
                 )
             }
         }
-        
-        return .changed
     }
 }
 
@@ -330,5 +295,33 @@ extension PDFTool {
         }
         
         return files
+    }
+    
+    /// Generic wrapper for transforming page(s).
+    func performPagesTransform(
+        file: PDFFileDescriptor,
+        pages: PDFPagesFilter,
+        transform: (_ page: PDFPage, _ pageDescription: String) throws -> Void
+    ) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(file)
+        
+        let pdfIndexes = try pdf.pageIndexes(filter: pages)
+        
+        guard pdfIndexes.isInclusive else {
+            throw PDFToolError.runtimeError(
+                "Page number descriptor is invalid or out of range."
+            )
+        }
+        
+        for index in pdfIndexes.included {
+            guard let page = pdf.page(at: index) else {
+                throw PDFToolError.runtimeError(
+                    "Page number \(index + 1) of \(file) could not be read."
+                )
+            }
+            try transform(page, "page number \(index + 1) of \(file)")
+        }
+        
+        return .changed
     }
 }
