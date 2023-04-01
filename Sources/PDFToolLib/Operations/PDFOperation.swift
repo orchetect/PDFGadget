@@ -21,6 +21,8 @@ public enum PDFOperation: Equatable, Hashable {
     
     // TODO: reorder or sort files
     
+    // TODO: collation stuff
+    
     /// Filter page(s) of PDF file(s).
     case filterPages(file: PDFFileDescriptor, pages: PDFPagesFilter)
     
