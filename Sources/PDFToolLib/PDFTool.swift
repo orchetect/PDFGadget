@@ -60,15 +60,22 @@ extension PDFTool {
     ///   - urls: File URLs for PDFS to load from disk.
     ///   - removeExisting: Remove currently loaded PDFs first.
     public func load(pdfs urls: [URL], removeExisting: Bool = false) throws {
+        let docs = try urls.map {
+            guard let doc = PDFDocument(url: $0) else {
+                throw PDFToolError.runtimeError(
+                    "Failed to read PDF file contents: \($0.path.quoted)"
+                )
+            }
+            return doc
+        }
+        try load(pdfs: docs, removeExisting: removeExisting)
+    }
+    
+    public func load(pdfs docs: [PDFDocument], removeExisting: Bool = false) throws {
         if removeExisting {
             pdfs = []
         }
-        for url in urls {
-            guard let doc = PDFDocument(url: url) else {
-                throw PDFToolError.runtimeError(
-                    "Failed to read PDF file contents: \(url.path.quoted)"
-                )
-            }
+        for doc in docs {
             pdfs.append(PDFFile(doc: doc))
         }
     }
