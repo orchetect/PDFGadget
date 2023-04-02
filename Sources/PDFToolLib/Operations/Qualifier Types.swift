@@ -58,12 +58,47 @@ extension PDFOperation {
     }
 }
 
+extension PDFOperation.PageAndFilename: Comparable {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.pageIndex < rhs.pageIndex
+    }
+}
+
 extension PDFOperation.PageAndFilename {
     public var verboseDescription: String {
         if let filename {
-            return "page index \(pageIndex) to \(filename.quoted)"
+            return "page index \(pageIndex)  with name \(filename.quoted)"
         } else {
             return "page index \(pageIndex)"
+        }
+    }
+}
+
+extension PDFOperation {
+    public struct PageRangeAndFilename: Equatable, Hashable {
+        public var pageRange: ClosedRange<Int>
+        public var filename: String?
+        
+        public init(_ pageRange: ClosedRange<Int>, _ filename: String? = nil) {
+            self.pageRange = pageRange
+            self.filename = filename
+        }
+    }
+}
+
+extension PDFOperation.PageRangeAndFilename: Comparable {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        // TODO: naïve sorting but mostly works, could be better
+        lhs.pageRange.lowerBound < rhs.pageRange.lowerBound
+    }
+}
+
+extension PDFOperation.PageRangeAndFilename {
+    public var verboseDescription: String {
+        if let filename {
+            return "page range \(pageRange) with name \(filename.quoted)"
+        } else {
+            return "page range \(pageRange)"
         }
     }
 }

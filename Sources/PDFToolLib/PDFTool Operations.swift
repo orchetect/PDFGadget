@@ -249,11 +249,11 @@ extension PDFTool {
         }
         
         var dedupeFilenameCount = 0
-        for (pageRange, filename) in newSplits {
-            let pages = try pdf.doc.pages(at: pageRange, copy: true)
+        for split in newSplits {
+            let pages = try pdf.doc.pages(at: split.pageRange, copy: true)
             let newFile = newEmptyPDFFile()
             
-            if let filename {
+            if let filename = split.filename {
                 newFile.set(filenameForExport: filename)
             } else {
                 newFile.set(filenameForExport: newFile.filenameForExport + "-split\(dedupeFilenameCount)")
@@ -261,7 +261,7 @@ extension PDFTool {
             }
             newFile.doc.append(pages: pages)
             pdfs.append(newFile)
-            remainingPageIndexes.removeAll(where: { pageRange.contains($0) })
+            remainingPageIndexes.removeAll(where: { split.pageRange.contains($0) })
         }
         
         func removeSourceFile() { pdfs.removeAll(pdf) }

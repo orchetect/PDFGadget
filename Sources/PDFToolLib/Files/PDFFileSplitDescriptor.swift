@@ -11,24 +11,22 @@ import PDFKit
 public enum PDFFileSplitDescriptor: Equatable, Hashable {
     case at(pageIndexes: [Int])
     case every(pageCount: Int)
-    case pageIndexesAndFilenames([ClosedRange<Int>: String?])
-    case pageNumbersAndFilenames([ClosedRange<Int>: String?])
+    case pageIndexesAndFilenames([PDFOperation.PageRangeAndFilename])
+    case pageNumbersAndFilenames([PDFOperation.PageRangeAndFilename])
     
     // TODO: add fileCount(Int) case to split a file into n number of files with equal number of pages each
 }
 
 extension PDFFileSplitDescriptor {
-    typealias PageRangeAndFilename = (pageRange: ClosedRange<Int>, filename: String?)
-    
-    func splits(source: PDFFile) -> [PageRangeAndFilename] {
-        var splits: [PageRangeAndFilename] = []
+    func splits(source: PDFFile) -> [PDFOperation.PageRangeAndFilename] {
+        var splits: [PDFOperation.PageRangeAndFilename] = []
         
         switch self {
         case .at(let pageIndexes):
             // also removes dupes and sorts
             let ranges = convertPageIndexesToRanges(pageIndexes: pageIndexes, totalPageCount: source.doc.pageCount)
             for range in ranges {
-                splits.append((pageRange: range, filename: nil))
+                splits.append(.init(range, nil))
             }
             
         case .every(var nthPage):
@@ -41,21 +39,19 @@ extension PDFFileSplitDescriptor {
             
             let ranges = (0 ..< source.doc.pageCount)
                 .split(every: nthPage)
-            splits = ranges.map { (pageRange: $0, filename: String?.none) }
+            splits = ranges.map { .init($0, String?.none) }
             
         case .pageIndexesAndFilenames(let pageIndexesAndFilenames):
-            // must sort since input is a dictionary
-            for (indexRange, filename) in pageIndexesAndFilenames
-                .sorted(by: { $0.key.lowerBound < $1.key.lowerBound })
-            {
-                splits.append((pageRange: indexRange, filename: filename))
-            }
+            splits = pageIndexesAndFilenames
             
         case .pageNumbersAndFilenames(let pageNumbersAndFilenames):
-            let mappedToIndexes = pageNumbersAndFilenames.mapDictionary { range, filename in
-                (range.lowerBound - 1 ... range.upperBound - 1, filename)
+            var mappedToIndexes = pageNumbersAndFilenames
+            mappedToIndexes.indices.forEach {
+                mappedToIndexes[$0].pageRange =
+                    mappedToIndexes[$0].pageRange.lowerBound - 1
+                        ... mappedToIndexes[$0].pageRange.upperBound - 1
             }
-            return Self.pageIndexesAndFilenames(mappedToIndexes).splits(source: source)
+            splits = mappedToIndexes
         }
         
         return splits
