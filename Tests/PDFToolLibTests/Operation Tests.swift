@@ -55,6 +55,16 @@ final class OperationTests: XCTestCase {
             testPDF5Pages()
         ])
         
+        // all
+        
+        try tool.perform(operations: [
+            .filterFiles(.all)
+        ])
+        
+        XCTAssertEqual(tool.pdfs.count, 3)
+        
+        // index range
+        
         try tool.perform(operations: [
             .filterFiles(.indexRange(1...2))
         ])
@@ -62,9 +72,16 @@ final class OperationTests: XCTestCase {
         XCTAssertEqual(tool.pdfs.count, 2)
         try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF2Pages())
         try AssertDocumentIsEqual(tool.pdfs[1].doc, testPDF5Pages())
+        
+        // index
+        
+        try tool.perform(operations: [
+            .filterFiles(.index(1))
+        ])
+        
+        XCTAssertEqual(tool.pdfs.count, 1)
+        try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF5Pages())
     }
-    
-    #warning("> add additional filterFiles unit tests")
     
     func testMergeFilesA() throws {
         let tool = PDFTool()
