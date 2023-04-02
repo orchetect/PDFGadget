@@ -1,6 +1,6 @@
 # PDFGadget
 
-Batch PDF utilities with simple API for Swift.
+Batch PDF utilities with simple API for Swift. Supports macOS and iOS, and wraps PDFKit.
 
 *(Currently only a Swift library. CLI and/or GUI frontend may be added in future.)*
 
