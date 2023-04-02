@@ -49,11 +49,7 @@ extension PDFTool {
         files: PDFFilesDescriptor,
         appendingTo targetFile: PDFFileDescriptor? = nil
     ) throws -> PDFOperationResult {
-        var filteredPDFs = try expectZeroOrMoreFiles(.all)
-        
-        guard filteredPDFs.count > 1 else {
-            return .noChange(reason: "Not enough source files to perform merge.")
-        }
+        var filteredPDFs = try expectZeroOrMoreFiles(files)
         
         guard let targetPDF = targetFile != nil
             ? try expectOneFile(targetFile!)
@@ -72,9 +68,8 @@ extension PDFTool {
         
         for pdf in filteredPDFs {
             try targetPDF.doc.append(pages: pdf.doc.pages(for: .all, copy: true))
+            pdfs.removeAll(pdf)
         }
-        
-        pdfs = [targetPDF]
         
         return .changed
     }

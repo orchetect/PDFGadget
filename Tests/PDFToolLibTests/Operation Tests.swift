@@ -66,7 +66,7 @@ final class OperationTests: XCTestCase {
     
     #warning("> add additional filterFiles unit tests")
     
-    func testMergeFiles() throws {
+    func testMergeFilesA() throws {
         let tool = PDFTool()
         
         try tool.load(pdfs: [
@@ -87,7 +87,29 @@ final class OperationTests: XCTestCase {
         )
     }
     
-    #warning("> add additional mergeFiles unit tests")
+    func testMergeFilesB() throws {
+        let tool = PDFTool()
+        
+        try tool.load(pdfs: [
+            testPDF1Page(),
+            testPDF2Pages(),
+            testPDF5Pages()
+        ])
+        
+        try tool.perform(operations: [
+            .mergeFiles(.second, appendingTo: .last)
+        ])
+        
+        XCTAssertEqual(tool.pdfs.count, 2)
+        
+        try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
+        
+        XCTAssertEqual(tool.pdfs[1].doc.pageCount, 7)
+        try AssertPagesAreEqual(
+            tool.pdfs[1].doc.pages(for: .all),
+            testPDF5Pages().pages() + testPDF2Pages().pages()
+        )
+    }
     
     func testFilterPages() throws {
         let tool = PDFTool()
