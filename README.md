@@ -7,6 +7,8 @@ Batch PDF utilities with simple API for Swift.
 ## Basic Usage
 
 ```swift
+import PDFGadget
+
 let sources = [URL, URL, URL, ...] // URLs to one or more PDF files
 let outputDir = URL.desktopFolder
 ```
