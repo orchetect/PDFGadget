@@ -4,7 +4,7 @@
 
 Batch PDF utilities with simple API for Swift. Declarative API for:
 
-- assigning or remove file metadata
+- assigning or remove file attributes (metadata)
 - file filtering, ordering, and merging
 - page management: reordering, collation, copying, moving, and replacement
 - page presentation: rotation, cropping, etc.
@@ -80,6 +80,11 @@ The following are single operations that may be used in a batch sequence of oper
 ### Page Content Operations
 
 - Filter annotations (by types, or remove all)
+
+## Getting Started
+
+1. Add the package to your application as a dependency using Swift Package Manager
+2. `import PDFGadget`
 
 ## Author
 
