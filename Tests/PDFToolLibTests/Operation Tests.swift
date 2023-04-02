@@ -128,6 +128,25 @@ final class OperationTests: XCTestCase {
         )
     }
     
+    func testSetFilename() throws {
+        let tool = PDFTool()
+        
+        try tool.load(pdfs: [
+            testPDF1Page(),
+            testPDF2Pages(),
+            testPDF5Pages()
+        ])
+        
+        // just check default filename - not important for this test but we'll do it any way
+        XCTAssertEqual(tool.pdfs[1].filenameForExport, TestResource.pdf2pages.name + "-processed")
+        
+        try tool.perform(operations: [
+            .setFilename(file: .index(1), filename: "NewFileName")
+        ])
+        
+        XCTAssertEqual(tool.pdfs[1].filenameForExport, "NewFileName")
+    }
+    
     func testFilterPages() throws {
         let tool = PDFTool()
         
@@ -146,25 +165,6 @@ final class OperationTests: XCTestCase {
         try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
         try AssertDocumentIsEqual(tool.pdfs[1].doc, testPDF2Pages())
         try AssertPagesAreEqual(tool.pdfs[2].doc.pages(), testPDF5Pages().pages(at: [0, 2, 4]))
-    }
-    
-    func testSetFilename() throws {
-        let tool = PDFTool()
-        
-        try tool.load(pdfs: [
-            testPDF1Page(),
-            testPDF2Pages(),
-            testPDF5Pages()
-        ])
-        
-        // just check default filename - not important for this test but we'll do it any way
-        XCTAssertEqual(tool.pdfs[1].filenameForExport, TestResource.pdf2pages.name + "-processed")
-        
-        try tool.perform(operations: [
-            .setFilename(file: .index(1), filename: "NewFileName")
-        ])
-        
-        XCTAssertEqual(tool.pdfs[1].filenameForExport, "NewFileName")
     }
     
     func testCopyPages() throws {
@@ -231,52 +231,6 @@ final class OperationTests: XCTestCase {
         try Assert(page: fileIdx2Pages[2], isTagged: "5")
     }
     
-    /// Reverse page order of all pages of a file.
-    func testReversePageOrderA() throws {
-        let tool = PDFTool()
-        
-        try tool.load(pdfs: [
-            testPDF5Pages()
-        ])
-        
-        try tool.perform(operations: [
-            .reversePageOrder(file: .first, pages: .all)
-        ])
-        
-        XCTAssertEqual(tool.pdfs.count, 1)
-        
-        let filePages = try tool.pdfs[0].doc.pages()
-        XCTAssertEqual(filePages.count, 5)
-        try Assert(page: filePages[0], isTagged: "5")
-        try Assert(page: filePages[1], isTagged: "4")
-        try Assert(page: filePages[2], isTagged: "3")
-        try Assert(page: filePages[3], isTagged: "2")
-        try Assert(page: filePages[4], isTagged: "1")
-    }
-    
-    /// Reverse page order of some pages of a file.
-    func testReversePageOrderB() throws {
-        let tool = PDFTool()
-        
-        try tool.load(pdfs: [
-            testPDF5Pages()
-        ])
-        
-        try tool.perform(operations: [
-            .reversePageOrder(file: .first, pages: .include([.range(indexes: 1 ... 3)]))
-        ])
-        
-        XCTAssertEqual(tool.pdfs.count, 1)
-        
-        let filePages = try tool.pdfs[0].doc.pages()
-        XCTAssertEqual(filePages.count, 5)
-        try Assert(page: filePages[0], isTagged: "1")
-        try Assert(page: filePages[1], isTagged: "4")
-        try Assert(page: filePages[2], isTagged: "3")
-        try Assert(page: filePages[3], isTagged: "2")
-        try Assert(page: filePages[4], isTagged: "5")
-    }
-    
     /// Replace pages by copying.
     func testReplacePagesCopy() throws {
         let tool = PDFTool()
@@ -340,6 +294,52 @@ final class OperationTests: XCTestCase {
         try Assert(page: fileIdx2Pages[2], isTagged: "3") // testPDF5Pages page 3
         try Assert(page: fileIdx2Pages[3], isTagged: "1") // testPDF2Pages page 1
         try Assert(page: fileIdx2Pages[4], isTagged: "2") // testPDF2Pages page 2
+    }
+    
+    /// Reverse page order of all pages of a file.
+    func testReversePageOrderA() throws {
+        let tool = PDFTool()
+        
+        try tool.load(pdfs: [
+            testPDF5Pages()
+        ])
+        
+        try tool.perform(operations: [
+            .reversePageOrder(file: .first, pages: .all)
+        ])
+        
+        XCTAssertEqual(tool.pdfs.count, 1)
+        
+        let filePages = try tool.pdfs[0].doc.pages()
+        XCTAssertEqual(filePages.count, 5)
+        try Assert(page: filePages[0], isTagged: "5")
+        try Assert(page: filePages[1], isTagged: "4")
+        try Assert(page: filePages[2], isTagged: "3")
+        try Assert(page: filePages[3], isTagged: "2")
+        try Assert(page: filePages[4], isTagged: "1")
+    }
+    
+    /// Reverse page order of some pages of a file.
+    func testReversePageOrderB() throws {
+        let tool = PDFTool()
+        
+        try tool.load(pdfs: [
+            testPDF5Pages()
+        ])
+        
+        try tool.perform(operations: [
+            .reversePageOrder(file: .first, pages: .include([.range(indexes: 1 ... 3)]))
+        ])
+        
+        XCTAssertEqual(tool.pdfs.count, 1)
+        
+        let filePages = try tool.pdfs[0].doc.pages()
+        XCTAssertEqual(filePages.count, 5)
+        try Assert(page: filePages[0], isTagged: "1")
+        try Assert(page: filePages[1], isTagged: "4")
+        try Assert(page: filePages[2], isTagged: "3")
+        try Assert(page: filePages[3], isTagged: "2")
+        try Assert(page: filePages[4], isTagged: "5")
     }
     
     func testRotatePages() throws {

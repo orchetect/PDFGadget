@@ -21,13 +21,13 @@ public enum PDFOperation: Equatable, Hashable {
     
     // TODO: reorder or sort files
     
+    /// Set new filename for a PDF file.
+    case setFilename(file: PDFFileDescriptor, filename: String?)
+    
     // TODO: collation stuff
     
     /// Filter page(s) of PDF file(s).
     case filterPages(file: PDFFileDescriptor, pages: PDFPagesFilter)
-    
-    /// Set new filename for a PDF file.
-    case setFilename(file: PDFFileDescriptor, filename: String?)
     
     // TODO: additional setFilename cases, such as renaming all to sequential numbers etc.
     
@@ -43,15 +43,15 @@ public enum PDFOperation: Equatable, Hashable {
         toFile: PDFFileDescriptor, toPageIndex: Int? = nil
     )
     
-    /// Reverse the page order of a PDF file.
-    case reversePageOrder(file: PDFFileDescriptor, pages: PDFPagesFilter)
-    
     /// Replace existing page(s) with other page(s).
     case replacePages(
         fromFile: PDFFileDescriptor, fromPages: PDFPagesFilter,
         toFile: PDFFileDescriptor, toPages: PDFPagesFilter,
         behavior: InterchangeBehavior
     )
+    
+    /// Reverse the page order of a PDF file.
+    case reversePageOrder(file: PDFFileDescriptor, pages: PDFPagesFilter)
     
     /// Rotate page(s) by a multiple of 90 degrees.
     /// Rotation can be absolute or relative to current page rotation (if any).
@@ -160,11 +160,11 @@ extension PDFOperation {
                 : "appending to end of"
             return "Move \(fromPages.verboseDescription) from \(fromFile.verboseDescription), \(location) \(toFile.verboseDescription)"
             
-        case let .reversePageOrder(file, pages):
-            return "Reverse page order of \(pages.verboseDescription) in \(file.verboseDescription)"
-            
         case let .replacePages(fromFile, fromPages, toFile, toPages, behavior):
             return "Replace \(toPages.verboseDescription) of \(toFile.verboseDescription) with \(fromPages.verboseDescription) from \(fromFile.verboseDescription) by \(behavior.verboseDescription)"
+            
+        case let .reversePageOrder(file, pages):
+            return "Reverse page order of \(pages.verboseDescription) in \(file.verboseDescription)"
             
         case let .rotatePages(file, pages, rotation):
             return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation)"
