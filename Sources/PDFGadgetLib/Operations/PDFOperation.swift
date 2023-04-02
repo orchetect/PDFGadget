@@ -9,6 +9,8 @@
 import Foundation
 
 public enum PDFOperation: Equatable, Hashable {
+    // MARK: - File Operations
+    
     /// New empty PDF file.
     case newFile
     
@@ -23,8 +25,14 @@ public enum PDFOperation: Equatable, Hashable {
     
     // TODO: reorder or sort files
     
+    /// Split file at certain page points into multiple files.
+    /// The original file is discarded.
+    case splitFile(file: PDFFileDescriptor, discardUnused: Bool = true, _ splits: PDFFileSplitDescriptor)
+    
     /// Set new filename for a PDF file.
     case setFilename(file: PDFFileDescriptor, filename: String?)
+    
+    // MARK: - Page Operations
     
     // TODO: collation stuff
     
@@ -59,13 +67,11 @@ public enum PDFOperation: Equatable, Hashable {
     /// Rotation can be absolute or relative to current page rotation (if any).
     case rotatePages(file: PDFFileDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
     
-    /// Split file at certain page points into multiple files.
-    /// The original file is discarded.
-    case splitFile(file: PDFFileDescriptor, discardUnused: Bool = true, _ splits: PDFFileSplitDescriptor)
-    
     // TODO: case crop(pages: PDFPagesFilter, area: Rect)
     
     // TODO: case flip(pages: PDFPagesFilter, axis: Axis) // -> use Quartz filter?
+    
+    // MARK: - Page Content Operations
     
     /// Filter annotation(s).
     case filterAnnotations(file: PDFFileDescriptor, pages: PDFPagesFilter, annotations: PDFAnnotationFilter)
@@ -140,6 +146,9 @@ extension PDFOperation {
         case .mergeFiles:
             return "Merge files"
             
+        case let .splitFile(file, discardUnused, splits):
+            return "Split \(file.verboseDescription) \(splits.verboseDescription)\(discardUnused ? ", discarding unused pages if any" : "")"
+            
         case let .setFilename(file, filename):
             if let filename {
                 return "Set filename for \(file.verboseDescription) to \(filename.quoted)"
@@ -170,9 +179,6 @@ extension PDFOperation {
             
         case let .rotatePages(file, pages, rotation):
             return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation)"
-            
-        case let .splitFile(file, discardUnused, splits):
-            return "Split \(file.verboseDescription) \(splits.verboseDescription)\(discardUnused ? ", discarding unused pages if any" : "")"
             
         case let .filterAnnotations(file, pages, annotations):
             return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"

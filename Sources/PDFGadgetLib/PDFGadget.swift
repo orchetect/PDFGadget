@@ -174,6 +174,9 @@ extension PDFGadget {
         case let .mergeFiles(files, target):
             return try performMergeFiles(files: files, appendingTo: target)
             
+        case let .splitFile(file, discardUnused, splits):
+            return try performSplitFile(file: file, discardUnused: discardUnused, splits: splits)
+            
         case let .setFilename(file, filename):
             return try performSetFilename(file: file, filename: filename)
             
@@ -212,9 +215,6 @@ extension PDFGadget {
             
         case let .rotatePages(file, pages, rotation):
             return try performRotatePages(file: file, pages: pages, rotation: rotation)
-            
-        case let .splitFile(file, discardUnused, splits):
-            return try performSplitFile(file: file, discardUnused: discardUnused, splits: splits)
             
         case let .filterAnnotations(file, pages, annotations):
             return try performFilterAnnotations(file: file, pages: pages, annotations: annotations)

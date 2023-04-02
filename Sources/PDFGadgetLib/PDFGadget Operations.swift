@@ -75,6 +75,65 @@ extension PDFGadget {
         return .changed
     }
     
+    /// Split a single PDF file into multiple files.
+    func performSplitFile(
+        file: PDFFileDescriptor,
+        discardUnused: Bool,
+        splits: PDFFileSplitDescriptor
+    ) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(file)
+        var remainingPageIndexes: [Int] = pdf.doc.pageIndexes()
+        
+        let newSplits = splits.splits(source: pdf)
+        
+        guard !newSplits.isEmpty else {
+            return .noChange(reason: "File split descriptor does not result in multiple files.")
+        }
+        
+        var dedupeFilenameCount = 0
+        for split in newSplits {
+            let pages = try pdf.doc.pages(at: split.pageRange, copy: true)
+            let newFile = newEmptyPDFFile()
+            
+            if let filename = split.filename {
+                newFile.set(filenameForExport: filename)
+            } else {
+                newFile.set(filenameForExport: newFile.filenameForExport + "-split\(dedupeFilenameCount)")
+                dedupeFilenameCount += 1
+            }
+            newFile.doc.append(pages: pages)
+            pdfs.append(newFile)
+            remainingPageIndexes.removeAll(where: { split.pageRange.contains($0) })
+        }
+        
+        func removeSourceFile() { pdfs.removeAll(pdf) }
+        
+        // some logic and user feedback regarding source file and page utilization
+        let remainingPageNumbersString = remainingPageIndexes.map { String($0 + 1) }.joined(separator: ", ")
+        if discardUnused {
+            if !remainingPageIndexes.isEmpty {
+                logger.info(
+                    "Note: Split source file will be discarded, but page numbers \(remainingPageNumbersString) were unused."
+                )
+            }
+            removeSourceFile()
+        } else {
+            if remainingPageIndexes.isEmpty {
+                logger.info("Removing split source file; all pages were split into new file(s).")
+                removeSourceFile()
+            } else {
+                // source file has at least one unused page remaining
+                logger.info("Split source file still contains unused page numbers \(remainingPageNumbersString).")
+                
+                // remove used pages
+                let usedIndexes = pdf.doc.pageIndexes().filter { !remainingPageIndexes.contains($0) }
+                try pdf.doc.removePages(at: usedIndexes)
+            }
+        }
+        
+        return .changed
+    }
+    
     /// Set new filename for a PDF file.
     func performSetFilename(
         file: PDFFileDescriptor,
@@ -137,38 +196,6 @@ extension PDFGadget {
         return .changed
     }
     
-    /// Reverse the pages in a file.
-    func performReversePageOrder(
-        file: PDFFileDescriptor,
-        pages: PDFPagesFilter
-    ) throws -> PDFOperationResult {
-        let pdf = try expectOneFile(file)
-        
-        let pageIndexes = try pdf.doc.pageIndexes(filter: pages)
-        
-        guard pageIndexes.isInclusive else {
-            throw PDFGadgetError.runtimeError(
-                "Page number descriptors are invalid or out of range."
-            )
-        }
-        
-        let indexesToReverse = pageIndexes.included
-        
-        guard indexesToReverse.count > 1 else {
-            let plural = "page\(indexesToReverse.count == 1 ? " is" : "s are")"
-            return .noChange(reason: "Reversing pages has no effect because file only has \(indexesToReverse.count) \(plural) selected for reversal.")
-        }
-        
-        let pairs = zip(indexesToReverse, indexesToReverse.reversed())
-            .prefix(indexesToReverse.count / 2)
-        
-        for (srcIndex, destIndex) in pairs {
-            pdf.doc.exchangePage(at: srcIndex, withPageAt: destIndex)
-        }
-        
-        return .changed
-    }
-    
     /// Replace page(s) with a copy of other page(s) either within the same file or between two files.
     func performReplacePages(
         from sourceFile: PDFFileDescriptor,
@@ -217,6 +244,38 @@ extension PDFGadget {
         return .changed
     }
     
+    /// Reverse the pages in a file.
+    func performReversePageOrder(
+        file: PDFFileDescriptor,
+        pages: PDFPagesFilter
+    ) throws -> PDFOperationResult {
+        let pdf = try expectOneFile(file)
+        
+        let pageIndexes = try pdf.doc.pageIndexes(filter: pages)
+        
+        guard pageIndexes.isInclusive else {
+            throw PDFGadgetError.runtimeError(
+                "Page number descriptors are invalid or out of range."
+            )
+        }
+        
+        let indexesToReverse = pageIndexes.included
+        
+        guard indexesToReverse.count > 1 else {
+            let plural = "page\(indexesToReverse.count == 1 ? " is" : "s are")"
+            return .noChange(reason: "Reversing pages has no effect because file only has \(indexesToReverse.count) \(plural) selected for reversal.")
+        }
+        
+        let pairs = zip(indexesToReverse, indexesToReverse.reversed())
+            .prefix(indexesToReverse.count / 2)
+        
+        for (srcIndex, destIndex) in pairs {
+            pdf.doc.exchangePage(at: srcIndex, withPageAt: destIndex)
+        }
+        
+        return .changed
+    }
+    
     /// Sets the rotation angle for the page in degrees.
     func performRotatePages(
         file: PDFFileDescriptor,
@@ -227,65 +286,6 @@ extension PDFGadget {
             let sourceAngle = PDFPageRotation.Angle(degrees: page.rotation) ?? ._0degrees
             page.rotation = rotation.degrees(offsetting: sourceAngle)
         }
-    }
-    
-    /// Split a single PDF file into multiple files.
-    func performSplitFile(
-        file: PDFFileDescriptor,
-        discardUnused: Bool,
-        splits: PDFFileSplitDescriptor
-    ) throws -> PDFOperationResult {
-        let pdf = try expectOneFile(file)
-        var remainingPageIndexes: [Int] = pdf.doc.pageIndexes()
-        
-        let newSplits = splits.splits(source: pdf)
-        
-        guard !newSplits.isEmpty else {
-            return .noChange(reason: "File split descriptor does not result in multiple files.")
-        }
-        
-        var dedupeFilenameCount = 0
-        for split in newSplits {
-            let pages = try pdf.doc.pages(at: split.pageRange, copy: true)
-            let newFile = newEmptyPDFFile()
-            
-            if let filename = split.filename {
-                newFile.set(filenameForExport: filename)
-            } else {
-                newFile.set(filenameForExport: newFile.filenameForExport + "-split\(dedupeFilenameCount)")
-                dedupeFilenameCount += 1
-            }
-            newFile.doc.append(pages: pages)
-            pdfs.append(newFile)
-            remainingPageIndexes.removeAll(where: { split.pageRange.contains($0) })
-        }
-        
-        func removeSourceFile() { pdfs.removeAll(pdf) }
-        
-        // some logic and user feedback regarding source file and page utilization
-        let remainingPageNumbersString = remainingPageIndexes.map { String($0 + 1) }.joined(separator: ", ")
-        if discardUnused {
-            if !remainingPageIndexes.isEmpty {
-                logger.info(
-                    "Note: Split source file will be discarded, but page numbers \(remainingPageNumbersString) were unused."
-                )
-            }
-            removeSourceFile()
-        } else {
-            if remainingPageIndexes.isEmpty {
-                logger.info("Removing split source file; all pages were split into new file(s).")
-                removeSourceFile()
-            } else {
-                // source file has at least one unused page remaining
-                logger.info("Split source file still contains unused page numbers \(remainingPageNumbersString).")
-                
-                // remove used pages
-                let usedIndexes = pdf.doc.pageIndexes().filter { !remainingPageIndexes.contains($0) }
-                try pdf.doc.removePages(at: usedIndexes)
-            }
-        }
-        
-        return .changed
     }
     
     /// Filter annotations by type.

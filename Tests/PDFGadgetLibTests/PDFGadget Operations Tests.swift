@@ -130,6 +130,31 @@ final class PDFGadgetOperationsTests: XCTestCase {
         )
     }
     
+    func testSplitFile() throws {
+        let tool = PDFGadget()
+        
+        try tool.load(pdfs: [
+            testPDF5Pages()
+        ])
+        
+        try tool.perform(operations: [
+            .splitFile(file: .first, discardUnused: false, .every(pageCount: 2))
+        ])
+        
+        XCTAssertEqual(tool.pdfs.count, 3)
+        
+        XCTAssertEqual(tool.pdfs[0].doc.pageCount, 2)
+        try Assert(page: tool.pdfs[0].doc.page(at: 0), isTagged: "1")
+        try Assert(page: tool.pdfs[0].doc.page(at: 1), isTagged: "2")
+        
+        XCTAssertEqual(tool.pdfs[1].doc.pageCount, 2)
+        try Assert(page: tool.pdfs[1].doc.page(at: 0), isTagged: "3")
+        try Assert(page: tool.pdfs[1].doc.page(at: 1), isTagged: "4")
+        
+        XCTAssertEqual(tool.pdfs[2].doc.pageCount, 1)
+        try Assert(page: tool.pdfs[2].doc.page(at: 0), isTagged: "5")
+    }
+    
     func testSetFilename() throws {
         let tool = PDFGadget()
         
@@ -387,31 +412,6 @@ final class PDFGadgetOperationsTests: XCTestCase {
         XCTAssertEqual(tool.pdfs[0].doc.page(at: 2)?.rotation, 270)
         XCTAssertEqual(tool.pdfs[0].doc.page(at: 3)?.rotation, 0)
         XCTAssertEqual(tool.pdfs[0].doc.page(at: 4)?.rotation, 0)
-    }
-    
-    func testSplitFile() throws {
-        let tool = PDFGadget()
-        
-        try tool.load(pdfs: [
-            testPDF5Pages()
-        ])
-        
-        try tool.perform(operations: [
-            .splitFile(file: .first, discardUnused: false, .every(pageCount: 2))
-        ])
-        
-        XCTAssertEqual(tool.pdfs.count, 3)
-        
-        XCTAssertEqual(tool.pdfs[0].doc.pageCount, 2)
-        try Assert(page: tool.pdfs[0].doc.page(at: 0), isTagged: "1")
-        try Assert(page: tool.pdfs[0].doc.page(at: 1), isTagged: "2")
-        
-        XCTAssertEqual(tool.pdfs[1].doc.pageCount, 2)
-        try Assert(page: tool.pdfs[1].doc.page(at: 0), isTagged: "3")
-        try Assert(page: tool.pdfs[1].doc.page(at: 1), isTagged: "4")
-        
-        XCTAssertEqual(tool.pdfs[2].doc.pageCount, 1)
-        try Assert(page: tool.pdfs[2].doc.page(at: 0), isTagged: "5")
     }
     
     func testFilterAnnotations() throws {
