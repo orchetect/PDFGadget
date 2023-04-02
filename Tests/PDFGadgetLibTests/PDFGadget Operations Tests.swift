@@ -190,6 +190,37 @@ final class PDFGadgetOperationsTests: XCTestCase {
         XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count ?? 0, 0)
     }
     
+    func testSetFileAttribute() throws {
+        let tool = PDFGadget()
+        
+        try tool.load(pdfs: [
+            testPDF1Page_withAttrAnno()
+        ])
+        
+        // set new value
+        
+        try tool.perform(operations: [
+            .setFileAttribute(files: .all, .titleAttribute, value: "New Title")
+        ])
+        
+        XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count, 7)
+        XCTAssertEqual(
+            tool.pdfs[0].doc.documentAttributes?[PDFDocumentAttribute.titleAttribute] as? String,
+            "New Title"
+        )
+        
+        // clear value
+        
+        try tool.perform(operations: [
+            .setFileAttribute(files: .all, .titleAttribute, value: nil)
+        ])
+        
+        XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count, 6)
+        XCTAssert(
+            tool.pdfs[0].doc.documentAttributes?.keys.contains(PDFDocumentAttribute.titleAttribute) == false
+        )
+    }
+    
     func testFilterPages() throws {
         let tool = PDFGadget()
         

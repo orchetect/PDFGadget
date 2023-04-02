@@ -150,16 +150,25 @@ extension PDFGadget {
             : .changed
     }
     
-    /// Remove metadata (attributes) from the file.
+    /// Remove metadata (attributes) from one or more files.
     func performRemoveFileAttributes(
         files: PDFFilesDescriptor
     ) throws -> PDFOperationResult {
         let pdfs = try expectZeroOrMoreFiles(files)
         
+        guard !pdfs.isEmpty else {
+            return .noChange(reason: "No files specified.")
+        }
+        
+        var result: PDFOperationResult = .noChange(reason: "No attributes were found.")
+        
         for pdf in pdfs {
             // setting nil doesn't work, have to set empty dictionary instead
-            pdf.doc.documentAttributes = [:]
-            
+            if pdf.doc.documentAttributes?.isEmpty == false {
+                pdf.doc.documentAttributes = [:]
+                result = .changed
+            }
+            // validation check
             guard pdf.doc.documentAttributes == nil
                 || pdf.doc.documentAttributes?.isEmpty == true
             else {
@@ -169,7 +178,43 @@ extension PDFGadget {
             }
         }
         
-        return .changed
+        return result
+    }
+    
+    /// Set an attribute's value for one or more files.
+    func performSetFileAttribute(
+        files: PDFFilesDescriptor,
+        attribute: PDFDocumentAttribute,
+        value: String?
+    ) throws -> PDFOperationResult {
+        let pdfs = try expectZeroOrMoreFiles(files)
+        
+        guard !pdfs.isEmpty else {
+            return .noChange(reason: "No files specified.")
+        }
+        
+        var result: PDFOperationResult = .noChange(reason: "Value(s) are identical.")
+        
+        for pdf in pdfs {
+            if pdf.doc.documentAttributes == nil {
+                pdf.doc.documentAttributes = [:]
+            }
+            
+            func assignValue() {
+                pdf.doc.documentAttributes?[attribute] = value
+                result = .changed
+            }
+            
+            if let existingValue = pdf.doc.documentAttributes?[attribute] as? String {
+                if existingValue != value {
+                    assignValue()
+                }
+            } else {
+                assignValue()
+            }
+        }
+        
+        return result
     }
     
     /// Filter page(s).

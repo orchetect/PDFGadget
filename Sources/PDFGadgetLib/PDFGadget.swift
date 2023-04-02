@@ -183,6 +183,9 @@ extension PDFGadget {
         case let .removeFileAttributes(files):
             return try performRemoveFileAttributes(files: files)
             
+        case let .setFileAttribute(files, attr, value):
+            return try performSetFileAttribute(files: files, attribute: attr, value: value)
+            
         case let .filterPages(file, filter):
             return try performFilterPages(file: file, pages: filter)
             

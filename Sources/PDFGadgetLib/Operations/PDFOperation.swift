@@ -36,6 +36,9 @@ public enum PDFOperation: Equatable, Hashable {
     /// Removes file attributes (metadata).
     case removeFileAttributes(files: PDFFilesDescriptor)
     
+    /// Set or clear an attribute for one or more files.
+    case setFileAttribute(files: PDFFilesDescriptor, _ attribute: PDFDocumentAttribute, value: String?)
+    
     // MARK: - Page Operations
     
     // TODO: collation stuff
@@ -163,6 +166,13 @@ extension PDFOperation {
         case let .removeFileAttributes(files):
             return "Remove attributes (metadata) for \(files.verboseDescription)"
             
+        case let .setFileAttribute(files, attr, value):
+            if let value {
+                return "Set \(attr) attribute value \(value.quoted) for \(files.verboseDescription)"
+            } else {
+                return "Remove \(attr) attribute from \(files.verboseDescription)"
+            }
+        
         case let .filterPages(file, pages):
             return "Filter \(pages.verboseDescription) in \(file.verboseDescription)"
             
