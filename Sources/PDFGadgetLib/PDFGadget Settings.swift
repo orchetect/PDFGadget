@@ -7,7 +7,7 @@
 #if canImport(PDFKit)
 
 import Foundation
-import OTCore
+@_implementationOnly import OTCore
 
 extension PDFGadget {
     public struct Settings {

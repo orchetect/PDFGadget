@@ -8,7 +8,7 @@
 
 import Foundation
 import Logging
-import OTCore
+@_implementationOnly import OTCore
 import PDFKit
 
 public final class PDFGadget {

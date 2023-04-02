@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import OTCore
+@_implementationOnly import OTCore
 
 /// Criteria to filter PDF pages.
 public enum PDFPagesDescriptor {

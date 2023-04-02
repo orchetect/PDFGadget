@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import OTCore
+@_implementationOnly import OTCore
 
 extension RangeExpression where Bound: Strideable {
     @_disfavoredOverload

@@ -7,7 +7,7 @@
 #if canImport(PDFKit)
 
 import Foundation
-import OTCore
+@_implementationOnly import OTCore
 import PDFKit
 
 public enum PDFFileSplitDescriptor: Equatable, Hashable {
