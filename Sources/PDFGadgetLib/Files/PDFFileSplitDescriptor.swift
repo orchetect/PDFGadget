@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
 import OTCore
 import PDFKit
@@ -86,3 +88,5 @@ extension PDFFileSplitDescriptor {
         }
     }
 }
+
+#endif

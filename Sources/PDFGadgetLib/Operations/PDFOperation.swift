@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
 
 public enum PDFOperation: Equatable, Hashable {
@@ -177,3 +179,5 @@ extension PDFOperation {
         }
     }
 }
+
+#endif

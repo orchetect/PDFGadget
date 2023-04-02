@@ -4,8 +4,9 @@
 //  Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
-import AppKit
 import Logging
 import OTCore
 import PDFKit
@@ -226,12 +227,16 @@ extension PDFGadget {
         fileNameWithoutExtension: String,
         outputDir: URL?
     ) throws -> URL {
-        let folderPath = outputDir
+        var folderPath = outputDir
             ?? pdf.doc.documentURL?.deletingLastPathComponent()
-            ?? URL.desktopDirectoryBackCompat
         
-        guard folderPath.fileExists,
-            folderPath.isFolder == true
+        #if os(macOS)
+            folderPath = folderPath ?? URL.desktopDirectoryBackCompat
+        #endif
+        
+        guard let folderPath,
+              folderPath.fileExists,
+              folderPath.isFolder == true
         else {
             throw PDFGadgetError.runtimeError(
                 "Could not determine output path. Output path is either not a folder or does not exist."
@@ -243,3 +248,5 @@ extension PDFGadget {
             .appendingPathExtension("pdf")
     }
 }
+
+#endif

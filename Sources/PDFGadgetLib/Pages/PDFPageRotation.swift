@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
 
 public struct PDFPageRotation: Equatable, Hashable {
@@ -67,3 +69,5 @@ extension PDFPageRotation.Angle {
         Self.init(degrees: lhs.degrees - rhs.degrees) ?? ._0degrees
     }
 }
+
+#endif

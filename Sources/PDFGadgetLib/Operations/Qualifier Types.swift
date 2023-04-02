@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
 
 extension PDFOperation {
@@ -102,3 +104,5 @@ extension PDFOperation.PageRangeAndFilename {
         }
     }
 }
+
+#endif

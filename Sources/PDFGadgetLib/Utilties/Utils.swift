@@ -27,8 +27,12 @@ extension RangeExpression where Bound: Strideable {
 }
 
 extension URL {
+    @available(macOS 10.12, *)
+    @available(iOS, unavailable)
+    @available(tvOS, unavailable)
+    @available(watchOS, unavailable)
     static var desktopDirectoryBackCompat: URL {
-        if #available(macOS 13, *) {
+        if #available(macOS 13, iOS 16, tvOS 16, watchOS 9, *) {
             return .desktopDirectory
         } else {
             return FileManager.default.homeDirectoryForCurrentUser

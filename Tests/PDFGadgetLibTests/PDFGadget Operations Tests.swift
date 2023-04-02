@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import XCTest
 @testable import PDFGadgetLib
 import PDFKit
@@ -546,3 +548,5 @@ extension PDFGadgetOperationsTests {
         XCTAssertEqual(page.string?.trimmed, isTagged)
     }
 }
+
+#endif

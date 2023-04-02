@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
 import PDFKit
 
@@ -173,3 +175,5 @@ extension PDFAnnotation {
         subTypes.contains { matches(subType: $0) }
     }
 }
+
+#endif

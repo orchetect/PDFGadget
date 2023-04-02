@@ -4,8 +4,9 @@
 //  Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
-import AppKit
 import Logging
 import OTCore
 import PDFKit
@@ -393,3 +394,5 @@ extension PDFGadget {
         return .changed
     }
 }
+
+#endif

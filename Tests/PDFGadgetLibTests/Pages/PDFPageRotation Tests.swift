@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import XCTest
 @testable import PDFGadgetLib
 
@@ -71,3 +73,5 @@ final class PDFPageRotationTests: XCTestCase {
         XCTAssertEqual(_270 - _270, _0)
     }
 }
+
+#endif

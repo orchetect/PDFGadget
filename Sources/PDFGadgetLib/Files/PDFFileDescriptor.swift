@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
 import PDFKit
 
@@ -64,3 +66,5 @@ extension PDFFileDescriptor {
         }
     }
 }
+
+#endif

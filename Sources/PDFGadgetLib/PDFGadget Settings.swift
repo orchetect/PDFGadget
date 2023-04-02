@@ -4,7 +4,8 @@
 //  Licensed under MIT License
 //
 
-import AppKit
+#if canImport(PDFKit)
+
 import Foundation
 import OTCore
 
@@ -82,3 +83,5 @@ extension PDFGadget {
         }
     }
 }
+
+#endif
