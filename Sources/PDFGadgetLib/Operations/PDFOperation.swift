@@ -32,6 +32,9 @@ public enum PDFOperation: Equatable, Hashable {
     /// Set new filename for a PDF file.
     case setFilename(file: PDFFileDescriptor, filename: String?)
     
+    /// Removes file metadata (attributes).
+    case removeFileMetadata(files: PDFFilesDescriptor)
+    
     // MARK: - Page Operations
     
     // TODO: collation stuff
@@ -155,6 +158,9 @@ extension PDFOperation {
             } else {
                 return "Reset filename for \(file.verboseDescription))"
             }
+            
+        case let .removeFileMetadata(files):
+            return "Remove metadata for \(files.verboseDescription)"
             
         case let .filterPages(file, pages):
             return "Filter \(pages.verboseDescription) in \(file.verboseDescription)"

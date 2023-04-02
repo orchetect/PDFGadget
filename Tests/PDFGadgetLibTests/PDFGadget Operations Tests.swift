@@ -174,6 +174,22 @@ final class PDFGadgetOperationsTests: XCTestCase {
         XCTAssertEqual(tool.pdfs[1].filenameForExport, "NewFileName")
     }
     
+    func testRemoveFileMetadata() throws {
+        let tool = PDFGadget()
+        
+        try tool.load(pdfs: [
+            testPDF1Page_withAttrAnno()
+        ])
+        
+        try tool.perform(operations: [
+            .removeFileMetadata(files: .all)
+        ])
+        
+        XCTAssertEqual(tool.pdfs.count, 1)
+        try AssertPageIsEqual(tool.pdfs[0].doc.page(at: 0)!, testPDF1Page_withAttrAnno().page(at: 0)!)
+        XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count ?? 0, 0)
+    }
+    
     func testFilterPages() throws {
         let tool = PDFGadget()
         
@@ -535,10 +551,18 @@ extension PDFGadgetOperationsTests {
         XCTAssertEqual(lhs.count, rhs.count)
         
         for (lhsPage, rhsPage) in zip(lhs, rhs) {
-            XCTAssertEqual(lhsPage.string, rhsPage.string)
-            
-            XCTAssertEqual(lhsPage.annotations.count, rhsPage.annotations.count)
-            XCTAssertEqual(lhsPage.annotations, rhsPage.annotations) // TODO: not sure if this works as expected?
+            try AssertPageIsEqual(lhsPage, rhsPage)
+        }
+    }
+    
+    /// Checks that pages are equal between two PDF files, by checking page text and annotations.
+    /// Not an exhaustive check but enough for unit testing.
+    func AssertPageIsEqual(_ lhs: PDFPage, _ rhs: PDFPage) throws {
+        XCTAssertEqual(lhs.string, rhs.string)
+        
+        XCTAssertEqual(lhs.annotations.count, rhs.annotations.count)
+        for (lhsAnno, rhsAnno) in zip(lhs.annotations, rhs.annotations) {
+            try AssertAnnotationIsEqual(lhsAnno, rhsAnno)
         }
     }
     
@@ -546,6 +570,15 @@ extension PDFGadgetOperationsTests {
     func Assert(page: PDFPage?, isTagged: String) throws {
         guard let page else { XCTFail("Page is nil.") ; return }
         XCTAssertEqual(page.string?.trimmed, isTagged)
+    }
+    
+    /// Checks if two annotations have equal content.
+    /// Not an exhaustive check but enough for unit testing.
+    func AssertAnnotationIsEqual(_ lhs: PDFAnnotation, _ rhs: PDFAnnotation) throws {
+        XCTAssertEqual(lhs.type, rhs.type)
+        XCTAssertEqual(lhs.bounds, rhs.bounds)
+        XCTAssertEqual(lhs.contents, rhs.contents)
+        XCTAssertEqual(lhs.annotationKeyValues.count, rhs.annotationKeyValues.count)
     }
 }
 

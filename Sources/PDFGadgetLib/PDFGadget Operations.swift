@@ -150,6 +150,28 @@ extension PDFGadget {
             : .changed
     }
     
+    /// Remove metadata (attributes) from the file.
+    func performRemoveFileMetadata(
+        files: PDFFilesDescriptor
+    ) throws -> PDFOperationResult {
+        let pdfs = try expectZeroOrMoreFiles(files)
+        
+        for pdf in pdfs {
+            // setting nil doesn't work, have to set empty dictionary instead
+            pdf.doc.documentAttributes = [:]
+            
+            guard pdf.doc.documentAttributes == nil
+                || pdf.doc.documentAttributes?.isEmpty == true
+            else {
+                throw PDFGadgetError.runtimeError(
+                    "Failed to remove attributes for \(pdf)."
+                )
+            }
+        }
+        
+        return .changed
+    }
+    
     /// Filter page(s).
     func performFilterPages(file: PDFFileDescriptor, pages: PDFPagesFilter) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
