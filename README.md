@@ -2,9 +2,15 @@
 
 [![CI Build Status](https://github.com/orchetect/PDFGadget/actions/workflows/build.yml/badge.svg)](https://github.com/orchetect/PDFGadget/actions/workflows/build.yml) [![Platforms - macOS 10.12+ | iOS 11+](https://img.shields.io/badge/platforms-macOS%2010.12+%20|%20iOS%2011+-lightgrey.svg?style=flat)](https://developer.apple.com/swift) ![Swift 5.6-5.8](https://img.shields.io/badge/Swift-5.6–5.8-orange.svg?style=flat) [![Xcode 13.3-14](https://img.shields.io/badge/Xcode-13.3–14-blue.svg?style=flat)](https://developer.apple.com/swift) [![License: MIT](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/orchetect/PDFGadget/blob/main/LICENSE)
 
-Batch PDF utilities with simple API for Swift. Supports macOS and iOS, and wraps PDFKit.
+Batch PDF utilities with simple API for Swift. Declarative API for:
 
-*(Currently only a Swift library. CLI and/or GUI frontend may be added in future.)*
+- assigning or remove file metadata (*future feature*)
+- file filtering, ordering, and merging
+- page management: reordering, collation, copying, moving, and replacement
+- page presentation: rotation, cropping, etc.
+- page content: filtering or removal of annotations
+
+> **Note**: *(Currently only a Swift library. CLI and/or GUI frontend may be added in future.)*
 
 ## Basic Usage
 
@@ -48,7 +54,9 @@ try PDFGadget().run(using: settings)
 
 ## Batch Operations
 
-The following are single operations that may be used in a batch sequence of operations. More to be added in future.
+The following are single operations that may be used in a batch sequence of operations.
+
+More to be added in future, including: file metadata assignment or removal, page cropping, more sophisticated annotation editing/filtering/removal.
 
 ### File Operations
 
