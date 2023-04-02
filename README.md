@@ -1,4 +1,4 @@
-# PDFTool
+# PDFGadget
 
 Batch PDF utilities with simple API for Swift.
 
@@ -14,23 +14,23 @@ let outputDir = URL.desktopFolder
 The steps of loading source PDFs, performing operations, and saving the resulting PDFs can be performed individually:
 
 ```swift
-let pdfTool = PDFTool()
+let pdfGadget = PDFGadget()
 
-try pdfTool.load(pdfs: sources)
-try pdfTool.perform(operations: [
+try pdfGadget.load(pdfs: sources)
+try pdfGadget.perform(operations: [
     // one or more operations
 ])
 
 // access the resulting PDF documents in memory
-pdfTool.pdfDocuments // [PDFDocument]
+pdfGadget.pdfDocuments // [PDFDocument]
 
 // or save them as PDF files to disk
-try pdfTool.savePDFs(outputDir: outputDir)
+try pdfGadget.savePDFs(outputDir: outputDir)
 ```
-Or a fully automated batch operation can be run with a single call to `run()` by passing in a populated instance of `PDFTool.Settings`.
+Or a fully automated batch operation can be run with a single call to `run()` by passing in a populated instance of `PDFGadget.Settings`.
 
 ```swift
-let settings = PDFTool.Settings(
+let settings = PDFGadget.Settings(
     sourcePDFs: sources,
     outputDir: outputDir,
     operations: [
@@ -39,7 +39,7 @@ let settings = PDFTool.Settings(
     savePDFs: true
 )
 
-try PDFTool().run(using: settings)
+try PDFGadget().run(using: settings)
 ```
 
 ## Batch Operations
@@ -78,8 +78,8 @@ Licensed under the MIT license. See [LICENSE](/LICENSE) for details.
 
 ## Sponsoring
 
-If you enjoy using PDFTool and want to contribute to open-source financially, GitHub sponsorship is much appreciated. Feedback and code contributions are also welcome.
+If you enjoy using PDFGadget and want to contribute to open-source financially, GitHub sponsorship is much appreciated. Feedback and code contributions are also welcome.
 
 ## Roadmap & Contributions
 
-Planned and in-progress features can be found in [Issues](https://github.com/orchetect/PDFTool/issues). Any help is welcome and appreciated.
+Planned and in-progress features can be found in [Issues](https://github.com/orchetect/PDFGadget/issues). Any help is welcome and appreciated.

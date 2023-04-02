@@ -4,19 +4,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "PDFTool",
+    name: "PDFGadget",
     platforms: [
         .macOS(.v10_12)
     ],
     products: [
         .library(
-            name: "PDFToolLib",
+            name: "PDFGadgetLib",
             type: .static,
-            targets: ["PDFToolLib"]
+            targets: ["PDFGadgetLib"]
         ),
         .executable(
-            name: "pdftool",
-            targets: ["pdftool-cli"]
+            name: "pdfgadget",
+            targets: ["pdfgadget-cli"]
         )
     ],
     dependencies: [
@@ -27,7 +27,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "PDFToolLib",
+            name: "PDFGadgetLib",
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
                 // .product(name: "Collections", package: "swift-collections"),
@@ -35,14 +35,14 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "PDFToolLibTests",
-            dependencies: ["PDFToolLib"],
+            name: "PDFGadgetLibTests",
+            dependencies: ["PDFGadgetLib"],
             resources: [.copy("TestResource/PDF Files")]
         ),
         .executableTarget(
-            name: "pdftool-cli",
+            name: "pdfgadget-cli",
             dependencies: [
-                "PDFToolLib",
+                "PDFGadgetLib",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
         )
