@@ -36,7 +36,8 @@ let package = Package(
         ),
         .testTarget(
             name: "PDFToolLibTests",
-            dependencies: ["PDFToolLib"]
+            dependencies: ["PDFToolLib"],
+            resources: [.copy("TestResource/PDF Files")]
         ),
         .executableTarget(
             name: "pdftool-cli",
