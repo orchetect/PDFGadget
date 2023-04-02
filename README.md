@@ -56,7 +56,7 @@ try PDFGadget().run(using: settings)
 
 The following are single operations that may be used in a batch sequence of operations.
 
-More to be added in future, including: file metadata assignment or removal, page cropping, more sophisticated annotation editing/filtering/removal.
+>  **Note**: More to be added in future, including: page cropping, more sophisticated annotation editing/filtering/removal.
 
 ### File Operations
 
@@ -64,8 +64,8 @@ More to be added in future, including: file metadata assignment or removal, page
 - Clone file
 - Filter files
 - Merge files
-- Set file's filename
-- Remove file attributes (metadata such as title, author, etc.)
+- Set file filename
+- Set or remove file attributes (metadata such as title, author, etc.)
 
 ### Page Operations
 
