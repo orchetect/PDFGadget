@@ -23,7 +23,7 @@
 --funcattributes prev-line
 --groupedextension "MARK: %c"
 --guardelse auto
---header "\n {file}\n PDFTool • https://github.com/orchetect/PDFTool\n Licensed under MIT License\n"
+--header "\n {file}\n PDFGadget • https://github.com/orchetect/PDFGadget\n Licensed under MIT License\n"
 --hexgrouping 4,8
 --hexliteralcase uppercase
 --ifdef no-indent
