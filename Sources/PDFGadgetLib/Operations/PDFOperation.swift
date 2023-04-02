@@ -7,6 +7,7 @@
 #if canImport(PDFKit)
 
 import Foundation
+import PDFKit
 
 public enum PDFOperation: Equatable, Hashable {
     // MARK: - File Operations
@@ -32,8 +33,8 @@ public enum PDFOperation: Equatable, Hashable {
     /// Set new filename for a PDF file.
     case setFilename(file: PDFFileDescriptor, filename: String?)
     
-    /// Removes file metadata (attributes).
-    case removeFileMetadata(files: PDFFilesDescriptor)
+    /// Removes file attributes (metadata).
+    case removeFileAttributes(files: PDFFilesDescriptor)
     
     // MARK: - Page Operations
     
@@ -159,8 +160,8 @@ extension PDFOperation {
                 return "Reset filename for \(file.verboseDescription))"
             }
             
-        case let .removeFileMetadata(files):
-            return "Remove metadata for \(files.verboseDescription)"
+        case let .removeFileAttributes(files):
+            return "Remove attributes (metadata) for \(files.verboseDescription)"
             
         case let .filterPages(file, pages):
             return "Filter \(pages.verboseDescription) in \(file.verboseDescription)"

@@ -151,7 +151,7 @@ extension PDFGadget {
     }
     
     /// Remove metadata (attributes) from the file.
-    func performRemoveFileMetadata(
+    func performRemoveFileAttributes(
         files: PDFFilesDescriptor
     ) throws -> PDFOperationResult {
         let pdfs = try expectZeroOrMoreFiles(files)

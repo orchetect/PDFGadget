@@ -174,7 +174,7 @@ final class PDFGadgetOperationsTests: XCTestCase {
         XCTAssertEqual(tool.pdfs[1].filenameForExport, "NewFileName")
     }
     
-    func testRemoveFileMetadata() throws {
+    func testRemoveFileAttributes() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -182,7 +182,7 @@ final class PDFGadgetOperationsTests: XCTestCase {
         ])
         
         try tool.perform(operations: [
-            .removeFileMetadata(files: .all)
+            .removeFileAttributes(files: .all)
         ])
         
         XCTAssertEqual(tool.pdfs.count, 1)
