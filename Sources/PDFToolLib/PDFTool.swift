@@ -209,7 +209,7 @@ extension PDFTool {
                 behavior: behavior
             )
             
-        case let .rotate(file, pages, rotation):
+        case let .rotatePages(file, pages, rotation):
             return try performRotatePages(file: file, pages: pages, rotation: rotation)
             
         case let .splitFile(file, discardUnused, splits):

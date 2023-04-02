@@ -55,7 +55,7 @@ public enum PDFOperation: Equatable, Hashable {
     
     /// Rotate page(s) by a multiple of 90 degrees.
     /// Rotation can be absolute or relative to current page rotation (if any).
-    case rotate(file: PDFFileDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
+    case rotatePages(file: PDFFileDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
     
     /// Split file at certain page points into multiple files.
     /// The original file is discarded.
@@ -166,7 +166,7 @@ extension PDFOperation {
         case let .replacePages(fromFile, fromPages, toFile, toPages, behavior):
             return "Replace \(toPages.verboseDescription) of \(toFile.verboseDescription) with \(fromPages.verboseDescription) from \(fromFile.verboseDescription) by \(behavior.verboseDescription)"
             
-        case let .rotate(file, pages, rotation):
+        case let .rotatePages(file, pages, rotation):
             return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation)"
             
         case let .splitFile(file, discardUnused, splits):

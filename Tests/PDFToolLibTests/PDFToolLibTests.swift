@@ -41,10 +41,10 @@ final class PDFToolLibTests: XCTestCase {
 //                .copyPages(fromFile: .first, fromPages: .include([.first(count: 3)]), toFile: .second),
 //                .movePages(fromFile: .first, fromPages: .include([.last(count: 3)]), toFile: .second),
 //                .filterFiles(.second)
-//                .crop(file: .first,
-//                      pages: .include([.first(count: 3)]),
-//                      area: .scale(factor: 0.5),
-//                      process: .relative)
+//                .cropPages(file: .first,
+//                           pages: .include([.first(count: 3)]),
+//                           area: .scale(factor: 0.5),
+//                           process: .relative)
 //                .setFilename(file: .first, filename: "first"),
 //                .setFilename(file: .second, filename: "second")
 //                .splitFile(file: .first, .at(pageIndexes: [4, 20, 22]))
