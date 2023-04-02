@@ -9,7 +9,7 @@ import OTCore
 
 extension RangeExpression where Bound: Strideable {
     @_disfavoredOverload
-    public func isContainedWithin(values: [Bound]) -> Bool {
+    func isContainedWithin(values: [Bound]) -> Bool {
         let bounds = getAbsoluteBounds()
         
         if let min = bounds.min, let max = bounds.max { // X...X, X..<X
