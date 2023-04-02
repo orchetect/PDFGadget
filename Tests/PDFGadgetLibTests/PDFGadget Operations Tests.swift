@@ -1,5 +1,5 @@
 //
-//  Operation Tests.swift
+//  PDFGadget Operations Tests.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
 //  Licensed under MIT License
 //
@@ -11,7 +11,7 @@ import OTCore
 
 /// These are integration tests to test the actual operations,
 /// not the specific syntax or underlying semantics.
-final class OperationTests: XCTestCase {
+final class PDFGadgetOperationsTests: XCTestCase {
     func testNewFile() throws {
         let tool = PDFGadget()
         
@@ -457,7 +457,7 @@ final class OperationTests: XCTestCase {
 
 // MARK: - Utils
 
-extension OperationTests {
+extension PDFGadgetOperationsTests {
     // MARK: Test Resource Conveniences
     
     func testPDF1Page() throws -> PDFDocument {

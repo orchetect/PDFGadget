@@ -7,7 +7,7 @@
 import XCTest
 @testable import PDFGadgetLib
 
-final class PDFPageFilterTests: XCTestCase {
+final class PDFPagesFilterTests: XCTestCase {
     func testAll() throws {
         let filter: PDFPagesFilter = .all
         
