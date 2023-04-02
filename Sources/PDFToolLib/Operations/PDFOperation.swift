@@ -59,7 +59,7 @@ public enum PDFOperation: Equatable, Hashable {
     
     /// Split file at certain page points into multiple files.
     /// The original file is discarded.
-    case splitFile(file: PDFFileDescriptor, _ splits: PDFFileSplitDescriptor)
+    case splitFile(file: PDFFileDescriptor, discardUnused: Bool = true, _ splits: PDFFileSplitDescriptor)
     
     // TODO: case crop(pages: PDFPagesFilter, area: Rect)
     
@@ -169,8 +169,8 @@ extension PDFOperation {
         case let .rotate(file, pages, rotation):
             return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation)"
             
-        case let .splitFile(file, splits):
-            return "Split \(file.verboseDescription) \(splits.verboseDescription)"
+        case let .splitFile(file, discardUnused, splits):
+            return "Split \(file.verboseDescription) \(splits.verboseDescription)\(discardUnused ? ", discarding unused pages if any" : "")"
             
         case let .filterAnnotations(file, pages, annotations):
             return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"

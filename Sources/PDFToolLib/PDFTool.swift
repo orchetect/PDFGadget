@@ -205,8 +205,8 @@ extension PDFTool {
         case let .rotate(file, pages, rotation):
             return try performRotatePages(file: file, pages: pages, rotation: rotation)
             
-        case let .splitFile(file, splits):
-            return try performSplitFile(file: file, splits: splits)
+        case let .splitFile(file, discardUnused, splits):
+            return try performSplitFile(file: file, discardUnused: discardUnused, splits: splits)
             
         case let .filterAnnotations(file, pages, annotations):
             return try performFilterAnnotations(file: file, pages: pages, annotations: annotations)

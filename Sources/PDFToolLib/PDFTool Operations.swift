@@ -236,14 +236,16 @@ extension PDFTool {
     /// Split a single PDF file into multiple files.
     func performSplitFile(
         file: PDFFileDescriptor,
+        discardUnused: Bool,
         splits: PDFFileSplitDescriptor
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
+        var remainingPageIndexes: [Int] = pdf.doc.pageIndexes()
         
         let newSplits = splits.splits(source: pdf)
         
         guard !newSplits.isEmpty else {
-            return .noChange(reason: "Split descriptor does not result in multiple files.")
+            return .noChange(reason: "File split descriptor does not result in multiple files.")
         }
         
         var dedupeFilenameCount = 0
@@ -259,12 +261,35 @@ extension PDFTool {
             }
             newFile.doc.append(pages: pages)
             pdfs.append(newFile)
+            remainingPageIndexes.removeAll(where: { pageRange.contains($0) })
         }
         
-        // remove source file
-        pdfs.removeAll(pdf)
+        func removeSourceFile() { pdfs.removeAll(pdf) }
         
-        return .changed // TODO: ?
+        // some logic and user feedback regarding source file and page utilization
+        let remainingPageNumbersString = remainingPageIndexes.map { String($0 + 1) }.joined(separator: ", ")
+        if discardUnused {
+            if !remainingPageIndexes.isEmpty {
+                logger.info(
+                    "Note: Split source file will be discarded, but page numbers \(remainingPageNumbersString) were unused."
+                )
+            }
+            removeSourceFile()
+        } else {
+            if remainingPageIndexes.isEmpty {
+                logger.info("Removing split source file; all pages were split into new file(s).")
+                removeSourceFile()
+            } else {
+                // source file has at least one unused page remaining
+                logger.info("Split source file still contains unused page numbers \(remainingPageNumbersString).")
+                
+                // remove used pages
+                let usedIndexes = pdf.doc.pageIndexes().filter { !remainingPageIndexes.contains($0) }
+                try pdf.doc.removePages(at: usedIndexes)
+            }
+        }
+        
+        return .changed
     }
     
     /// Filter annotations by type.
