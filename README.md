@@ -1,5 +1,7 @@
 # PDFGadget
 
+[![CI Build Status](https://github.com/orchetect/PDFGadget/actions/workflows/build.yml/badge.svg)](https://github.com/orchetect/PDFGadget/actions/workflows/build.yml) [![Platforms - macOS 10.12+ | iOS 11+](https://img.shields.io/badge/platforms-macOS%2010.12+%20|%20iOS%2011+-lightgrey.svg?style=flat)](https://developer.apple.com/swift) ![Swift 5.6-5.8](https://img.shields.io/badge/Swift-5.6–5.8-orange.svg?style=flat) [![Xcode 13.0-14](https://img.shields.io/badge/Xcode-13.0–14-blue.svg?style=flat)](https://developer.apple.com/swift) [![License: MIT](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/orchetect/PDFGadget/blob/main/LICENSE)
+
 Batch PDF utilities with simple API for Swift. Supports macOS and iOS, and wraps PDFKit.
 
 *(Currently only a Swift library. CLI and/or GUI frontend may be added in future.)*
