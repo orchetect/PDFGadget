@@ -9,6 +9,7 @@
 import Foundation
 import PDFKit
 
+/// PDF editing operations.
 public enum PDFOperation: Equatable, Hashable {
     // MARK: - File Operations
     
@@ -30,7 +31,7 @@ public enum PDFOperation: Equatable, Hashable {
     /// The original file is discarded.
     case splitFile(file: PDFFileDescriptor, discardUnused: Bool = true, _ splits: PDFFileSplitDescriptor)
     
-    /// Set new filename for a PDF file.
+    /// Set new filename for a PDF file (excluding .pdf file extension).
     case setFilename(file: PDFFileDescriptor, filename: String?)
     
     /// Removes file attributes (metadata).
@@ -106,6 +107,7 @@ public enum PDFOperation: Equatable, Hashable {
 // MARK: - Static Constructors
 
 extension PDFOperation {
+    /// Copy page(s) within the same PDF file or from one file to another.
     public static func copyPages(
         file: PDFFileDescriptor,
         from fromPages: PDFPagesFilter,
@@ -114,6 +116,7 @@ extension PDFOperation {
         .copyPages(fromFile: file, fromPages: fromPages, toFile: file, toPageIndex: toPageIndex)
     }
     
+    /// Copy page(s) within the same PDF file or from one file to another.
     public static func movePages(
         file: PDFFileDescriptor,
         from fromPages: PDFPagesFilter,
@@ -122,6 +125,7 @@ extension PDFOperation {
         .movePages(fromFile: file, fromPages: fromPages, toFile: file, toPageIndex: toPageIndex)
     }
     
+    /// Replace existing page(s) with other page(s).
     public static func replacePages(
         file: PDFFileDescriptor,
         from fromPages: PDFPagesFilter,

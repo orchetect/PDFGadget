@@ -9,6 +9,7 @@
 import Foundation
 
 extension PDFOperation {
+    /// PDF editing operation behavior.
     public enum InterchangeBehavior: Equatable, Hashable {
         case copy
         case move
@@ -27,6 +28,7 @@ extension PDFOperation.InterchangeBehavior {
 }
 
 extension PDFOperation {
+    /// PDF editing operation value modification behavior.
     public enum ValueModification: Equatable, Hashable {
         /// Set absolute page rotation value, replacing existing rotation if any.
         case absolute
@@ -49,6 +51,7 @@ extension PDFOperation.ValueModification {
 }
 
 extension PDFOperation {
+    /// PDF editing operation page & filename descriptor.
     public struct PageAndFilename: Equatable, Hashable {
         public var pageIndex: Int
         public var filename: String?
@@ -77,6 +80,7 @@ extension PDFOperation.PageAndFilename {
 }
 
 extension PDFOperation {
+    /// PDF editing operation page range & filename descriptor.
     public struct PageRangeAndFilename: Equatable, Hashable {
         public var pageRange: ClosedRange<Int>
         public var filename: String?

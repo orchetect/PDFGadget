@@ -10,6 +10,7 @@ import Foundation
 @_implementationOnly import OTCore
 import PDFKit
 
+/// Criteria for splitting a PDF file.
 public enum PDFFileSplitDescriptor: Equatable, Hashable {
     case at(pageIndexes: [Int])
     case every(pageCount: Int)

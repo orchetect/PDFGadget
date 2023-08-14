@@ -7,6 +7,7 @@
 import Foundation
 @_implementationOnly import OTCore
 
+/// Criteria to filter PDF pages.
 public enum PDFPagesFilter: Equatable, Hashable {
     case all
     // case none

@@ -11,6 +11,7 @@ import Logging
 @_implementationOnly import OTCore
 import PDFKit
 
+/// PDF editing toolkit offering declarative batch file & page operations.
 public final class PDFGadget {
     internal let logger = Logger(label: "\(PDFGadget.self)")
     

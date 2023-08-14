@@ -9,6 +9,7 @@
 import Foundation
 import PDFKit
 
+/// Provides a closure for custom introspection logic on a `PDFDocument` instance.
 public struct PDFFileIntrospection {
     internal let id: UUID = .init()
     

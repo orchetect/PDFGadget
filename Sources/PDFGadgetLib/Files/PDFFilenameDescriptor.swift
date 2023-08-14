@@ -7,15 +7,27 @@
 import Foundation
 @_implementationOnly import OTCore
 
+/// Criteria to match a PDF filename (excluding .pdf file extension).
 public enum PDFFilenameDescriptor: Equatable, Hashable {
+    /// Exact full string match.
     case equals(String)
     
+    /// Filename that starts with the given string.
     case starts(with: String)
+    
+    /// Filename that ends with the given string.
     case ends(with: String)
+    
+    /// Filename that contains the given string.
     case contains(String)
     
+    /// Filename that does not start with the given string.
     case doesNotStart(with: String)
+    
+    /// Filename that does not end with the given string.
     case doesNotEnd(with: String)
+    
+    /// Filename that does not contain the given string.
     case doesNotContain(String)
     
     // case matches(regex: Regex)

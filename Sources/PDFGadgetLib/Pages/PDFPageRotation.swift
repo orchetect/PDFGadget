@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// PDF editing page rotation descriptor.
 public struct PDFPageRotation: Equatable, Hashable {
     public var angle: Angle
     public var process: PDFOperation.ValueModification
@@ -34,6 +35,7 @@ extension PDFPageRotation: CustomStringConvertible {
 // MARK: - Angle
 
 extension PDFPageRotation {
+    /// PDF editing page rotation angle.
     public enum Angle: Int {
         case _0degrees = 0
         case _90degrees = 90

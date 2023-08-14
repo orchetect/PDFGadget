@@ -11,11 +11,22 @@ import PDFKit
 
 /// Criteria to match a single PDF file.
 public enum PDFFileDescriptor: Equatable, Hashable {
+    /// First file.
     case first
+    
+    /// Second file.
     case second
+    
+    /// Last file.
     case last
+    
+    /// File with given index (0-based).
     case index(_ idx: Int)
+    
+    /// File matching given filename descriptor.
     case filename(_ filenameDescriptor: PDFFilenameDescriptor)
+    
+    /// File matching against an introspection closure.
     case introspecting(_ introspection: PDFFileIntrospection)
 }
 
