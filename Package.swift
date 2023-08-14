@@ -23,7 +23,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
         // .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
-        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.4.8")
+        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.4.12")
     ],
     targets: [
         .target(
