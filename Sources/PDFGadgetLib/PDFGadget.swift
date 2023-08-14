@@ -123,8 +123,7 @@ extension PDFGadget {
         }
         
         // ensure there are no duplicate filenames
-        guard Set(filenames.map({ $0.lowercased() })).count
-                == filenames.map({ $0.lowercased() }).count
+        guard filenames.duplicateElements().isEmpty
         else {
             throw PDFGadgetError.runtimeError(
                 "Output filenames are not unique."
