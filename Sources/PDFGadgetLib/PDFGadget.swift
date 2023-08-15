@@ -180,6 +180,9 @@ extension PDFGadget {
         case let .setFilename(file, filename):
             return try performSetFilename(file: file, filename: filename)
             
+        case let .setFilenames(files, filenames):
+            return try performSetFilenames(files: files, filenames: filenames)
+            
         case let .removeFileAttributes(files):
             return try performRemoveFileAttributes(files: files)
             

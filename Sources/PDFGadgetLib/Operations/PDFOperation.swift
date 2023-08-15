@@ -32,7 +32,12 @@ public enum PDFOperation: Equatable, Hashable {
     case splitFile(file: PDFFileDescriptor, discardUnused: Bool = true, _ splits: PDFFileSplitDescriptor)
     
     /// Set new filename for a PDF file (excluding .pdf file extension).
+    /// Passing `nil` resets the filename.
     case setFilename(file: PDFFileDescriptor, filename: String?)
+    
+    /// Set new filenames for one or more PDF files (excluding .pdf file extension).
+    /// Passing `nil` for a filename resets that filename.
+    case setFilenames(files: PDFFilesDescriptor = .all, filenames: [String?])
     
     /// Removes file attributes (metadata).
     case removeFileAttributes(files: PDFFilesDescriptor)
@@ -166,6 +171,13 @@ extension PDFOperation {
             } else {
                 return "Reset filename for \(file.verboseDescription))"
             }
+            
+        case let .setFilenames(files, filenames):
+            let formattedFilenames = filenames
+                .map { $0 ?? "<reset>" }
+                .map { $0.quoted }
+                .joined(separator: ", ")
+            return "Set \(files.verboseDescription) to \(formattedFilenames)"
             
         case let .removeFileAttributes(files):
             return "Remove attributes (metadata) for \(files.verboseDescription)"

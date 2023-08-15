@@ -174,6 +174,30 @@ final class PDFGadgetOperationsTests: XCTestCase {
         XCTAssertEqual(tool.pdfs[1].filenameForExport, "NewFileName")
     }
     
+    func testSetFilenames() throws {
+        let tool = PDFGadget()
+        
+        try tool.load(pdfs: [
+            testPDF1Page(),
+            testPDF2Pages(),
+            testPDF5Pages()
+        ])
+        
+        // check default filenames first
+        XCTAssertEqual(tool.pdfs[0].filenameForExport, TestResource.pdf1page.name + "-processed")
+        XCTAssertEqual(tool.pdfs[1].filenameForExport, TestResource.pdf2pages.name + "-processed")
+        XCTAssertEqual(tool.pdfs[2].filenameForExport, TestResource.pdf5pages.name + "-processed")
+        
+        try tool.perform(operations: [
+            .setFilenames(files: .all, filenames: ["Renamed1", "Renamed2", "Renamed3"])
+        ])
+        
+        // check renamed files
+        XCTAssertEqual(tool.pdfs[0].filenameForExport, "Renamed1")
+        XCTAssertEqual(tool.pdfs[1].filenameForExport, "Renamed2")
+        XCTAssertEqual(tool.pdfs[2].filenameForExport, "Renamed3")
+    }
+    
     func testRemoveFileAttributes() throws {
         let tool = PDFGadget()
         

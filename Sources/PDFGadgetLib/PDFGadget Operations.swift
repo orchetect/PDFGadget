@@ -134,13 +134,21 @@ extension PDFGadget {
         return .changed
     }
     
-    /// Set new filename for a PDF file.
+    /// Set new filename for a PDF file. Passing `nil` resets the filename.
     func performSetFilename(
         file: PDFFileDescriptor,
         filename: String?
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
+        return try performSetFilename(file: pdf, filename: filename)
+    }
+    
+    /// Utility for `performSetFilename(file:filename:)`
+    private func performSetFilename(
+        file pdf: PDFFile,
+        filename: String?
+    ) throws -> PDFOperationResult {
         let oldFilename = pdf.filenameForExport
         
         pdf.set(filenameForExport: filename)
@@ -148,6 +156,35 @@ extension PDFGadget {
         return filename == oldFilename
             ? .noChange(reason: "New filename is identical to old filename.")
             : .changed
+    }
+    
+    /// Set new filenames for one or more PDF files. Passing `nil` resets a filename.
+    func performSetFilenames(
+        files: PDFFilesDescriptor,
+        filenames: [String?]
+    ) throws -> PDFOperationResult {
+        let pdfs = try expectZeroOrMoreFiles(files)
+        
+        guard !pdfs.isEmpty else {
+            return .noChange(reason: "No files specified.")
+        }
+        
+        guard filenames.count == pdfs.count else {
+            throw PDFGadgetError.runtimeError(
+                "Failed to set filenames; the resulting number of files does not match the supplied number of filenames."
+            )
+        }
+        
+        var result: PDFOperationResult = .noChange(reason: "All filenames are identical to old filenames.")
+        
+        for (pdf, filename) in zip(pdfs, filenames) {
+            let singleFileResult = try performSetFilename(file: pdf, filename: filename)
+            if case .changed = singleFileResult {
+                result = .changed
+            }
+        }
+        
+        return result
     }
     
     /// Remove metadata (attributes) from one or more files.

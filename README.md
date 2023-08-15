@@ -64,7 +64,7 @@ The following are single operations that may be used in a batch sequence of oper
 - Clone file
 - Filter files
 - Merge files
-- Set file filename
+- Set file filename(s)
 - Set or remove file attributes (metadata such as title, author, etc.)
 
 ### Page Operations
