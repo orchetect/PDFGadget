@@ -22,7 +22,6 @@ public struct PDFFileIntrospection {
     }
 }
 
-
 extension PDFFileIntrospection: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id

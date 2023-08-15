@@ -21,13 +21,16 @@ struct PDFGadgetCLI: ParsableCommand {
     
     // MARK: - Arguments
     
-    @Argument(
-        help: "Input PDF file(s). Can be specified more than once for multiple input files.",
+    @Option(
+        name: [.customLong("source"), .customShort("s")],
+        parsing: .upToNextOption, // allows multiple values
+        help: "One or more input PDF file(s).",
         transform: URL.init(fileURLWithPath:)
     )
     var source: [URL]
     
-    @Argument(
+    @Option(
+        name: [.customLong("destination"), .customShort("d")],
         help: "Output directory. Defaults to same director as first input file.",
         transform: URL.init(fileURLWithPath:)
     )
@@ -44,6 +47,13 @@ struct PDFGadgetCLI: ParsableCommand {
     @Flag(name: [.customLong("quiet")], help: "Disable log.")
     var logQuiet = false
     
+    @Option(
+        name: [.customLong("operations"), .customShort("o")],
+        parsing: .upToNextOption, // allows multiple values
+        help: "PDF editing operations."
+    )
+    var operations: [PDFOperation]
+    
     // MARK: - Protocol Method Implementations
     
     mutating func validate() throws {
@@ -59,7 +69,7 @@ struct PDFGadgetCLI: ParsableCommand {
             settings = try PDFGadget.Settings(
                 sourcePDFs: source,
                 outputDir: outputDir,
-                operations: [], // TODO: implement
+                operations: operations,
                 savePDFs: true
                 // ...
             )
