@@ -16,7 +16,7 @@ struct PDFGadgetCLI: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "PDF processing utilities.",
         discussion: "https://github.com/orchetect/PDFGadget",
-        version: "0.1.0"
+        version: "0.1.1"
     )
     
     // MARK: - Arguments
