@@ -90,16 +90,16 @@ public enum PDFOperation: Equatable, Hashable {
     case filterAnnotations(file: PDFFileDescriptor, pages: PDFPagesFilter, annotations: PDFAnnotationFilter)
     
     // --> nil out all annotations' `userName: String?` property etc.
-    // case removeAnnotationAuthors(fileIndex: Int, pages: PDFPagesFilter, for: PDFAnnotationFilter)
+    // case removeAnnotationAuthors(files: PDFFilesDescriptor, pages: PDFPagesFilter, for: PDFAnnotationFilter)
     
     // TODO: text/freeText annotation: removal based on text content, allowing regex matching
     // TODO: text/freeText annotation: text search & replace, allowing regex matching
     
     // TODO: Title, Author, Subject, PDF Producer, Content creator, etc.
-    // case fileMetadata(property: PDFFileProperty, value: String)
+    // case setFileMetadata(files: PDFFilesDescriptor, property: PDFFileProperty, value: String)
     
     // TODO: Draw text, shapes or images on page(s) - ie: a watermark or redaction
-    // case overlay(text: String, in: Rect)
+    // case overlay(files: PDFFilesDescriptor, pages: PDFPagesFilter, text: String, in: Rect)
     
     // TODO: Modify style of existing text/freeText annotations
     

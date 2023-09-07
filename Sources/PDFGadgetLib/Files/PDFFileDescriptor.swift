@@ -49,12 +49,11 @@ extension PDFFileDescriptor {
             
         case .filename(let filenameDescriptor):
             return inputs.first { pdf in
-                return filenameDescriptor.matches(pdf.filenameForMatching)
+                filenameDescriptor.matches(pdf.filenameForMatching)
             }
             
         case .introspecting(let introspection):
             return inputs.first(where: { introspection.closure($0.doc) })
-            
         }
     }
 }
