@@ -5,7 +5,7 @@
 //
 
 import Foundation
-@_implementationOnly import OTCore
+/* private */ import OTCore
 
 /// Criteria to match a PDF filename (excluding .pdf file extension).
 public enum PDFFilenameDescriptor: Equatable, Hashable {

@@ -7,7 +7,7 @@
 #if canImport(PDFKit)
 
 import Foundation
-@_implementationOnly import OTCore
+/* private */ import OTCore
 import PDFKit
 
 /// Criteria for splitting a PDF file.

@@ -7,7 +7,7 @@
 import Foundation
 import PDFGadgetLib
 import ArgumentParser
-@_implementationOnly import OTCore
+/* private */ import OTCore
 
 extension PDFOperation: ExpressibleByArgument {
     public init?(argument: String) {

@@ -9,7 +9,7 @@
 import XCTest
 @testable import PDFGadgetLib
 import PDFKit
-@_implementationOnly import OTCore
+import OTCore
 
 /// These are integration tests to test the actual operations,
 /// not the specific syntax or underlying semantics.
