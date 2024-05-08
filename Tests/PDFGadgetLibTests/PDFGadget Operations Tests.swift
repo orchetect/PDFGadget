@@ -210,7 +210,11 @@ final class PDFGadgetOperationsTests: XCTestCase {
         ])
         
         XCTAssertEqual(tool.pdfs.count, 1)
-        try AssertPageIsEqual(tool.pdfs[0].doc.page(at: 0)!, testPDF1Page_withAttrAnno().page(at: 0)!)
+        try AssertPageIsEqual(
+            tool.pdfs[0].doc.page(at: 0)!,
+            testPDF1Page_withAttrAnno().page(at: 0)!,
+            ignoreOpenState: true
+        )
         XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count ?? 0, 0)
     }
     
@@ -596,28 +600,28 @@ extension PDFGadgetOperationsTests {
     
     /// Checks that pages are equal between two PDF files, by checking page text and annotations.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertDocumentsAreEqual(_ lhs: PDFDocument, _ rhs: PDFDocument) throws {
-        try AssertPagesAreEqual(lhs.pages(for: .all), rhs.pages(for: .all))
+    func AssertDocumentsAreEqual(_ lhs: PDFDocument, _ rhs: PDFDocument, ignoreOpenState: Bool = false) throws {
+        try AssertPagesAreEqual(lhs.pages(for: .all), rhs.pages(for: .all), ignoreOpenState: ignoreOpenState)
     }
     
     /// Checks that pages are equal between two PDF files, by checking page text and annotations.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertPagesAreEqual(_ lhs: [PDFPage], _ rhs: [PDFPage]) throws {
+    func AssertPagesAreEqual(_ lhs: [PDFPage], _ rhs: [PDFPage], ignoreOpenState: Bool = false) throws {
         XCTAssertEqual(lhs.count, rhs.count)
         
         for (lhsPage, rhsPage) in zip(lhs, rhs) {
-            try AssertPageIsEqual(lhsPage, rhsPage)
+            try AssertPageIsEqual(lhsPage, rhsPage, ignoreOpenState: ignoreOpenState)
         }
     }
     
     /// Checks that pages are equal between two PDF files, by checking page text and annotations.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertPageIsEqual(_ lhs: PDFPage, _ rhs: PDFPage) throws {
+    func AssertPageIsEqual(_ lhs: PDFPage, _ rhs: PDFPage, ignoreOpenState: Bool = false) throws {
         XCTAssertEqual(lhs.string, rhs.string)
         
         XCTAssertEqual(lhs.annotations.count, rhs.annotations.count)
         for (lhsAnno, rhsAnno) in zip(lhs.annotations, rhs.annotations) {
-            try AssertAnnotationIsEqual(lhsAnno, rhsAnno)
+            try AssertAnnotationIsEqual(lhsAnno, rhsAnno, ignoreOpenState: ignoreOpenState)
         }
     }
     
@@ -629,11 +633,25 @@ extension PDFGadgetOperationsTests {
     
     /// Checks if two annotations have equal content.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertAnnotationIsEqual(_ lhs: PDFAnnotation, _ rhs: PDFAnnotation) throws {
+    func AssertAnnotationIsEqual(
+        _ lhs: PDFAnnotation,
+        _ rhs: PDFAnnotation,
+        ignoreOpenState: Bool
+    ) throws {
         XCTAssertEqual(lhs.type, rhs.type)
         XCTAssertEqual(lhs.bounds, rhs.bounds)
         XCTAssertEqual(lhs.contents, rhs.contents)
-        XCTAssertEqual(lhs.annotationKeyValues.count, rhs.annotationKeyValues.count)
+        
+        if ignoreOpenState {
+            // it seems at some point PDFKit gained the behavior of removing the Open
+            // annotation property during the course of loading/manipulating PDF documents
+            // so it may be desirable to exempt the property from comparison.
+            let lhsAKV = lhs.annotationKeyValues.filter { $0.key.base as? String != "/Open" }
+            let rhsAKV = rhs.annotationKeyValues.filter { $0.key.base as? String != "/Open" }
+            XCTAssertEqual(lhsAKV.count, rhsAKV.count)
+        } else {
+            XCTAssertEqual(lhs.annotationKeyValues.count, rhs.annotationKeyValues.count)
+        }
     }
 }
 
