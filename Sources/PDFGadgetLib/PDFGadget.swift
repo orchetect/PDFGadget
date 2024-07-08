@@ -21,6 +21,9 @@ public final class PDFGadget {
         pdfs.map(\.doc)
     }
     
+    /// Temporary storage for PDF operations, keyed by the variable name.
+    public var variables: [String: VariableContent] = [:]
+    
     public init() { }
     
     public init(pdfs: [PDFDocument]) {
