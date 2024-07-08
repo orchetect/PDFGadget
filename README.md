@@ -37,6 +37,7 @@ pdfGadget.pdfDocuments // [PDFDocument]
 // or save them as PDF files to disk
 try pdfGadget.savePDFs(outputDir: outputDir)
 ```
+
 Or a fully automated batch operation can be run with a single call to `run()` by passing in a populated instance of `PDFGadget.Settings`.
 
 ```swift
@@ -80,6 +81,7 @@ The following are single operations that may be used in a batch sequence of oper
 ### Page Content Operations
 
 - Filter annotations (by types, or remove all)
+- Extract plain text (to system pasteboard, to file on disk, or to variable in memory)
 
 ## Getting Started
 
