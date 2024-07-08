@@ -530,6 +530,78 @@ final class PDFGadgetOperationsTests: XCTestCase {
         XCTAssertEqual(tool.pdfs[0].doc.pageCount, 1)
         XCTAssertEqual(tool.pdfs[0].doc.page(at: 0)?.annotations.count, 0)
     }
+    
+    func testExtractPlainText() throws {
+        let tool = PDFGadget()
+        
+        try tool.load(pdfs: [
+            try XCTUnwrap(PDFDocument(url: TestResource.loremIpsum.url()))
+        ])
+        
+        let textPage1 = "TEXTPAGE1"
+        
+        try tool.perform(operations: [
+            .extractPlainText(
+                file: .first,
+                pages: .include([.first(count: 1)]),
+                to: .variable(named: textPage1),
+                pageBreak: .none
+            )
+        ])
+        
+        let extractedPage1TextCase = try XCTUnwrap(tool.variables[textPage1])
+        guard case let .string(extractedPage1Text) = extractedPage1TextCase
+        else { XCTFail(); return }
+        
+        let expectedPage1Text = """
+             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ultrices
+            vel mi vitae pharetra. Pellentesque venenatis massa et dui viverra
+            efficitur. Aliquam mollis ex sit amet nibh tincidunt, nec posuere orci
+            tempor. Nullam eleifend, sem sed ornare laoreet, justo dolor ultrices
+            tellus, eu viverra odio risus et ante. Curabitur vel tempus est. Fusce in
+            ante aliquam, iaculis risus eget, ultricies magna. Morbi molestie sem
+            auctor tristique luctus. Vivamus nisi augue, elementum at nibh vel,
+            volutpat vestibulum justo. Nulla eu libero dui. Nulla non pharetra magna.
+            Aliquam ut finibus dui, sit amet consequat lectus. Donec massa turpis,
+            faucibus nec nisl posuere, cursus vestibulum tellus. Mauris dignissim
+            orci a rutrum tristique. Quisque fermentum metus ut bibendum accumsan.
+            Proin hendrerit vulputate nisi. Pellentesque suscipit lectus quam, sit
+            amet fermentum quam accumsan at. Sed ac justo nisl. Duis leo dolor,
+            suscipit elementum ligula a, consequat lacinia magna. Pellentesque at
+            accumsan nisi. Interdum et malesuada fames ac ante ipsum primis in
+            faucibus. Mauris efficitur metus eget massa malesuada placerat.
+            Sed sed magna consectetur, facilisis magna vitae, consequat quam. Fusce
+            semper libero risus, quis sagittis arcu ornare a. Morbi varius lacus eget
+            magna sodales, eu auctor tortor porttitor. Aenean gravida justo ipsum,
+            efficitur tempus velit iaculis sit amet. Duis ut suscipit ipsum, non
+            vestibulum urna. Etiam viverra sit amet sapien ut viverra. Ut suscipit
+            feugiat risus a lacinia. In hac habitasse platea dictumst. Duis fringilla
+            tellus sed luctus consequat. Nam placerat venenatis ligula pharetra
+            laoreet. Donec quis purus non tortor blandit facilisis. Proin iaculis
+            augue eu dignissim sagittis. Proin elementum dui iaculis diam blandit
+            aliquam. Duis in nunc leo. Quisque mattis risus quis lacinia interdum.
+            Nullam nec pulvinar massa.
+            Sed molestie nisi ligula, id semper ante ullamcorper eget. Proin sed nisl
+            aliquet, porta nisl ut, aliquet magna. Etiam volutpat congue est, eget
+            pretium ligula feugiat quis. In consectetur tellus leo, nec malesuada
+            mauris gravida mattis. Mauris viverra ultricies nibh at tempor. Donec
+            blandit sem non rutrum mollis. Etiam metus erat, fermentum vel congue ut,
+            bibendum rhoncus risus. Nulla tincidunt vehicula eleifend.
+            Curabitur volutpat lorem et mauris efficitur, at dictum odio mollis. Nunc
+            euismod euismod placerat. Morbi eleifend volutpat vehicula. Curabitur eu
+            mauris vel purus commodo dignissim in a velit. Donec auctor tempus neque,
+            vitae venenatis velit fringilla eu. Aliquam erat volutpat. Morbi iaculis,
+            nisl vitae consectetur consectetur, tortor odio imperdiet nisi, quis
+            suscipit libero urna non dui. Fusce tempor rhoncus commodo. Proin
+            molestie porta nisi. Proin id felis ante. Nulla vulputate nunc nulla, sit
+            amet consequat felis ornare non. Morbi tristique vitae nunc ut pretium.
+            Pellentesque ac orci tincidunt, tempus nisi eget, volutpat sapien. Fusce
+            
+            """
+        
+        // TODO: This could be a flakey test if PDFKit changes how it extracts text from PDFs.
+        XCTAssertEqual(extractedPage1Text, expectedPage1Text)
+    }
 }
 
 // MARK: - Utils

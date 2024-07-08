@@ -22,6 +22,10 @@ enum TestResource: CaseIterable {
     static let pdf1page_withAttributes_withAnnotations = TestResource.File(
         name: "1Page-WithAttributes-WithAnnotations", ext: "pdf", subFolder: "PDF Files"
     )
+    
+    static let loremIpsum = TestResource.File(
+        name: "LoremIpsum", ext: "pdf", subFolder: "PDF Files"
+    )
 }
 
 // MARK: - Utilities
