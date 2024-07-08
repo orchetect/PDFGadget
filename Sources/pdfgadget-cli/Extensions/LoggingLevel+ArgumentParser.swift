@@ -4,7 +4,11 @@
 //  Licensed under MIT License
 //
 
+#if os(macOS)
+
 import ArgumentParser
 import Logging
 
 extension Logger.Level: ExpressibleByArgument { }
+
+#endif

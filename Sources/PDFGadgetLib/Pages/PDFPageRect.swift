@@ -27,9 +27,11 @@ public enum PDFPageRect: Equatable, Hashable {
 // MARK: - Static Constructors
 
 extension PDFPageRect {
+    #if os(macOS)
     public static func scaleInsets(_ insets: NSEdgeInsets) -> Self {
         .scaleInsets(top: insets.top, leading: insets.left, bottom: insets.bottom, trailing: insets.right)
     }
+    #endif
     
     public static func rect(_ rect: CGRect) -> Self {
         .rect(x: rect.origin.x, y: rect.origin.y, width: rect.width, height: rect.height)
@@ -40,7 +42,7 @@ extension PDFPageRect {
 import SwiftUI
 
 extension PDFPageRect {
-    @available(macOS 10.15, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public static func scaleInsets(_ insets: EdgeInsets) -> Self {
         .scaleInsets(top: insets.top, leading: insets.leading, bottom: insets.bottom, trailing: insets.trailing)
     }
@@ -50,11 +52,11 @@ extension PDFPageRect {
 extension PDFPageRect {
     public func rect(for source: CGRect) -> CGRect {
         switch self {
-        case .scale(let factor):
+        case let .scale(factor):
             let factor = factor.clamped(to: 0.01 ... 100.0)
             return source.scale(factor: factor)
             
-        case .scaleInsets(let top, let leading, let bottom, let trailing):
+        case let .scaleInsets(top, leading, bottom, trailing):
             guard top > 0, leading > 0, bottom > 0, trailing > 0 else { return source }
             // TODO: Add additional guards for validation checks
             
@@ -67,7 +69,7 @@ extension PDFPageRect {
             
             return rect
             
-        case .rect(let x, let y, let width, let height):
+        case let .rect(x, y, width, height):
             return CGRect(x: x, y: y, width: width, height: height)
         }
     }
@@ -76,11 +78,11 @@ extension PDFPageRect {
 extension PDFPageRect {
     public var verboseDescription: String {
         switch self {
-        case .scale(let factor):
+        case let .scale(factor):
             return "scale factor of \(factor)"
-        case .scaleInsets(let top, let leading, let bottom, let trailing):
+        case let .scaleInsets(top, leading, bottom, trailing):
             return "scale insets \(top) \(leading) \(bottom) \(trailing)"
-        case .rect(let x, let y, let width, let height):
+        case let .rect(x, y, width, height):
             return "area x:\(x) y:\(y) w:\(width) h:\(height)"
         }
     }

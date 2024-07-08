@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if os(macOS)
+
 import Foundation
 import Logging
 
@@ -99,3 +101,5 @@ public struct FileLogHandler: LogHandler {
         }
     }
 }
+
+#endif

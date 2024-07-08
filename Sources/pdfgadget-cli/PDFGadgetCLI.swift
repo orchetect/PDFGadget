@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if os(macOS)
+
 import Foundation
 import ArgumentParser
 import Logging
@@ -113,3 +115,5 @@ extension PDFGadgetCLI {
         }
     }
 }
+
+#endif

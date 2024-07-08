@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if os(macOS)
+
 import ArgumentParser
 import PDFGadgetLib
 
@@ -12,3 +14,5 @@ import PDFGadgetLib
 //extension PDFOperation: ExpressibleByArgument { }
 //extension PDFPageSet: ExpressibleByArgument { }
 //extension PDFPagesFilter: ExpressibleByArgument { }
+
+#endif

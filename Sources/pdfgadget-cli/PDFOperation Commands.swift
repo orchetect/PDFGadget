@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if os(macOS)
+
 import Foundation
 import PDFGadgetLib
 import ArgumentParser
@@ -123,3 +125,5 @@ extension PDFOperation: ExpressibleByArgument {
 //        }
 //    }
 //}
+
+#endif

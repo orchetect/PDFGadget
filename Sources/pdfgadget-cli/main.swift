@@ -4,6 +4,8 @@
 //  Licensed under MIT License
 //
 
+#if os(macOS)
+
 import PDFGadgetLib
 
 func main() {
@@ -16,3 +18,5 @@ func main() {
 }
 
 main()
+
+#endif
