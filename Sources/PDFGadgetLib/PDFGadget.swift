@@ -227,6 +227,9 @@ extension PDFGadget {
             
         case let .filterAnnotations(file, pages, annotations):
             return try performFilterAnnotations(file: file, pages: pages, annotations: annotations)
+            
+        case let .extractPlainText(file, pages, destination, pageBreak):
+            return try performExtractPlainText(file: file, pages: pages, to: destination, pageBreak: pageBreak)
         }
     }
     

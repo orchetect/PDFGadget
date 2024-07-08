@@ -109,4 +109,52 @@ extension PDFOperation.PageRangeAndFilename {
     }
 }
 
+/// A destination to transfer or save plain text.
+public enum PDFTextDestination: Equatable, Hashable {
+    /// System pasteboard (clipboard).
+    case pasteboard
+    
+    /// Save to a file on disk.
+    case file(url: URL)
+    
+    /// Store in memory in the ``PDFGadget`` instance's ``PDFGadget/variables`` dictionary,
+    /// keyed by the variable name.
+    ///
+    /// Appends or replaces variable.
+    case variable(named: String)
+}
+
+extension PDFTextDestination {
+    public var verboseDescription: String {
+        switch self {
+        case .pasteboard: 
+            return "pasteboard"
+        case let .file(url):
+            return url.absoluteString
+        case let .variable(name):
+            return "variable named \(name.quoted)"
+        }
+    }
+}
+
+/// Character(s) to insert at PDF page breaks in plain text output.
+public enum PDFTextPageBreak: String, Equatable, Hashable {
+    case none = ""
+    case newLine = "\n"
+    case doubleNewLine = "\n\n"
+}
+
+extension PDFTextPageBreak {
+    public var verboseDescription: String {
+        switch self {
+        case .none:
+            return "none"
+        case .newLine:
+            return "new-line"
+        case .doubleNewLine:
+            return "double new-line"
+        }
+    }
+}
+
 #endif

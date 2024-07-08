@@ -107,6 +107,12 @@ public enum PDFOperation: Equatable, Hashable {
     // perhaps these could be nesting blocks using a result builder; might need to rethink the whole library API?
     // case expect(fileCount: Int)
     // case expect(file: PDFFileDescriptor, pageCount: Int) // could use enum: equals(), greaterThan(), lessThan()
+    
+    /// Extract plain text content and send it to the specified destination.
+    case extractPlainText(
+        file: PDFFileDescriptor, pages: PDFPagesFilter,
+        to: PDFTextDestination, pageBreak: PDFTextPageBreak
+    )
 }
 
 // MARK: - Static Constructors
@@ -215,6 +221,9 @@ extension PDFOperation {
             
         case let .filterAnnotations(file, pages, annotations):
             return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"
+            
+        case let .extractPlainText(file, pages, destination, _ /* pageBreak */):
+            return "Extract plain text from \(pages.verboseDescription) in \(file.verboseDescription) to \(destination.verboseDescription)"
         }
     }
 }

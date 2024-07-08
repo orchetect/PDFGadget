@@ -416,6 +416,40 @@ extension PDFGadget {
             }
         }
     }
+    
+    func performExtractPlainText(
+        file: PDFFileDescriptor,
+        pages: PDFPagesFilter,
+        to destination: PDFTextDestination,
+        pageBreak: PDFTextPageBreak
+    ) throws -> PDFOperationResult {
+        var pageTexts: [String] = []
+        
+        // discard result since this is a read-only operation
+        let _ = try performPagesTransform(file: file, pages: pages) { page, pageDescription in
+            guard let pageText = page.string else { return }
+            pageTexts.append(pageText)
+        }
+        
+        let fullText = pageTexts.joined(separator: pageBreak.rawValue)
+        
+        switch destination {
+        case .pasteboard:
+            if !fullText.copyToClipboard() {
+                throw PDFGadgetError.runtimeError(
+                    "Error while attempting to copy text to pasteboard."
+                )
+            }
+            
+        case .file(let url):
+            try fullText.write(to: url, atomically: false, encoding: .utf8)
+            
+        case let .variable(named: variableName):
+            variables[variableName] = .string(fullText)
+        }
+        
+        return .noChange(reason: "Reading plain text.")
+    }
 }
 
 // MARK: - Helpers
