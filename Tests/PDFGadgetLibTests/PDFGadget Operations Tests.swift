@@ -554,7 +554,7 @@ final class PDFGadgetOperationsTests: XCTestCase {
         else { XCTFail(); return }
         
         let expectedPage1Text = """
-             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ultrices
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ultrices
             vel mi vitae pharetra. Pellentesque venenatis massa et dui viverra
             efficitur. Aliquam mollis ex sit amet nibh tincidunt, nec posuere orci
             tempor. Nullam eleifend, sem sed ornare laoreet, justo dolor ultrices
@@ -596,11 +596,16 @@ final class PDFGadgetOperationsTests: XCTestCase {
             molestie porta nisi. Proin id felis ante. Nulla vulputate nunc nulla, sit
             amet consequat felis ornare non. Morbi tristique vitae nunc ut pretium.
             Pellentesque ac orci tincidunt, tempus nisi eget, volutpat sapien. Fusce
-            
             """
         
         // TODO: This could be a flakey test if PDFKit changes how it extracts text from PDFs.
-        XCTAssertEqual(extractedPage1Text, expectedPage1Text)
+        // oddly enough, PDFKit has slightly different behaviors on different platforms (and has changed over time).
+        // sometimes it pads extracted text with whitespace and/or trailing line-break, sometimes it doesn't.
+        // for our tests we choose to ignore these differences when comparing.
+        XCTAssertEqual(
+            extractedPage1Text.trimmingCharacters(in: .whitespacesAndNewlines),
+            expectedPage1Text
+        )
     }
 }
 
@@ -688,8 +693,22 @@ extension PDFGadgetOperationsTests {
     
     /// Checks that pages are equal between two PDF files, by checking page text and annotations.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertPageIsEqual(_ lhs: PDFPage, _ rhs: PDFPage, ignoreOpenState: Bool = false) throws {
-        XCTAssertEqual(lhs.string, rhs.string)
+    func AssertPageIsEqual(
+        _ lhs: PDFPage,
+        _ rhs: PDFPage,
+        ignoreOpenState: Bool = false,
+        ignoreSurroundingTextWhitespace: Bool = true
+    ) throws {
+        // oddly enough, PDFKit has slightly different behaviors on different platforms (and has changed over time).
+        // sometimes it pads extracted text with whitespace and/or trailing line-break, sometimes it doesn't.
+        // for our tests we choose to ignore these differences when comparing.
+        let lhsString = ignoreSurroundingTextWhitespace
+            ? lhs.string?.trimmingCharacters(in: .whitespacesAndNewlines)
+            : lhs.string
+        let rhsString = ignoreSurroundingTextWhitespace
+            ? rhs.string?.trimmingCharacters(in: .whitespacesAndNewlines)
+            : rhs.string
+        XCTAssertEqual(lhsString, rhsString)
         
         XCTAssertEqual(lhs.annotations.count, rhs.annotations.count)
         for (lhsAnno, rhsAnno) in zip(lhs.annotations, rhs.annotations) {
