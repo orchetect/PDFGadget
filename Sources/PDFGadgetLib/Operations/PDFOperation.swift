@@ -23,13 +23,20 @@ public enum PDFOperation: Equatable, Hashable {
     case filterFiles(_ files: PDFFilesDescriptor)
     
     /// Merge loaded PDF files.
-    case mergeFiles(_ files: PDFFilesDescriptor = .all, appendingTo: PDFFileDescriptor? = nil)
+    case mergeFiles(
+        _ files: PDFFilesDescriptor = .all,
+        appendingTo: PDFFileDescriptor? = nil
+    )
     
     // TODO: reorder or sort files
     
     /// Split file at certain page points into multiple files.
     /// The original file is discarded.
-    case splitFile(file: PDFFileDescriptor, discardUnused: Bool = true, _ splits: PDFFileSplitDescriptor)
+    case splitFile(
+        file: PDFFileDescriptor,
+        discardUnused: Bool = true,
+        _ splits: PDFFileSplitDescriptor
+    )
     
     /// Set new filename for a PDF file (excluding .pdf file extension).
     /// Passing `nil` resets the filename.
@@ -43,7 +50,11 @@ public enum PDFOperation: Equatable, Hashable {
     case removeFileAttributes(files: PDFFilesDescriptor)
     
     /// Set or clear an attribute for one or more files.
-    case setFileAttribute(files: PDFFilesDescriptor, _ attribute: PDFDocumentAttribute, value: String?)
+    case setFileAttribute(
+        files: PDFFilesDescriptor,
+        _ attribute: PDFDocumentAttribute,
+        value: String?
+    )
     
     // MARK: - Page Operations
     
@@ -56,20 +67,26 @@ public enum PDFOperation: Equatable, Hashable {
     
     /// Copy page(s) within the same PDF file or from one file to another.
     case copyPages(
-        fromFile: PDFFileDescriptor, fromPages: PDFPagesFilter,
-        toFile: PDFFileDescriptor, toPageIndex: Int? = nil
+        fromFile: PDFFileDescriptor, 
+        fromPages: PDFPagesFilter,
+        toFile: PDFFileDescriptor,
+        toPageIndex: Int? = nil
     )
     
     /// Copy page(s) within the same PDF file or from one file to another.
     case movePages(
-        fromFile: PDFFileDescriptor, fromPages: PDFPagesFilter,
-        toFile: PDFFileDescriptor, toPageIndex: Int? = nil
+        fromFile: PDFFileDescriptor, 
+        fromPages: PDFPagesFilter,
+        toFile: PDFFileDescriptor,
+        toPageIndex: Int? = nil
     )
     
     /// Replace existing page(s) with other page(s).
     case replacePages(
-        fromFile: PDFFileDescriptor, fromPages: PDFPagesFilter,
-        toFile: PDFFileDescriptor, toPages: PDFPagesFilter,
+        fromFile: PDFFileDescriptor, 
+        fromPages: PDFPagesFilter,
+        toFile: PDFFileDescriptor,
+        toPages: PDFPagesFilter,
         behavior: InterchangeBehavior
     )
     
@@ -80,7 +97,7 @@ public enum PDFOperation: Equatable, Hashable {
     /// Rotation can be absolute or relative to current page rotation (if any).
     case rotatePages(file: PDFFileDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
     
-    // TODO: case crop(pages: PDFPagesFilter, area: Rect)
+    // TODO: case crop(pages: PDFPagesFilter, area: PDFPageRect)
     
     // TODO: case flip(pages: PDFPagesFilter, axis: Axis) // -> use Quartz filter?
     
@@ -99,7 +116,7 @@ public enum PDFOperation: Equatable, Hashable {
     // case setFileMetadata(files: PDFFilesDescriptor, property: PDFFileProperty, value: String)
     
     // TODO: Draw text, shapes or images on page(s) - ie: a watermark or redaction
-    // case overlay(files: PDFFilesDescriptor, pages: PDFPagesFilter, text: String, in: Rect)
+    // case addPageElement(files: PDFFilesDescriptor, pages: PDFPagesFilter, text: String, in: Rect)
     
     // TODO: Modify style of existing text/freeText annotations
     
@@ -110,8 +127,10 @@ public enum PDFOperation: Equatable, Hashable {
     
     /// Extract plain text content and send it to the specified destination.
     case extractPlainText(
-        file: PDFFileDescriptor, pages: PDFPagesFilter,
-        to: PDFTextDestination, pageBreak: PDFTextPageBreak
+        file: PDFFileDescriptor, 
+        pages: PDFPagesFilter,
+        to: PDFTextDestination,
+        pageBreak: PDFTextPageBreak
     )
 }
 

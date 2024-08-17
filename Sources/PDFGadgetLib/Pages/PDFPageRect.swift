@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import OTCore
 
 public enum PDFPageRect: Equatable, Hashable {
     case scale(factor: Double)
@@ -29,12 +30,22 @@ public enum PDFPageRect: Equatable, Hashable {
 extension PDFPageRect {
     #if os(macOS)
     public static func scaleInsets(_ insets: NSEdgeInsets) -> Self {
-        .scaleInsets(top: insets.top, leading: insets.left, bottom: insets.bottom, trailing: insets.right)
+        .scaleInsets(
+            top: insets.top,
+            leading: insets.left,
+            bottom: insets.bottom,
+            trailing: insets.right
+        )
     }
     #endif
     
     public static func rect(_ rect: CGRect) -> Self {
-        .rect(x: rect.origin.x, y: rect.origin.y, width: rect.width, height: rect.height)
+        .rect(
+            x: rect.origin.x,
+            y: rect.origin.y,
+            width: rect.width,
+            height: rect.height
+        )
     }
 }
 
@@ -44,7 +55,12 @@ import SwiftUI
 extension PDFPageRect {
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public static func scaleInsets(_ insets: EdgeInsets) -> Self {
-        .scaleInsets(top: insets.top, leading: insets.leading, bottom: insets.bottom, trailing: insets.trailing)
+        .scaleInsets(
+            top: insets.top,
+            leading: insets.leading,
+            bottom: insets.bottom,
+            trailing: insets.trailing
+        )
     }
 }
 #endif
