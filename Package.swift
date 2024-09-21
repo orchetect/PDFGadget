@@ -20,9 +20,9 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.4.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.6.1"),
-        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.5.3")
+        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.6.0")
     ],
     targets: [
         .target(
