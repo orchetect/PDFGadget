@@ -11,7 +11,8 @@ import PDFGadgetLib
 import ArgumentParser
 /* private */ import OTCore
 
-extension PDFOperation: ExpressibleByArgument {
+// We can safely use `@retroactive` since we are the owner of this type in the package.
+extension PDFOperation: @retroactive ExpressibleByArgument {
     public init?(argument: String) {
         // ⚠️ NOTE: THIS IS A WORK IN PROGRESS
         

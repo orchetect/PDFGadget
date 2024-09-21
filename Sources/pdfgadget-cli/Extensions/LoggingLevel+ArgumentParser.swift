@@ -9,6 +9,6 @@
 import ArgumentParser
 import Logging
 
-extension Logger.Level: ExpressibleByArgument { }
+extension Logger.Level: @retroactive ExpressibleByArgument { }
 
 #endif
