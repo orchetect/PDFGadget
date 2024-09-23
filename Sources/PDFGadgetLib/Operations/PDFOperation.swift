@@ -132,6 +132,9 @@ public enum PDFOperation: Equatable, Hashable {
         to: PDFTextDestination,
         pageBreak: PDFTextPageBreak
     )
+    
+    /// Attempts to remove document protections.
+    case removeProtections(files: PDFFilesDescriptor)
 }
 
 // MARK: - Static Constructors
@@ -243,6 +246,9 @@ extension PDFOperation {
             
         case let .extractPlainText(file, pages, destination, _ /* pageBreak */):
             return "Extract plain text from \(pages.verboseDescription) in \(file.verboseDescription) to \(destination.verboseDescription)"
+            
+        case .removeProtections:
+            return "Remove protections"
         }
     }
 }

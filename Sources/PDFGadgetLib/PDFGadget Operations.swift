@@ -450,6 +450,25 @@ extension PDFGadget {
         
         return .noChange(reason: "Reading plain text.")
     }
+    
+    func performRemoveProtections(
+        files: PDFFilesDescriptor
+    ) throws -> PDFOperationResult {
+        let files = try expectZeroOrMoreFiles(files)
+        
+        guard !files.isEmpty else {
+            return .noChange()
+        }
+        
+        for file in files {
+            // TODO: add checks to see if file has permissions set first, and skip removing protections if unnecessary and return `.noChange`
+            
+            let unprotectedFile = try file.doc.unprotectedCopy()
+            file.doc = unprotectedFile
+        }
+        
+        return .changed
+    }
 }
 
 // MARK: - Helpers

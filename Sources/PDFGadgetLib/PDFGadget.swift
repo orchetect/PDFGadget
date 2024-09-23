@@ -233,6 +233,9 @@ extension PDFGadget {
             
         case let .extractPlainText(file, pages, destination, pageBreak):
             return try performExtractPlainText(file: file, pages: pages, to: destination, pageBreak: pageBreak)
+            
+        case let .removeProtections(files):
+            return try performRemoveProtections(files: files)
         }
     }
     
