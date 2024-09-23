@@ -158,6 +158,33 @@ extension PDFDocument {
     public var filenameWithoutExtension: String? {
         self.documentURL?.deletingPathExtension().lastPathComponent
     }
+    
+    // MARK: - Protections
+    
+    /// Attempts to remove protections of the PDF file.
+    /// If successful, returns a new copy of the document.
+    ///
+    /// This is based on the premise that copying pages to a new empty PDF document
+    /// will strip the file's protections. This still works as of macOS 15 but it
+    /// may break in future revisions to PDFKit.
+    @_disfavoredOverload
+    public func unprotectedCopy() throws -> PDFDocument {
+        let newPDF = PDFDocument()
+        
+        // document attributes
+        newPDF.documentAttributes = documentAttributes
+        
+        // copy pages
+        try (0 ..< pageCount)
+            .forEach { pageIndex in
+                guard let pageCopy = page(at: pageIndex)?.copy() as? PDFPage else {
+                    throw CocoaError(.fileLocking)
+                }
+                newPDF.insert(pageCopy, at: pageIndex)
+            }
+        
+        return newPDF
+    }
 }
 
 extension PDFAnnotation {
