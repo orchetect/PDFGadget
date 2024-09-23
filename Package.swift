@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "PDFGadget",
     platforms: [
-        .macOS(.v10_12), .iOS(.v11)
+        .macOS(.v11), .iOS(.v14), .tvOS(.v14), .watchOS(.v7)
     ],
     products: [
         .library(
