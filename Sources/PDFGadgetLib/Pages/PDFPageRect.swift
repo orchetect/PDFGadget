@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import OTCore
+internal import OTCore
 
 public enum PDFPageRect: Equatable, Hashable {
     case scale(factor: Double)

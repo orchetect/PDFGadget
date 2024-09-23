@@ -9,7 +9,7 @@
 import Foundation
 import PDFGadgetLib
 import ArgumentParser
-/* private */ import OTCore
+internal import OTCore
 
 // We can safely use `@retroactive` since we are the owner of this type in the package.
 extension PDFOperation: @retroactive ExpressibleByArgument {

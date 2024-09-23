@@ -9,7 +9,7 @@
 import Foundation
 import ArgumentParser
 import os.log
-/* private */ import OTCore
+internal import OTCore
 import PDFGadgetLib
 
 struct PDFGadgetCLI: ParsableCommand {

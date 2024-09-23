@@ -9,7 +9,7 @@
 import XCTest
 @testable import PDFGadgetLib
 import PDFKit
-import OTCore
+internal import OTCore
 
 /// DEV TESTS
 /// These are not unit tests. They are experimental and only used during development.

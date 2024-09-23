@@ -8,7 +8,7 @@
 
 import Foundation
 import os.log
-/* private */ import OTCore
+internal import OTCore
 import PDFKit
 
 /// PDF editing toolkit offering declarative batch file & page operations.
