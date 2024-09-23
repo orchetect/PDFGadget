@@ -1,6 +1,6 @@
 # PDFGadget
 
-[![CI Build Status](https://github.com/orchetect/PDFGadget/actions/workflows/build.yml/badge.svg)](https://github.com/orchetect/PDFGadget/actions/workflows/build.yml) [![Platforms - macOS 10.12+ | iOS 11+ | visionOS 1+](https://img.shields.io/badge/platforms-macOS%2010.12+%20|%20iOS%2011+%20|%20visionOS%201+-lightgrey.svg?style=flat)](https://developer.apple.com/swift) ![Swift 5.6-6.0](https://img.shields.io/badge/Swift-5.6–6.0-orange.svg?style=flat) [![Xcode 16+](https://img.shields.io/badge/Xcode-16+-blue.svg?style=flat)](https://developer.apple.com/swift) [![License: MIT](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/orchetect/PDFGadget/blob/main/LICENSE)
+[![CI Build Status](https://github.com/orchetect/PDFGadget/actions/workflows/build.yml/badge.svg)](https://github.com/orchetect/PDFGadget/actions/workflows/build.yml) [![Platforms - macOS 11+ | iOS 14+ | visionOS 1+](https://img.shields.io/badge/platforms-macOS%2011+%20|%20iOS%2014+%20|%20visionOS%201+-lightgrey.svg?style=flat)](https://developer.apple.com/swift) ![Swift 5.6-6.0](https://img.shields.io/badge/Swift-5.6–6.0-orange.svg?style=flat) [![Xcode 16+](https://img.shields.io/badge/Xcode-16+-blue.svg?style=flat)](https://developer.apple.com/swift) [![License: MIT](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/orchetect/PDFGadget/blob/main/LICENSE)
 
 Batch PDF utilities with simple API for Swift. Declarative API for:
 

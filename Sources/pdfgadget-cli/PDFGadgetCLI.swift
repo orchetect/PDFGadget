@@ -8,7 +8,7 @@
 
 import Foundation
 import ArgumentParser
-import Logging
+import os.log
 /* private */ import OTCore
 import PDFGadgetLib
 
@@ -41,10 +41,10 @@ struct PDFGadgetCLI: ParsableCommand {
     @Option(
         help: ArgumentHelp(
             "Log level.",
-            valueName: Logger.Level.allCases.map { $0.rawValue }.joined(separator: ", ")
+            valueName: OSLogType.allCases.map { $0.name }.joined(separator: ", ")
         )
     )
-    var logLevel: Logger.Level = .info
+    var logLevel: OSLogType = .info
     
     @Flag(name: [.customLong("quiet")], help: "Disable log.")
     var logQuiet = false
@@ -63,8 +63,6 @@ struct PDFGadgetCLI: ParsableCommand {
     }
     
     mutating func run() throws {
-        initLogging(logLevel: logQuiet ? nil : logLevel, logFile: nil)
-        
         let settings: PDFGadget.Settings
         
         do {
@@ -80,39 +78,6 @@ struct PDFGadgetCLI: ParsableCommand {
         }
         
         try PDFGadget().run(using: settings)
-    }
-}
-
-// MARK: Helpers
-
-extension PDFGadgetCLI {
-    private func initLogging(logLevel: Logger.Level?, logFile: URL?) {
-        LoggingSystem.bootstrap { label in
-            guard let logLevel = logLevel else {
-                return SwiftLogNoOpLogHandler()
-            }
-
-            var logHandlers: [LogHandler] = [
-                ConsoleLogHandler(label: label)
-            ]
-
-            if let logFile = logFile {
-                do {
-                    logHandlers.append(try FileLogHandler(label: label, localFile: logFile))
-                } catch {
-                    print(
-                        "Cannot write to log file \(logFile.lastPathComponent.quoted):"
-                            + " \(error.localizedDescription)"
-                    )
-                }
-            }
-
-            for i in 0 ..< logHandlers.count {
-                logHandlers[i].logLevel = logLevel
-            }
-
-            return MultiplexLogHandler(logHandlers)
-        }
     }
 }
 

@@ -7,13 +7,13 @@
 #if canImport(PDFKit)
 
 import Foundation
-import Logging
+import os.log
 /* private */ import OTCore
 import PDFKit
 
 /// PDF editing toolkit offering declarative batch file & page operations.
 public final class PDFGadget {
-    internal let logger = Logger(label: "\(PDFGadget.self)")
+    internal let logger = Logger(subsystem: "com.orchetect.PDFGadget", category: "Gadget")
     
     internal var pdfs: [PDFFile] = []
     

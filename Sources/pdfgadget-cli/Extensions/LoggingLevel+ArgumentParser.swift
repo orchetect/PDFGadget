@@ -7,8 +7,8 @@
 #if os(macOS)
 
 import ArgumentParser
-import Logging
+import os.log
 
-extension Logger.Level: @retroactive ExpressibleByArgument { }
+extension OSLogType: @retroactive ExpressibleByArgument { }
 
 #endif

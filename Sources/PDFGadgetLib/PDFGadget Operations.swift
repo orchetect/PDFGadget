@@ -7,7 +7,6 @@
 #if canImport(PDFKit)
 
 import Foundation
-import Logging
 /* private */ import OTCore
 import PDFKit
 
