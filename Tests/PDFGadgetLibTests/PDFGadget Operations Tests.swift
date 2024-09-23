@@ -628,6 +628,8 @@ final class PDFGadgetOperationsTests: XCTestCase {
         // check initial encryption status
         XCTAssertTrue(tool.pdfs[0].doc.isEncrypted)
         XCTAssertFalse(tool.pdfs[0].doc.isLocked)
+        // capture document atrributes
+        let originalDocumentAttributes = tool.pdfs[0].doc.documentAttributes
         
         // remove protections
         let result = try tool.perform(operation: .removeProtections(files: .all))
@@ -644,6 +646,8 @@ final class PDFGadgetOperationsTests: XCTestCase {
         // check encryption status
         XCTAssertFalse(tool.pdfs[0].doc.isEncrypted)
         XCTAssertFalse(tool.pdfs[0].doc.isLocked)
+        // check document attributes are retained
+        XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count, originalDocumentAttributes?.count)
     }
 }
 
