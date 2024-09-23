@@ -18,7 +18,7 @@ Batch PDF utilities with simple API for Swift. Declarative API for:
 import PDFGadget
 
 let sources = [URL, URL, URL, ...] // URLs to one or more PDF files
-let outputDir = URL.desktopFolder
+let outputDir = URL.desktopDirectory
 ```
 
 The steps of loading source PDFs, performing operations, and saving the resulting PDFs can be performed individually:
@@ -41,7 +41,7 @@ try pdfGadget.savePDFs(outputDir: outputDir)
 Or a fully automated batch operation can be run with a single call to `run()` by passing in a populated instance of `PDFGadget.Settings`.
 
 ```swift
-let settings = PDFGadget.Settings(
+let settings = try PDFGadget.Settings(
     sourcePDFs: sources,
     outputDir: outputDir,
     operations: [
