@@ -607,6 +607,44 @@ final class PDFGadgetOperationsTests: XCTestCase {
             expectedPage1Text
         )
     }
+    
+    func testRemoveProtections() throws {
+        // note: PDF password is "1234"
+        
+        let tool = PDFGadget()
+        
+        try tool.load(pdfs: [
+            try XCTUnwrap(PDFDocument(url: TestResource.permissions.url()))
+        ])
+        
+        // check initial permission status
+        XCTAssertTrue(tool.pdfs[0].doc.allowsContentAccessibility)
+        XCTAssertFalse(tool.pdfs[0].doc.allowsCommenting)
+        XCTAssertTrue(tool.pdfs[0].doc.allowsCopying)
+        XCTAssertTrue(tool.pdfs[0].doc.allowsPrinting)
+        XCTAssertFalse(tool.pdfs[0].doc.allowsDocumentAssembly)
+        XCTAssertFalse(tool.pdfs[0].doc.allowsDocumentChanges)
+        XCTAssertFalse(tool.pdfs[0].doc.allowsFormFieldEntry)
+        // check initial encryption status
+        XCTAssertTrue(tool.pdfs[0].doc.isEncrypted)
+        XCTAssertFalse(tool.pdfs[0].doc.isLocked)
+        
+        // remove protections
+        let result = try tool.perform(operation: .removeProtections(files: .all))
+        XCTAssertEqual(result, .changed)
+        
+        // check permission status
+        XCTAssertTrue(tool.pdfs[0].doc.allowsContentAccessibility)
+        XCTAssertTrue(tool.pdfs[0].doc.allowsCommenting)
+        XCTAssertTrue(tool.pdfs[0].doc.allowsCopying)
+        XCTAssertTrue(tool.pdfs[0].doc.allowsPrinting)
+        XCTAssertTrue(tool.pdfs[0].doc.allowsDocumentAssembly)
+        XCTAssertTrue(tool.pdfs[0].doc.allowsDocumentChanges)
+        XCTAssertTrue(tool.pdfs[0].doc.allowsFormFieldEntry)
+        // check encryption status
+        XCTAssertFalse(tool.pdfs[0].doc.isEncrypted)
+        XCTAssertFalse(tool.pdfs[0].doc.isLocked)
+    }
 }
 
 // MARK: - Utils

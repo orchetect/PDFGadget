@@ -26,6 +26,10 @@ enum TestResource: CaseIterable {
     static let loremIpsum = TestResource.File(
         name: "LoremIpsum", ext: "pdf", subFolder: "PDF Files"
     )
+    
+    static let permissions = TestResource.File(
+        name: "Permissions", ext: "pdf", subFolder: "PDF Files"
+    )
 }
 
 // MARK: - Utilities
