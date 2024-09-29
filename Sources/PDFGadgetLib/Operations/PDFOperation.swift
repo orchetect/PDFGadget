@@ -1,7 +1,7 @@
 //
 //  PDFOperation.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -67,7 +67,7 @@ public enum PDFOperation: Equatable, Hashable {
     
     /// Copy page(s) within the same PDF file or from one file to another.
     case copyPages(
-        fromFile: PDFFileDescriptor, 
+        fromFile: PDFFileDescriptor,
         fromPages: PDFPagesFilter,
         toFile: PDFFileDescriptor,
         toPageIndex: Int? = nil
@@ -75,7 +75,7 @@ public enum PDFOperation: Equatable, Hashable {
     
     /// Copy page(s) within the same PDF file or from one file to another.
     case movePages(
-        fromFile: PDFFileDescriptor, 
+        fromFile: PDFFileDescriptor,
         fromPages: PDFPagesFilter,
         toFile: PDFFileDescriptor,
         toPageIndex: Int? = nil
@@ -83,7 +83,7 @@ public enum PDFOperation: Equatable, Hashable {
     
     /// Replace existing page(s) with other page(s).
     case replacePages(
-        fromFile: PDFFileDescriptor, 
+        fromFile: PDFFileDescriptor,
         fromPages: PDFPagesFilter,
         toFile: PDFFileDescriptor,
         toPages: PDFPagesFilter,
@@ -104,7 +104,11 @@ public enum PDFOperation: Equatable, Hashable {
     // MARK: - Page Content Operations
     
     /// Filter annotation(s).
-    case filterAnnotations(file: PDFFileDescriptor, pages: PDFPagesFilter, annotations: PDFAnnotationFilter)
+    case filterAnnotations(
+        file: PDFFileDescriptor,
+        pages: PDFPagesFilter,
+        annotations: PDFAnnotationFilter
+    )
     
     // --> nil out all annotations' `userName: String?` property etc.
     // case removeAnnotationAuthors(files: PDFFilesDescriptor, pages: PDFPagesFilter, for: PDFAnnotationFilter)
@@ -127,7 +131,7 @@ public enum PDFOperation: Equatable, Hashable {
     
     /// Extract plain text content and send it to the specified destination.
     case extractPlainText(
-        file: PDFFileDescriptor, 
+        file: PDFFileDescriptor,
         pages: PDFPagesFilter,
         to: PDFTextDestination,
         pageBreak: PDFTextPageBreak
@@ -244,7 +248,7 @@ extension PDFOperation {
         case let .filterAnnotations(file, pages, annotations):
             return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"
             
-        case let .extractPlainText(file, pages, destination, _ /* pageBreak */):
+        case let .extractPlainText(file, pages, destination, _ /* pageBreak */ ):
             return "Extract plain text from \(pages.verboseDescription) in \(file.verboseDescription) to \(destination.verboseDescription)"
             
         case .removeProtections:

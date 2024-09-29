@@ -1,7 +1,7 @@
 //
 //  PDFFilenameDescriptor.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -37,19 +37,19 @@ public enum PDFFilenameDescriptor: Equatable, Hashable {
 extension PDFFilenameDescriptor {
     public func matches(_ source: String) -> Bool {
         switch self {
-        case .equals(let string):
+        case let .equals(string):
             return source == string
-        case .starts(let prefix):
+        case let .starts(prefix):
             return source.starts(with: prefix)
-        case .ends(let suffix):
+        case let .ends(suffix):
             return source.hasSuffix(suffix)
-        case .contains(let string):
+        case let .contains(string):
             return source.contains(string)
-        case .doesNotStart(let prefix):
+        case let .doesNotStart(prefix):
             return !source.starts(with: prefix)
-        case .doesNotEnd(let suffix):
+        case let .doesNotEnd(suffix):
             return !source.hasSuffix(suffix)
-        case .doesNotContain(let string):
+        case let .doesNotContain(string):
             return !source.contains(string)
         }
     }
@@ -58,19 +58,19 @@ extension PDFFilenameDescriptor {
 extension PDFFilenameDescriptor {
     public var verboseDescription: String {
         switch self {
-        case .equals(let string):
+        case let .equals(string):
             return string.quoted
-        case .starts(let prefix):
+        case let .starts(prefix):
             return "starting with \(prefix.quoted)"
-        case .ends(let suffix):
+        case let .ends(suffix):
             return "ending with \(suffix.quoted)"
-        case .contains(let string):
+        case let .contains(string):
             return "containing \(string.quoted)"
-        case .doesNotStart(let prefix):
+        case let .doesNotStart(prefix):
             return "not starting with \(prefix.quoted)"
-        case .doesNotEnd(let suffix):
+        case let .doesNotEnd(suffix):
             return "not ending with \(suffix.quoted)"
-        case .doesNotContain(let string):
+        case let .doesNotContain(string):
             return "not containing \(string.quoted)"
         }
     }

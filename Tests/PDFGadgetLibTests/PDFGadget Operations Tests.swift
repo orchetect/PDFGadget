@@ -1,14 +1,14 @@
 //
 //  PDFGadget Operations Tests.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
 
-import XCTest
 @testable import PDFGadgetLib
 import PDFKit
+import XCTest
 internal import OTCore
 
 /// These are integration tests to test the actual operations,
@@ -68,7 +68,7 @@ final class PDFGadgetOperationsTests: XCTestCase {
         // index range
         
         try tool.perform(operations: [
-            .filterFiles(.indexRange(1...2))
+            .filterFiles(.indexRange(1 ... 2))
         ])
         
         XCTAssertEqual(tool.pdfs.count, 2)
@@ -245,7 +245,8 @@ final class PDFGadgetOperationsTests: XCTestCase {
         
         XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count, 6)
         XCTAssert(
-            tool.pdfs[0].doc.documentAttributes?.keys.contains(PDFDocumentAttribute.titleAttribute) == false
+            tool.pdfs[0].doc.documentAttributes?.keys
+                .contains(PDFDocumentAttribute.titleAttribute) == false
         )
     }
     
@@ -279,10 +280,12 @@ final class PDFGadgetOperationsTests: XCTestCase {
         ])
         
         try tool.perform(operations: [
-            .copyPages(fromFile: .index(2),
-                       fromPages: .include([.evenNumbers]),
-                       toFile: .index(1),
-                       toPageIndex: 1)
+            .copyPages(
+                fromFile: .index(2),
+                fromPages: .include([.evenNumbers]),
+                toFile: .index(1),
+                toPageIndex: 1
+            )
         ])
         
         XCTAssertEqual(tool.pdfs.count, 3)
@@ -309,10 +312,12 @@ final class PDFGadgetOperationsTests: XCTestCase {
         ])
         
         try tool.perform(operations: [
-            .movePages(fromFile: .index(2),
-                       fromPages: .include([.evenNumbers]),
-                       toFile: .index(1),
-                       toPageIndex: 1)
+            .movePages(
+                fromFile: .index(2),
+                fromPages: .include([.evenNumbers]),
+                toFile: .index(1),
+                toPageIndex: 1
+            )
         ])
         
         XCTAssertEqual(tool.pdfs.count, 3)
@@ -344,11 +349,13 @@ final class PDFGadgetOperationsTests: XCTestCase {
         ])
         
         try tool.perform(operations: [
-            .replacePages(fromFile: .second,
-                          fromPages: .all,
-                          toFile: .last,
-                          toPages: .include([.range(indexes: 3 ... 4)]),
-                          behavior: .copy)
+            .replacePages(
+                fromFile: .second,
+                fromPages: .all,
+                toFile: .last,
+                toPages: .include([.range(indexes: 3 ... 4)]),
+                behavior: .copy
+            )
         ])
         
         XCTAssertEqual(tool.pdfs.count, 3)
@@ -376,11 +383,13 @@ final class PDFGadgetOperationsTests: XCTestCase {
         ])
         
         try tool.perform(operations: [
-            .replacePages(fromFile: .second,
-                          fromPages: .all,
-                          toFile: .last,
-                          toPages: .include([.range(indexes: 3 ... 4)]),
-                          behavior: .move)
+            .replacePages(
+                fromFile: .second,
+                fromPages: .all,
+                toFile: .last,
+                toPages: .include([.range(indexes: 3 ... 4)]),
+                behavior: .move
+            )
         ])
         
         XCTAssertEqual(tool.pdfs.count, 3)
@@ -518,7 +527,6 @@ final class PDFGadgetOperationsTests: XCTestCase {
         XCTAssertEqual(tool.pdfs[0].doc.pageCount, 1)
         XCTAssertEqual(tool.pdfs[0].doc.page(at: 0)?.annotations.count, 6)
         
-        
         // none
         
         try tool.perform(operations: [
@@ -535,7 +543,7 @@ final class PDFGadgetOperationsTests: XCTestCase {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
-            try XCTUnwrap(PDFDocument(url: TestResource.loremIpsum.url()))
+            XCTUnwrap(PDFDocument(url: TestResource.loremIpsum.url()))
         ])
         
         let textPage1 = "TEXTPAGE1"
@@ -599,8 +607,10 @@ final class PDFGadgetOperationsTests: XCTestCase {
             """
         
         // TODO: This could be a flakey test if PDFKit changes how it extracts text from PDFs.
-        // oddly enough, PDFKit has slightly different behaviors on different platforms (and has changed over time).
-        // sometimes it pads extracted text with whitespace and/or trailing line-break, sometimes it doesn't.
+        // oddly enough, PDFKit has slightly different behaviors on different platforms (and has
+        // changed over time).
+        // sometimes it pads extracted text with whitespace and/or trailing line-break, sometimes it
+        // doesn't.
         // for our tests we choose to ignore these differences when comparing.
         XCTAssertEqual(
             extractedPage1Text.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -614,7 +624,7 @@ final class PDFGadgetOperationsTests: XCTestCase {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
-            try XCTUnwrap(PDFDocument(url: TestResource.permissions.url()))
+            XCTUnwrap(PDFDocument(url: TestResource.permissions.url()))
         ])
         
         // check initial permission status
@@ -647,7 +657,10 @@ final class PDFGadgetOperationsTests: XCTestCase {
         XCTAssertFalse(tool.pdfs[0].doc.isEncrypted)
         XCTAssertFalse(tool.pdfs[0].doc.isLocked)
         // check document attributes are retained
-        XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count, originalDocumentAttributes?.count)
+        XCTAssertEqual(
+            tool.pdfs[0].doc.documentAttributes?.count,
+            originalDocumentAttributes?.count
+        )
     }
 }
 
@@ -685,7 +698,7 @@ extension PDFGadgetOperationsTests {
     func AssertDocumentIsEqual(_ lhs: PDFDocument, _ rhs: PDFDocument) throws {
         if let lhsAttribs = lhs.documentAttributes {
             guard let rhsAttribs = rhs.documentAttributes else {
-                XCTFail("Attributes are not equal.") ; return
+                XCTFail("Attributes are not equal."); return
             }
             // both docs have attributes, so we can compare them
             
@@ -719,13 +732,25 @@ extension PDFGadgetOperationsTests {
     
     /// Checks that pages are equal between two PDF files, by checking page text and annotations.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertDocumentsAreEqual(_ lhs: PDFDocument, _ rhs: PDFDocument, ignoreOpenState: Bool = false) throws {
-        try AssertPagesAreEqual(lhs.pages(for: .all), rhs.pages(for: .all), ignoreOpenState: ignoreOpenState)
+    func AssertDocumentsAreEqual(
+        _ lhs: PDFDocument,
+        _ rhs: PDFDocument,
+        ignoreOpenState: Bool = false
+    ) throws {
+        try AssertPagesAreEqual(
+            lhs.pages(for: .all),
+            rhs.pages(for: .all),
+            ignoreOpenState: ignoreOpenState
+        )
     }
     
     /// Checks that pages are equal between two PDF files, by checking page text and annotations.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertPagesAreEqual(_ lhs: [PDFPage], _ rhs: [PDFPage], ignoreOpenState: Bool = false) throws {
+    func AssertPagesAreEqual(
+        _ lhs: [PDFPage],
+        _ rhs: [PDFPage],
+        ignoreOpenState: Bool = false
+    ) throws {
         XCTAssertEqual(lhs.count, rhs.count)
         
         for (lhsPage, rhsPage) in zip(lhs, rhs) {
@@ -741,8 +766,10 @@ extension PDFGadgetOperationsTests {
         ignoreOpenState: Bool = false,
         ignoreSurroundingTextWhitespace: Bool = true
     ) throws {
-        // oddly enough, PDFKit has slightly different behaviors on different platforms (and has changed over time).
-        // sometimes it pads extracted text with whitespace and/or trailing line-break, sometimes it doesn't.
+        // oddly enough, PDFKit has slightly different behaviors on different platforms (and has
+        // changed over time).
+        // sometimes it pads extracted text with whitespace and/or trailing line-break, sometimes it
+        // doesn't.
         // for our tests we choose to ignore these differences when comparing.
         let lhsString = ignoreSurroundingTextWhitespace
             ? lhs.string?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -760,7 +787,7 @@ extension PDFGadgetOperationsTests {
     
     /// Checks page text. Convenience to identify a page for unit testing purposes.
     func Assert(page: PDFPage?, isTagged: String) throws {
-        guard let page else { XCTFail("Page is nil.") ; return }
+        guard let page else { XCTFail("Page is nil."); return }
         XCTAssertEqual(page.string?.trimmed, isTagged)
     }
     

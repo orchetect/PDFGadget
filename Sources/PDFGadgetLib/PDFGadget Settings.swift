@@ -1,7 +1,7 @@
 //
 //  PDFGadget Settings.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -32,9 +32,9 @@ extension PDFGadget {
         ) throws {
             self.sourcePDFs = sourcePDFs
             
-            self.outputDir = Defaults.outputDir
-            self.operations = Defaults.operations
-            self.savePDFs = Defaults.savePDFs
+            outputDir = Defaults.outputDir
+            operations = Defaults.operations
+            savePDFs = Defaults.savePDFs
             
             try validate()
         }

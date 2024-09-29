@@ -1,11 +1,11 @@
 //
 //  PDFPagesDescriptor Tests.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
-import XCTest
 @testable import PDFGadgetLib
+import XCTest
 
 final class PDFPagesDescriptorTests: XCTestCase {
     func testHashable() throws {
@@ -55,8 +55,10 @@ final class PDFPagesDescriptorTests: XCTestCase {
     func testContainsSamePages() throws {
         func isSame(_ lhs: PDFPagesDescriptor, _ rhs: PDFPagesDescriptor? = nil) {
             let rhs = rhs ?? lhs
-            XCTAssertTrue(lhs.containsSamePages(as: rhs),
-            "\(lhs) is not the same as \(rhs)")
+            XCTAssertTrue(
+                lhs.containsSamePages(as: rhs),
+                "\(lhs) is not the same as \(rhs)"
+            )
         }
         
         // baseline cases
@@ -227,7 +229,7 @@ final class PDFPagesDescriptorTests: XCTestCase {
     }
     
     func testRange() throws {
-        let descriptor: PDFPagesDescriptor = .range(indexes: 1..<3)
+        let descriptor: PDFPagesDescriptor = .range(indexes: 1 ..< 3)
         print(descriptor.verboseDescription)
         
         XCTAssertEqual(
@@ -257,7 +259,7 @@ final class PDFPagesDescriptorTests: XCTestCase {
     }
     
     func testClosedRange() throws {
-        let descriptor: PDFPagesDescriptor = .range(indexes: 1...3)
+        let descriptor: PDFPagesDescriptor = .range(indexes: 1 ... 3)
         print(descriptor.verboseDescription)
         
         XCTAssertEqual(

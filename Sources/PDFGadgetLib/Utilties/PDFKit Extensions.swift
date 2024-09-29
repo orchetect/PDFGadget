@@ -1,7 +1,7 @@
 //
 //  PDFKit Extensions.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -72,7 +72,7 @@ extension PDFDocument {
     // MARK: - Page Operations
     
     public func append(page: PDFPage) {
-        self.insert(page, at: pageCount)
+        insert(page, at: pageCount)
     }
     
     public func append(pages: [PDFPage]) {
@@ -97,7 +97,7 @@ extension PDFDocument {
         with pages: S
     ) throws where S.Element == PDFPage {
         try removeAllPages()
-        pages.enumerated().forEach { (pageIndex, page) in
+        for (pageIndex, page) in pages.enumerated() {
             insert(page, at: pageIndex)
         }
         guard pageCount == pages.count else {
@@ -108,8 +108,8 @@ extension PDFDocument {
     }
     
     public func removeAllPages() throws {
-        pageRange.reversed().forEach {
-            removePage(at: $0)
+        for item in pageRange.reversed() {
+            removePage(at: item)
         }
         guard pageCount == 0 else {
             throw PDFGadgetError.runtimeError(
@@ -127,8 +127,8 @@ extension PDFDocument {
         
         let originalPageCount = pageCount
         
-        indexes.sorted().reversed().forEach {
-            removePage(at: $0)
+        for index in indexes.sorted().reversed() {
+            removePage(at: index)
         }
         
         let postPageCount = pageCount
@@ -156,7 +156,7 @@ extension PDFDocument {
     // MARK: - File Info
     
     public var filenameWithoutExtension: String? {
-        self.documentURL?.deletingPathExtension().lastPathComponent
+        documentURL?.deletingPathExtension().lastPathComponent
     }
     
     // MARK: - Protections

@@ -1,14 +1,14 @@
 //
 //  PDFOperation Commands.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if os(macOS)
 
+import ArgumentParser
 import Foundation
 import PDFGadgetLib
-import ArgumentParser
 internal import OTCore
 
 // We can safely use `@retroactive` since we are the owner of this type in the package.
@@ -81,50 +81,50 @@ extension PDFOperation: @retroactive ExpressibleByArgument {
     }
 }
 
-//extension PDFGadgetCLI {
+// extension PDFGadgetCLI {
 //    struct Foo: ExpressibleByArgument {
 //        init?(argument: String) {
 //            #warning("> run sub-parser")
 //        }
-//        
-//        
+//
+//
 //    }
 //    struct OperationsBuilder: ParsableArguments {
 //        internal var wrapper: Operations = .init()
-//        
+//
 //        init() { }
-//        
-//        init(_ string: String) { 
+//
+//        init(_ string: String) {
 //            #warning("> run sub-parser")
 //        }
-//        
+//
 //        internal struct Operations: Codable {
 //            var operations: [PDFOperation]
-//            
+//
 //            init(operations: [PDFOperation] = []) {
 //                self.operations = operations
 //            }
-//            
+//
 //            func encode(to encoder: Encoder) throws {
 //                // we're not actually implementing Codable, it's just to satisfy ParsableArguments
 //            }
-//            
+//
 //            init(from decoder: Decoder) throws {
 //                // we're not actually implementing Codable, it's just to satisfy ParsableArguments
 //                self.init()
 //            }
 //        }
 //    }
-//    
+//
 //    struct NewFile: ParsableCommand {
 //        static var configuration = CommandConfiguration(commandName: "newfile")
-//        
+//
 //        @OptionGroup var builder: OperationsBuilder
-//        
+//
 //        mutating func run() {
 //            builder.wrapper.operations.append(.newFile)
 //        }
 //    }
-//}
+// }
 
 #endif

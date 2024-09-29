@@ -1,7 +1,7 @@
 //
 //  PDFGadget Operations.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -62,7 +62,7 @@ extension PDFGadget {
         filteredPDFs.removeAll(targetPDF)
         
         // check count again
-        guard filteredPDFs.count > 0 else {
+        guard !filteredPDFs.isEmpty else {
             return .noChange(reason: "Not enough source files to perform merge.")
         }
         
@@ -97,7 +97,10 @@ extension PDFGadget {
             if let filename = split.filename {
                 newFile.set(filenameForExport: filename)
             } else {
-                newFile.set(filenameForExport: newFile.filenameForExport + "-split\(dedupeFilenameCount)")
+                newFile.set(
+                    filenameForExport: newFile
+                        .filenameForExport + "-split\(dedupeFilenameCount)"
+                )
                 dedupeFilenameCount += 1
             }
             newFile.doc.append(pages: pages)
@@ -108,7 +111,9 @@ extension PDFGadget {
         func removeSourceFile() { pdfs.removeAll(pdf) }
         
         // some logic and user feedback regarding source file and page utilization
-        let remainingPageNumbersString = remainingPageIndexes.map { String($0 + 1) }.joined(separator: ", ")
+        let remainingPageNumbersString = remainingPageIndexes
+            .map { String($0 + 1) }
+            .joined(separator: ", ")
         if discardUnused {
             if !remainingPageIndexes.isEmpty {
                 logger.info(
@@ -122,10 +127,13 @@ extension PDFGadget {
                 removeSourceFile()
             } else {
                 // source file has at least one unused page remaining
-                logger.info("Split source file still contains unused page numbers \(remainingPageNumbersString).")
+                logger.info(
+                    "Split source file still contains unused page numbers \(remainingPageNumbersString)."
+                )
                 
                 // remove used pages
-                let usedIndexes = pdf.doc.pageIndexes().filter { !remainingPageIndexes.contains($0) }
+                let usedIndexes = pdf.doc.pageIndexes()
+                    .filter { !remainingPageIndexes.contains($0) }
                 try pdf.doc.removePages(at: usedIndexes)
             }
         }
@@ -254,7 +262,10 @@ extension PDFGadget {
     }
     
     /// Filter page(s).
-    func performFilterPages(file: PDFFileDescriptor, pages: PDFPagesFilter) throws -> PDFOperationResult {
+    func performFilterPages(
+        file: PDFFileDescriptor,
+        pages: PDFPagesFilter
+    ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
         let diff = try pdf.doc.pageIndexes(filter: pages)
@@ -366,7 +377,9 @@ extension PDFGadget {
         
         guard indexesToReverse.count > 1 else {
             let plural = "page\(indexesToReverse.count == 1 ? " is" : "s are")"
-            return .noChange(reason: "Reversing pages has no effect because file only has \(indexesToReverse.count) \(plural) selected for reversal.")
+            return .noChange(
+                reason: "Reversing pages has no effect because file only has \(indexesToReverse.count) \(plural) selected for reversal."
+            )
         }
         
         let pairs = zip(indexesToReverse, indexesToReverse.reversed())
@@ -440,7 +453,7 @@ extension PDFGadget {
                 )
             }
             
-        case .file(let url):
+        case let .file(url):
             try fullText.write(to: url, atomically: false, encoding: .utf8)
             
         case let .variable(named: variableName):

@@ -1,7 +1,7 @@
 //
 //  Qualifier Types.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -127,7 +127,7 @@ public enum PDFTextDestination: Equatable, Hashable {
 extension PDFTextDestination {
     public var verboseDescription: String {
         switch self {
-        case .pasteboard: 
+        case .pasteboard:
             return "pasteboard"
         case let .file(url):
             return url.absoluteString

@@ -1,7 +1,7 @@
 //
 //  PDFPageRotation.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -64,11 +64,11 @@ extension PDFPageRotation.Angle: CustomStringConvertible {
 
 extension PDFPageRotation.Angle {
     public static func + (lhs: Self, rhs: Self) -> Self {
-        Self.init(degrees: lhs.degrees + rhs.degrees) ?? ._0degrees
+        Self(degrees: lhs.degrees + rhs.degrees) ?? ._0degrees
     }
     
     public static func - (lhs: Self, rhs: Self) -> Self {
-        Self.init(degrees: lhs.degrees - rhs.degrees) ?? ._0degrees
+        Self(degrees: lhs.degrees - rhs.degrees) ?? ._0degrees
     }
 }
 

@@ -1,7 +1,7 @@
 //
 //  PDFFile.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -10,13 +10,13 @@ import Foundation
 import PDFKit
 
 /// Internal wrapper for `PDFDocument` to contain metadata for processing and exporting.
-internal class PDFFile {
+class PDFFile {
     var doc: PDFDocument
     private var _customExportFilename: String?
     
     init(doc: PDFDocument, customExportFilename: String? = nil) {
         self.doc = doc
-        self._customExportFilename = customExportFilename
+        _customExportFilename = customExportFilename
     }
     
     /// Return the consolidated filename for export, without file extension.

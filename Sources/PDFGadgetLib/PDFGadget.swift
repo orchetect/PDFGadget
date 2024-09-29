@@ -1,7 +1,7 @@
 //
 //  PDFGadget.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -13,9 +13,9 @@ import PDFKit
 
 /// PDF editing toolkit offering declarative batch file & page operations.
 public final class PDFGadget {
-    internal let logger = Logger(subsystem: "com.orchetect.PDFGadget", category: "Gadget")
+    let logger = Logger(subsystem: "com.orchetect.PDFGadget", category: "Gadget")
     
-    internal var pdfs: [PDFFile] = []
+    var pdfs: [PDFFile] = []
     
     public var pdfDocuments: [PDFDocument] {
         pdfs.map(\.doc)
@@ -46,9 +46,7 @@ extension PDFGadget {
             try load(pdfs: settings.sourcePDFs, removeExisting: true)
             try perform(operations: settings.operations)
             if settings.savePDFs {
-                try self.savePDFs(
-                    outputDir: settings.outputDir
-                )
+                try savePDFs(outputDir: settings.outputDir)
             }
         } catch {
             throw PDFGadgetError.runtimeError(
@@ -161,7 +159,7 @@ extension PDFGadget {
 
 extension PDFGadget {
     /// Internal utility to execute a single operation.
-    internal func perform(operation: PDFOperation) throws -> PDFOperationResult {
+    func perform(operation: PDFOperation) throws -> PDFOperationResult {
         logger.info("Performing operation: \(operation.verboseDescription)")
         
         switch operation {
@@ -232,7 +230,12 @@ extension PDFGadget {
             return try performFilterAnnotations(file: file, pages: pages, annotations: annotations)
             
         case let .extractPlainText(file, pages, destination, pageBreak):
-            return try performExtractPlainText(file: file, pages: pages, to: destination, pageBreak: pageBreak)
+            return try performExtractPlainText(
+                file: file,
+                pages: pages,
+                to: destination,
+                pageBreak: pageBreak
+            )
             
         case let .removeProtections(files):
             return try performRemoveProtections(files: files)
@@ -240,7 +243,7 @@ extension PDFGadget {
     }
     
     /// Generates full output path including filename.
-    internal func formOutputFilePath(
+    func formOutputFilePath(
         for pdf: PDFFile,
         fileNameWithoutExtension: String,
         outputDir: URL?
@@ -249,7 +252,7 @@ extension PDFGadget {
             ?? pdf.doc.documentURL?.deletingLastPathComponent()
         
         #if os(macOS)
-            folderPath = folderPath ?? URL.desktopDirectoryBackCompat
+        folderPath = folderPath ?? URL.desktopDirectoryBackCompat
         #endif
         
         guard let folderPath,

@@ -1,7 +1,7 @@
 //
 //  PDFFileDescriptor.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -43,16 +43,16 @@ extension PDFFileDescriptor {
         case .last:
             return inputs.last
             
-        case .index(let idx):
+        case let .index(idx):
             guard inputs.indices.contains(idx) else { return nil }
             return inputs[idx]
             
-        case .filename(let filenameDescriptor):
+        case let .filename(filenameDescriptor):
             return inputs.first { pdf in
                 filenameDescriptor.matches(pdf.filenameForMatching)
             }
             
-        case .introspecting(let introspection):
+        case let .introspecting(introspection):
             return inputs.first(where: { introspection.closure($0.doc) })
         }
     }
@@ -67,11 +67,11 @@ extension PDFFileDescriptor {
             return "second file"
         case .last:
             return "last file"
-        case .index(let idx):
+        case let .index(idx):
             return "file with index \(idx)"
-        case .filename(let filenameDescriptor):
+        case let .filename(filenameDescriptor):
             return "file with filename \(filenameDescriptor.verboseDescription)"
-        case .introspecting(let introspection):
+        case let .introspecting(introspection):
             return "file matching \(introspection.description)"
         }
     }

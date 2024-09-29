@@ -1,3 +1,9 @@
+//
+//  TestResource.swift
+//  PDFGadget • https://github.com/orchetect/PDFGadget
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
+//
+
 import Foundation
 import XCTest
 

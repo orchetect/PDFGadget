@@ -1,7 +1,7 @@
 //
 //  Types+ArgumentParser.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if os(macOS)
@@ -11,8 +11,8 @@ import PDFGadgetLib
 
 // Export
 
-//extension PDFOperation: ExpressibleByArgument { }
-//extension PDFPageSet: ExpressibleByArgument { }
-//extension PDFPagesFilter: ExpressibleByArgument { }
+// extension PDFOperation: ExpressibleByArgument { }
+// extension PDFPageSet: ExpressibleByArgument { }
+// extension PDFPagesFilter: ExpressibleByArgument { }
 
 #endif

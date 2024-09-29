@@ -1,13 +1,13 @@
 //
 //  PDFPageRotation Tests.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
 
-import XCTest
 @testable import PDFGadgetLib
+import XCTest
 
 final class PDFPageRotationTests: XCTestCase {
     func testAngleDegrees() throws {

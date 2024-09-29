@@ -1,7 +1,7 @@
 //
 //  PDFFileSplitDescriptor.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -25,14 +25,17 @@ extension PDFFileSplitDescriptor {
         var splits: [PDFOperation.PageRangeAndFilename] = []
         
         switch self {
-        case .at(let pageIndexes):
+        case let .at(pageIndexes):
             // also removes dupes and sorts
-            let ranges = convertPageIndexesToRanges(pageIndexes: pageIndexes, totalPageCount: source.doc.pageCount)
+            let ranges = convertPageIndexesToRanges(
+                pageIndexes: pageIndexes,
+                totalPageCount: source.doc.pageCount
+            )
             for range in ranges {
                 splits.append(.init(range, nil))
             }
             
-        case .every(var nthPage):
+        case var .every(nthPage):
             nthPage = nthPage.clamped(to: 1...)
             
             // Check to see that at least two resulting files will occur
@@ -44,15 +47,15 @@ extension PDFFileSplitDescriptor {
                 .split(every: nthPage)
             splits = ranges.map { .init($0, String?.none) }
             
-        case .pageIndexesAndFilenames(let pageIndexesAndFilenames):
+        case let .pageIndexesAndFilenames(pageIndexesAndFilenames):
             splits = pageIndexesAndFilenames
             
-        case .pageNumbersAndFilenames(let pageNumbersAndFilenames):
+        case let .pageNumbersAndFilenames(pageNumbersAndFilenames):
             var mappedToIndexes = pageNumbersAndFilenames
-            mappedToIndexes.indices.forEach {
-                mappedToIndexes[$0].pageRange =
-                    mappedToIndexes[$0].pageRange.lowerBound - 1
-                        ... mappedToIndexes[$0].pageRange.upperBound - 1
+            for index in mappedToIndexes.indices {
+                mappedToIndexes[index].pageRange =
+                    mappedToIndexes[index].pageRange.lowerBound - 1
+                        ... mappedToIndexes[index].pageRange.upperBound - 1
             }
             splits = mappedToIndexes
         }
@@ -78,13 +81,13 @@ extension PDFFileSplitDescriptor {
 extension PDFFileSplitDescriptor {
     public var verboseDescription: String {
         switch self {
-        case .at(let pageIndexes):
+        case let .at(pageIndexes):
             return "at page indexes \(pageIndexes.map { String($0) }.joined(separator: ", "))"
-        case .every(let pageCount):
+        case let .every(pageCount):
             return "every \(pageCount) page\(pageCount == 1 ? "" : "s")"
-        case .pageIndexesAndFilenames(let splits):
+        case let .pageIndexesAndFilenames(splits):
             return "at \(splits.count) named splits"
-        case .pageNumbersAndFilenames(let splits):
+        case let .pageNumbersAndFilenames(splits):
             return "at \(splits.count) named splits"
         }
     }

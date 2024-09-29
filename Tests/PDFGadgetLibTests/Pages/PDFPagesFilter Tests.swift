@@ -1,11 +1,11 @@
 //
 //  PDFPagesFilter Tests.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
-import XCTest
 @testable import PDFGadgetLib
+import XCTest
 
 final class PDFPagesFilterTests: XCTestCase {
     func testAll() throws {
@@ -65,7 +65,7 @@ final class PDFPagesFilterTests: XCTestCase {
     func testInclude_Multiple_isInclusive() throws {
         let filter: PDFPagesFilter = .include([
             .pages(indexes: [0]),
-            .range(indexes: 2...3)
+            .range(indexes: 2 ... 3)
         ])
         
         do {
@@ -86,7 +86,7 @@ final class PDFPagesFilterTests: XCTestCase {
     func testInclude_Multiple_isNotInclusive_FirstNotInclusive() throws {
         let filter: PDFPagesFilter = .include([
             .pages(indexes: [4]),
-            .range(indexes: 2...3)
+            .range(indexes: 2 ... 3)
         ])
         
         do {
@@ -107,7 +107,7 @@ final class PDFPagesFilterTests: XCTestCase {
     func testInclude_Multiple_isNotInclusive_LastNotInclusive() throws {
         let filter: PDFPagesFilter = .include([
             .pages(indexes: [0]),
-            .range(indexes: 2...3)
+            .range(indexes: 2 ... 3)
         ])
         
         do {
@@ -164,7 +164,7 @@ final class PDFPagesFilterTests: XCTestCase {
     func testExclude_Multiple_isInclusive() throws {
         let filter: PDFPagesFilter = .exclude([
             .pages(indexes: [0]),
-            .range(indexes: 2...3)
+            .range(indexes: 2 ... 3)
         ])
         
         do {

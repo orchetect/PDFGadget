@@ -1,7 +1,7 @@
 //
 //  PDFFileIntrospection.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
-//  Licensed under MIT License
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(PDFKit)
@@ -11,7 +11,7 @@ import PDFKit
 
 /// Provides a closure for custom introspection logic on a `PDFDocument` instance.
 public struct PDFFileIntrospection {
-    internal let id: UUID = .init()
+    let id: UUID = .init()
     
     public var description: String
     public var closure: (_ pdf: PDFDocument) -> Bool
