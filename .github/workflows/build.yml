@@ -34,7 +34,7 @@ jobs:
     - name: Build
       run: xcodebuild build -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "generic/platform=macOS,name=Any Mac" | xcpretty && exit ${PIPESTATUS[0]}
     - name: Unit Tests
-      run: xcodebuild test -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "platform=macOS" | xcpretty && exit ${PIPESTATUS[0]}
+      run: xcodebuild test -skipMacroValidation -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "platform=macOS" | xcpretty && exit ${PIPESTATUS[0]}
 
   macCatalyst:
     name: macCatalyst
@@ -47,7 +47,7 @@ jobs:
     - name: Build
       run: xcodebuild build -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "generic/platform=macOS,variant=Mac Catalyst,name=Any Mac" | xcpretty && exit ${PIPESTATUS[0]}
     - name: Unit Tests
-      run: xcodebuild test -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "platform=macOS,variant=Mac Catalyst" | xcpretty && exit ${PIPESTATUS[0]}
+      run: xcodebuild test -skipMacroValidation -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "platform=macOS,variant=Mac Catalyst" | xcpretty && exit ${PIPESTATUS[0]}
 
   iOS:
     name: iOS
@@ -60,7 +60,7 @@ jobs:
     - name: Build
       run: xcodebuild build -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "generic/platform=iOS Simulator,name=Any iOS Device" | xcpretty && exit ${PIPESTATUS[0]}
     - name: Unit Tests
-      run: xcodebuild test -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "platform=iOS Simulator,name=iPhone 15" | xcpretty && exit ${PIPESTATUS[0]}
+      run: xcodebuild test -skipMacroValidation -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "platform=iOS Simulator,name=iPhone 15" | xcpretty && exit ${PIPESTATUS[0]}
 
   tvOS:
     name: tvOS
@@ -73,7 +73,7 @@ jobs:
     - name: Build
       run: xcodebuild build -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "generic/platform=tvOS Simulator,name=Any tvOS Simulator Device" | xcpretty && exit ${PIPESTATUS[0]}
     - name: Unit Tests
-      run: xcodebuild test -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)" | xcpretty && exit ${PIPESTATUS[0]}
+      run: xcodebuild test -skipMacroValidation -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)" | xcpretty && exit ${PIPESTATUS[0]}
 
   watchOS:
     name: watchOS
@@ -86,7 +86,7 @@ jobs:
     - name: Build
       run: xcodebuild build -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "generic/platform=watchOS,name=Any watchOS Device" | xcpretty && exit ${PIPESTATUS[0]}
     - name: Unit Tests
-      run: xcodebuild test -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "platform=watchOS Simulator,name=Apple Watch Series 10 (46mm)" | xcpretty && exit ${PIPESTATUS[0]}
+      run: xcodebuild test -skipMacroValidation -workspace ".swiftpm/xcode/package.xcworkspace" -scheme "PDFGadget-CI" -destination "platform=watchOS Simulator,name=Apple Watch Series 10 (46mm)" | xcpretty && exit ${PIPESTATUS[0]}
 
 
 # xcodebuild test reference:
