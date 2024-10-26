@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "28D3AFBE-CC3C-4C05-976D-9D55FE22E4E6",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "PDFGadgetLibTests",
+        "name" : "PDFGadgetLibTests"
+      }
+    }
+  ],
+  "version" : 1
+}
