@@ -5,64 +5,65 @@
 //
 
 @testable import PDFGadgetLib
-import XCTest
+import Testing
+import TestingExtensions
 
-final class PDFPagesFilterTests: XCTestCase {
-    func testAll() throws {
+@Suite struct PDFPagesFilterTests {
+    @Test func all() throws {
         let filter: PDFPagesFilter = .all
         
         do {
             let filtered = filter.filtering([])
-            XCTAssertEqual(filtered.included, [])
-            XCTAssertEqual(filtered.excluded, [])
-            XCTAssertEqual(filtered.isInclusive, true)
+            #expect(filtered.included == [])
+            #expect(filtered.excluded == [])
+            #expect(filtered.isInclusive)
         }
         
         do {
             let filtered = filter.filtering([1, 3, 4, 5])
-            XCTAssertEqual(filtered.included, [1, 3, 4, 5])
-            XCTAssertEqual(filtered.excluded, [])
-            XCTAssertEqual(filtered.isInclusive, true)
+            #expect(filtered.included == [1, 3, 4, 5])
+            #expect(filtered.excluded == [])
+            #expect(filtered.isInclusive)
         }
     }
     
-    func testInclude_OddNumbers() throws {
+    @Test func include_OddNumbers() throws {
         let filter: PDFPagesFilter = .include([.oddNumbers])
         
         do {
             let filtered = filter.filtering([])
-            XCTAssertEqual(filtered.included, [])
-            XCTAssertEqual(filtered.excluded, [])
-            XCTAssertEqual(filtered.isInclusive, false)
+            #expect(filtered.included == [])
+            #expect(filtered.excluded == [])
+            #expect(!filtered.isInclusive)
         }
         
         do {
             let filtered = filter.filtering([1, 3, 4, 5])
-            XCTAssertEqual(filtered.included, [1, 4])
-            XCTAssertEqual(filtered.excluded, [3, 5])
-            XCTAssertEqual(filtered.isInclusive, true)
+            #expect(filtered.included == [1, 4])
+            #expect(filtered.excluded == [3, 5])
+            #expect(filtered.isInclusive)
         }
     }
     
-    func testInclude_EvenNumbers() throws {
+    @Test func include_EvenNumbers() throws {
         let filter: PDFPagesFilter = .include([.evenNumbers])
         
         do {
             let filtered = filter.filtering([])
-            XCTAssertEqual(filtered.included, [])
-            XCTAssertEqual(filtered.excluded, [])
-            XCTAssertEqual(filtered.isInclusive, false)
+            #expect(filtered.included == [])
+            #expect(filtered.excluded == [])
+            #expect(!filtered.isInclusive)
         }
         
         do {
             let filtered = filter.filtering([1, 3, 4, 5])
-            XCTAssertEqual(filtered.included, [3, 5])
-            XCTAssertEqual(filtered.excluded, [1, 4])
-            XCTAssertEqual(filtered.isInclusive, true)
+            #expect(filtered.included == [3, 5])
+            #expect(filtered.excluded == [1, 4])
+            #expect(filtered.isInclusive)
         }
     }
     
-    func testInclude_Multiple_isInclusive() throws {
+    @Test func include_Multiple_isInclusive() throws {
         let filter: PDFPagesFilter = .include([
             .pages(indexes: [0]),
             .range(indexes: 2 ... 3)
@@ -70,20 +71,20 @@ final class PDFPagesFilterTests: XCTestCase {
         
         do {
             let filtered = filter.filtering([])
-            XCTAssertEqual(filtered.included, [])
-            XCTAssertEqual(filtered.excluded, [])
-            XCTAssertEqual(filtered.isInclusive, false)
+            #expect(filtered.included == [])
+            #expect(filtered.excluded == [])
+            #expect(!filtered.isInclusive)
         }
         
         do {
             let filtered = filter.filtering([1, 3, 4, 5, 6])
-            XCTAssertEqual(filtered.included, [1, 4, 5])
-            XCTAssertEqual(filtered.excluded, [3, 6])
-            XCTAssertEqual(filtered.isInclusive, true)
+            #expect(filtered.included == [1, 4, 5])
+            #expect(filtered.excluded == [3, 6])
+            #expect(filtered.isInclusive)
         }
     }
     
-    func testInclude_Multiple_isNotInclusive_FirstNotInclusive() throws {
+    @Test func include_Multiple_isNotInclusive_FirstNotInclusive() throws {
         let filter: PDFPagesFilter = .include([
             .pages(indexes: [4]),
             .range(indexes: 2 ... 3)
@@ -91,20 +92,20 @@ final class PDFPagesFilterTests: XCTestCase {
         
         do {
             let filtered = filter.filtering([])
-            XCTAssertEqual(filtered.included, [])
-            XCTAssertEqual(filtered.excluded, [])
-            XCTAssertEqual(filtered.isInclusive, false)
+            #expect(filtered.included == [])
+            #expect(filtered.excluded == [])
+            #expect(!filtered.isInclusive)
         }
         
         do {
             let filtered = filter.filtering([1, 3, 4, 5])
-            XCTAssertEqual(filtered.included, [4, 5])
-            XCTAssertEqual(filtered.excluded, [1, 3])
-            XCTAssertEqual(filtered.isInclusive, false)
+            #expect(filtered.included == [4, 5])
+            #expect(filtered.excluded == [1, 3])
+            #expect(!filtered.isInclusive)
         }
     }
     
-    func testInclude_Multiple_isNotInclusive_LastNotInclusive() throws {
+    @Test func include_Multiple_isNotInclusive_LastNotInclusive() throws {
         let filter: PDFPagesFilter = .include([
             .pages(indexes: [0]),
             .range(indexes: 2 ... 3)
@@ -112,56 +113,56 @@ final class PDFPagesFilterTests: XCTestCase {
         
         do {
             let filtered = filter.filtering([])
-            XCTAssertEqual(filtered.included, [])
-            XCTAssertEqual(filtered.excluded, [])
-            XCTAssertEqual(filtered.isInclusive, false)
+            #expect(filtered.included == [])
+            #expect(filtered.excluded == [])
+            #expect(!filtered.isInclusive)
         }
         
         do {
             let filtered = filter.filtering([1, 3, 4])
-            XCTAssertEqual(filtered.included, [1, 4])
-            XCTAssertEqual(filtered.excluded, [3])
-            XCTAssertEqual(filtered.isInclusive, false)
+            #expect(filtered.included == [1, 4])
+            #expect(filtered.excluded == [3])
+            #expect(!filtered.isInclusive)
         }
     }
     
-    func testExclude_OddNumbers() throws {
+    @Test func exclude_OddNumbers() throws {
         let filter: PDFPagesFilter = .exclude([.oddNumbers])
         
         do {
             let filtered = filter.filtering([])
-            XCTAssertEqual(filtered.included, [])
-            XCTAssertEqual(filtered.excluded, [])
-            XCTAssertEqual(filtered.isInclusive, false)
+            #expect(filtered.included == [])
+            #expect(filtered.excluded == [])
+            #expect(!filtered.isInclusive)
         }
         
         do {
             let filtered = filter.filtering([1, 3, 4, 5])
-            XCTAssertEqual(filtered.included, [3, 5])
-            XCTAssertEqual(filtered.excluded, [1, 4])
-            XCTAssertEqual(filtered.isInclusive, true)
+            #expect(filtered.included == [3, 5])
+            #expect(filtered.excluded == [1, 4])
+            #expect(filtered.isInclusive)
         }
     }
     
-    func testExclude_EvenNumbers() throws {
+    @Test func exclude_EvenNumbers() throws {
         let filter: PDFPagesFilter = .exclude([.evenNumbers])
         
         do {
             let filtered = filter.filtering([])
-            XCTAssertEqual(filtered.included, [])
-            XCTAssertEqual(filtered.excluded, [])
-            XCTAssertEqual(filtered.isInclusive, false)
+            #expect(filtered.included == [])
+            #expect(filtered.excluded == [])
+            #expect(!filtered.isInclusive)
         }
         
         do {
             let filtered = filter.filtering([1, 3, 4, 5])
-            XCTAssertEqual(filtered.included, [1, 4])
-            XCTAssertEqual(filtered.excluded, [3, 5])
-            XCTAssertEqual(filtered.isInclusive, true)
+            #expect(filtered.included == [1, 4])
+            #expect(filtered.excluded == [3, 5])
+            #expect(filtered.isInclusive)
         }
     }
     
-    func testExclude_Multiple_isInclusive() throws {
+    @Test func exclude_Multiple_isInclusive() throws {
         let filter: PDFPagesFilter = .exclude([
             .pages(indexes: [0]),
             .range(indexes: 2 ... 3)
@@ -169,16 +170,16 @@ final class PDFPagesFilterTests: XCTestCase {
         
         do {
             let filtered = filter.filtering([])
-            XCTAssertEqual(filtered.included, [])
-            XCTAssertEqual(filtered.excluded, [])
-            XCTAssertEqual(filtered.isInclusive, false)
+            #expect(filtered.included == [])
+            #expect(filtered.excluded == [])
+            #expect(!filtered.isInclusive)
         }
         
         do {
             let filtered = filter.filtering([1, 3, 4, 5, 6])
-            XCTAssertEqual(filtered.included, [3, 6])
-            XCTAssertEqual(filtered.excluded, [1, 4, 5])
-            XCTAssertEqual(filtered.isInclusive, true)
+            #expect(filtered.included == [3, 6])
+            #expect(filtered.excluded == [1, 4, 5])
+            #expect(filtered.isInclusive)
         }
     }
 }

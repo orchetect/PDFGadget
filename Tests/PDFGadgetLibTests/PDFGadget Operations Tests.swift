@@ -7,32 +7,33 @@
 #if canImport(PDFKit)
 
 @testable import PDFGadgetLib
-import PDFKit
-import XCTest
 internal import OTCore
+import PDFKit
+import Testing
+import TestingExtensions
 
 /// These are integration tests to test the actual operations,
 /// not the specific syntax or underlying semantics.
-final class PDFGadgetOperationsTests: XCTestCase {
-    func testNewFile() throws {
+@Suite struct PDFGadgetOperationsTests {
+    @Test func newFile() throws {
         let tool = PDFGadget()
         
         try tool.perform(operations: [
             .newFile
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 1)
-        XCTAssertEqual(tool.pdfs[0].doc.pageCount, 0)
+        #expect(tool.pdfs.count == 1)
+        #expect(tool.pdfs[0].doc.pageCount == 0)
         
         try tool.perform(operations: [
             .newFile
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 2)
-        XCTAssertEqual(tool.pdfs[1].doc.pageCount, 0)
+        #expect(tool.pdfs.count == 2)
+        #expect(tool.pdfs[1].doc.pageCount == 0)
     }
     
-    func testCloneFile() throws {
+    @Test func cloneFile() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [TestResource.pdf1page.url()])
@@ -41,14 +42,14 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .cloneFile(file: .first)
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 2)
-        try AssertFilesAreEqual(tool.pdfs[0], tool.pdfs[1])
+        #expect(tool.pdfs.count == 2)
+        try expectFilesAreEqual(tool.pdfs[0], tool.pdfs[1])
         
-        try Assert(page: tool.pdfs[0].doc.page(at: 0), isTagged: "1")
-        try Assert(page: tool.pdfs[1].doc.page(at: 0), isTagged: "1")
+        try expect(page: tool.pdfs[0].doc.page(at: 0), isTagged: "1")
+        try expect(page: tool.pdfs[1].doc.page(at: 0), isTagged: "1")
     }
     
-    func testFilterFiles() throws {
+    @Test func filterFiles() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -63,7 +64,7 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .filterFiles(.all)
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 3)
+        #expect(tool.pdfs.count == 3)
         
         // index range
         
@@ -71,9 +72,9 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .filterFiles(.indexRange(1 ... 2))
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 2)
-        try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF2Pages())
-        try AssertDocumentIsEqual(tool.pdfs[1].doc, testPDF5Pages())
+        #expect(tool.pdfs.count == 2)
+        try expectDocumentIsEqual(tool.pdfs[0].doc, testPDF2Pages())
+        try expectDocumentIsEqual(tool.pdfs[1].doc, testPDF5Pages())
         
         // index
         
@@ -81,11 +82,11 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .filterFiles(.index(1))
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 1)
-        try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF5Pages())
+        #expect(tool.pdfs.count == 1)
+        try expectDocumentIsEqual(tool.pdfs[0].doc, testPDF5Pages())
     }
     
-    func testMergeFilesA() throws {
+    @Test func mergeFilesA() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -98,15 +99,15 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .mergeFiles()
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 1)
-        XCTAssertEqual(tool.pdfs[0].doc.pageCount, 8)
-        try AssertPagesAreEqual(
+        #expect(tool.pdfs.count == 1)
+        #expect(tool.pdfs[0].doc.pageCount == 8)
+        try expectPagesAreEqual(
             tool.pdfs[0].doc.pages(for: .all),
             testPDF1Page().pages() + testPDF2Pages().pages() + testPDF5Pages().pages()
         )
     }
     
-    func testMergeFilesB() throws {
+    @Test func mergeFilesB() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -119,18 +120,18 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .mergeFiles(.second, appendingTo: .last)
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 2)
+        #expect(tool.pdfs.count == 2)
         
-        try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
+        try expectDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
         
-        XCTAssertEqual(tool.pdfs[1].doc.pageCount, 7)
-        try AssertPagesAreEqual(
+        #expect(tool.pdfs[1].doc.pageCount == 7)
+        try expectPagesAreEqual(
             tool.pdfs[1].doc.pages(for: .all),
             testPDF5Pages().pages() + testPDF2Pages().pages()
         )
     }
     
-    func testSplitFile() throws {
+    @Test func splitFile() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -141,21 +142,21 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .splitFile(file: .first, discardUnused: false, .every(pageCount: 2))
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 3)
+        #expect(tool.pdfs.count == 3)
         
-        XCTAssertEqual(tool.pdfs[0].doc.pageCount, 2)
-        try Assert(page: tool.pdfs[0].doc.page(at: 0), isTagged: "1")
-        try Assert(page: tool.pdfs[0].doc.page(at: 1), isTagged: "2")
+        #expect(tool.pdfs[0].doc.pageCount == 2)
+        try expect(page: tool.pdfs[0].doc.page(at: 0), isTagged: "1")
+        try expect(page: tool.pdfs[0].doc.page(at: 1), isTagged: "2")
         
-        XCTAssertEqual(tool.pdfs[1].doc.pageCount, 2)
-        try Assert(page: tool.pdfs[1].doc.page(at: 0), isTagged: "3")
-        try Assert(page: tool.pdfs[1].doc.page(at: 1), isTagged: "4")
+        #expect(tool.pdfs[1].doc.pageCount == 2)
+        try expect(page: tool.pdfs[1].doc.page(at: 0), isTagged: "3")
+        try expect(page: tool.pdfs[1].doc.page(at: 1), isTagged: "4")
         
-        XCTAssertEqual(tool.pdfs[2].doc.pageCount, 1)
-        try Assert(page: tool.pdfs[2].doc.page(at: 0), isTagged: "5")
+        #expect(tool.pdfs[2].doc.pageCount == 1)
+        try expect(page: tool.pdfs[2].doc.page(at: 0), isTagged: "5")
     }
     
-    func testSetFilename() throws {
+    @Test func setFilename() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -165,16 +166,16 @@ final class PDFGadgetOperationsTests: XCTestCase {
         ])
         
         // just check default filename - not important for this test but we'll do it any way
-        XCTAssertEqual(tool.pdfs[1].filenameForExport, TestResource.pdf2pages.name + "-processed")
+        #expect(tool.pdfs[1].filenameForExport == TestResource.pdf2pages.name + "-processed")
         
         try tool.perform(operations: [
             .setFilename(file: .index(1), filename: "NewFileName")
         ])
         
-        XCTAssertEqual(tool.pdfs[1].filenameForExport, "NewFileName")
+        #expect(tool.pdfs[1].filenameForExport == "NewFileName")
     }
     
-    func testSetFilenames() throws {
+    @Test func setFilenames() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -184,21 +185,21 @@ final class PDFGadgetOperationsTests: XCTestCase {
         ])
         
         // check default filenames first
-        XCTAssertEqual(tool.pdfs[0].filenameForExport, TestResource.pdf1page.name + "-processed")
-        XCTAssertEqual(tool.pdfs[1].filenameForExport, TestResource.pdf2pages.name + "-processed")
-        XCTAssertEqual(tool.pdfs[2].filenameForExport, TestResource.pdf5pages.name + "-processed")
+        #expect(tool.pdfs[0].filenameForExport == TestResource.pdf1page.name + "-processed")
+        #expect(tool.pdfs[1].filenameForExport == TestResource.pdf2pages.name + "-processed")
+        #expect(tool.pdfs[2].filenameForExport == TestResource.pdf5pages.name + "-processed")
         
         try tool.perform(operations: [
             .setFilenames(files: .all, filenames: ["Renamed1", "Renamed2", "Renamed3"])
         ])
         
         // check renamed files
-        XCTAssertEqual(tool.pdfs[0].filenameForExport, "Renamed1")
-        XCTAssertEqual(tool.pdfs[1].filenameForExport, "Renamed2")
-        XCTAssertEqual(tool.pdfs[2].filenameForExport, "Renamed3")
+        #expect(tool.pdfs[0].filenameForExport == "Renamed1")
+        #expect(tool.pdfs[1].filenameForExport == "Renamed2")
+        #expect(tool.pdfs[2].filenameForExport == "Renamed3")
     }
     
-    func testRemoveFileAttributes() throws {
+    @Test func removeFileAttributes() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -209,16 +210,16 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .removeFileAttributes(files: .all)
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 1)
-        try AssertPageIsEqual(
+        #expect(tool.pdfs.count == 1)
+        try expectPageIsEqual(
             tool.pdfs[0].doc.page(at: 0)!,
             testPDF1Page_withAttrAnno().page(at: 0)!,
             ignoreOpenState: true
         )
-        XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count ?? 0, 0)
+        #expect(tool.pdfs[0].doc.documentAttributes?.count ?? 0 == 0)
     }
     
-    func testSetFileAttribute() throws {
+    @Test func setFileAttribute() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -231,9 +232,9 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .setFileAttribute(files: .all, .titleAttribute, value: "New Title")
         ])
         
-        XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count, 7)
-        XCTAssertEqual(
-            tool.pdfs[0].doc.documentAttributes?[PDFDocumentAttribute.titleAttribute] as? String,
+        #expect(tool.pdfs[0].doc.documentAttributes?.count == 7)
+        #expect(
+            tool.pdfs[0].doc.documentAttributes?[PDFDocumentAttribute.titleAttribute] as? String ==
             "New Title"
         )
         
@@ -243,14 +244,14 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .setFileAttribute(files: .all, .titleAttribute, value: nil)
         ])
         
-        XCTAssertEqual(tool.pdfs[0].doc.documentAttributes?.count, 6)
-        XCTAssert(
+        #expect(tool.pdfs[0].doc.documentAttributes?.count == 6)
+        #expect(
             tool.pdfs[0].doc.documentAttributes?.keys
                 .contains(PDFDocumentAttribute.titleAttribute) == false
         )
     }
     
-    func testFilterPages() throws {
+    @Test func filterPages() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -263,14 +264,14 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .filterPages(file: .index(2), pages: .include([.oddNumbers]))
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 3)
+        #expect(tool.pdfs.count == 3)
         
-        try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
-        try AssertDocumentIsEqual(tool.pdfs[1].doc, testPDF2Pages())
-        try AssertPagesAreEqual(tool.pdfs[2].doc.pages(), testPDF5Pages().pages(at: [0, 2, 4]))
+        try expectDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
+        try expectDocumentIsEqual(tool.pdfs[1].doc, testPDF2Pages())
+        try expectPagesAreEqual(tool.pdfs[2].doc.pages(), testPDF5Pages().pages(at: [0, 2, 4]))
     }
     
-    func testCopyPages() throws {
+    @Test func copyPages() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -288,21 +289,21 @@ final class PDFGadgetOperationsTests: XCTestCase {
             )
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 3)
+        #expect(tool.pdfs.count == 3)
         
-        try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
+        try expectDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
         
         let fileIdx1Pages = try tool.pdfs[1].doc.pages()
-        XCTAssertEqual(fileIdx1Pages.count, 2 + 2)
-        try Assert(page: fileIdx1Pages[0], isTagged: "1") // testPDF2Pages page 1
-        try Assert(page: fileIdx1Pages[1], isTagged: "2") // testPDF5Pages page 2
-        try Assert(page: fileIdx1Pages[2], isTagged: "4") // testPDF5Pages page 4
-        try Assert(page: fileIdx1Pages[3], isTagged: "2") // testPDF2Pages page 2
+        #expect(fileIdx1Pages.count == 2 + 2)
+        try expect(page: fileIdx1Pages[0], isTagged: "1") // testPDF2Pages page 1
+        try expect(page: fileIdx1Pages[1], isTagged: "2") // testPDF5Pages page 2
+        try expect(page: fileIdx1Pages[2], isTagged: "4") // testPDF5Pages page 4
+        try expect(page: fileIdx1Pages[3], isTagged: "2") // testPDF2Pages page 2
         
-        try AssertDocumentIsEqual(tool.pdfs[2].doc, testPDF5Pages())
+        try expectDocumentIsEqual(tool.pdfs[2].doc, testPDF5Pages())
     }
     
-    func testMovePages() throws {
+    @Test func movePages() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -320,26 +321,26 @@ final class PDFGadgetOperationsTests: XCTestCase {
             )
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 3)
+        #expect(tool.pdfs.count == 3)
         
-        try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
+        try expectDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
         
         let fileIdx1Pages = try tool.pdfs[1].doc.pages()
-        XCTAssertEqual(fileIdx1Pages.count, 2 + 2)
-        try Assert(page: fileIdx1Pages[0], isTagged: "1") // testPDF2Pages page 1
-        try Assert(page: fileIdx1Pages[1], isTagged: "2") // testPDF5Pages page 2
-        try Assert(page: fileIdx1Pages[2], isTagged: "4") // testPDF5Pages page 4
-        try Assert(page: fileIdx1Pages[3], isTagged: "2") // testPDF2Pages page 2
+        #expect(fileIdx1Pages.count == 2 + 2)
+        try expect(page: fileIdx1Pages[0], isTagged: "1") // testPDF2Pages page 1
+        try expect(page: fileIdx1Pages[1], isTagged: "2") // testPDF5Pages page 2
+        try expect(page: fileIdx1Pages[2], isTagged: "4") // testPDF5Pages page 4
+        try expect(page: fileIdx1Pages[3], isTagged: "2") // testPDF2Pages page 2
         
         let fileIdx2Pages = try tool.pdfs[2].doc.pages()
-        XCTAssertEqual(fileIdx2Pages.count, 5 - 2)
-        try Assert(page: fileIdx2Pages[0], isTagged: "1")
-        try Assert(page: fileIdx2Pages[1], isTagged: "3")
-        try Assert(page: fileIdx2Pages[2], isTagged: "5")
+        #expect(fileIdx2Pages.count == 5 - 2)
+        try expect(page: fileIdx2Pages[0], isTagged: "1")
+        try expect(page: fileIdx2Pages[1], isTagged: "3")
+        try expect(page: fileIdx2Pages[2], isTagged: "5")
     }
     
     /// Replace pages by copying.
-    func testReplacePagesCopy() throws {
+    @Test func replacePagesCopy() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -358,22 +359,22 @@ final class PDFGadgetOperationsTests: XCTestCase {
             )
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 3)
+        #expect(tool.pdfs.count == 3)
         
-        try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
-        try AssertDocumentIsEqual(tool.pdfs[1].doc, testPDF2Pages())
+        try expectDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
+        try expectDocumentIsEqual(tool.pdfs[1].doc, testPDF2Pages())
         
         let fileIdx2Pages = try tool.pdfs[2].doc.pages()
-        XCTAssertEqual(fileIdx2Pages.count, 5)
-        try Assert(page: fileIdx2Pages[0], isTagged: "1") // testPDF5Pages page 1
-        try Assert(page: fileIdx2Pages[1], isTagged: "2") // testPDF5Pages page 2
-        try Assert(page: fileIdx2Pages[2], isTagged: "3") // testPDF5Pages page 3
-        try Assert(page: fileIdx2Pages[3], isTagged: "1") // testPDF2Pages page 1
-        try Assert(page: fileIdx2Pages[4], isTagged: "2") // testPDF2Pages page 2
+        #expect(fileIdx2Pages.count == 5)
+        try expect(page: fileIdx2Pages[0], isTagged: "1") // testPDF5Pages page 1
+        try expect(page: fileIdx2Pages[1], isTagged: "2") // testPDF5Pages page 2
+        try expect(page: fileIdx2Pages[2], isTagged: "3") // testPDF5Pages page 3
+        try expect(page: fileIdx2Pages[3], isTagged: "1") // testPDF2Pages page 1
+        try expect(page: fileIdx2Pages[4], isTagged: "2") // testPDF2Pages page 2
     }
     
     /// Replace pages by moving.
-    func testReplacePagesMove() throws {
+    @Test func replacePagesMove() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -392,23 +393,23 @@ final class PDFGadgetOperationsTests: XCTestCase {
             )
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 3)
+        #expect(tool.pdfs.count == 3)
         
-        try AssertDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
+        try expectDocumentIsEqual(tool.pdfs[0].doc, testPDF1Page())
         
-        XCTAssertEqual(tool.pdfs[1].doc.pageCount, 0)
+        #expect(tool.pdfs[1].doc.pageCount == 0)
         
         let fileIdx2Pages = try tool.pdfs[2].doc.pages()
-        XCTAssertEqual(fileIdx2Pages.count, 5)
-        try Assert(page: fileIdx2Pages[0], isTagged: "1") // testPDF5Pages page 1
-        try Assert(page: fileIdx2Pages[1], isTagged: "2") // testPDF5Pages page 2
-        try Assert(page: fileIdx2Pages[2], isTagged: "3") // testPDF5Pages page 3
-        try Assert(page: fileIdx2Pages[3], isTagged: "1") // testPDF2Pages page 1
-        try Assert(page: fileIdx2Pages[4], isTagged: "2") // testPDF2Pages page 2
+        #expect(fileIdx2Pages.count == 5)
+        try expect(page: fileIdx2Pages[0], isTagged: "1") // testPDF5Pages page 1
+        try expect(page: fileIdx2Pages[1], isTagged: "2") // testPDF5Pages page 2
+        try expect(page: fileIdx2Pages[2], isTagged: "3") // testPDF5Pages page 3
+        try expect(page: fileIdx2Pages[3], isTagged: "1") // testPDF2Pages page 1
+        try expect(page: fileIdx2Pages[4], isTagged: "2") // testPDF2Pages page 2
     }
     
     /// Reverse page order of all pages of a file.
-    func testReversePageOrderA() throws {
+    @Test func reversePageOrderA() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -419,19 +420,19 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .reversePageOrder(file: .first, pages: .all)
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 1)
+        #expect(tool.pdfs.count == 1)
         
         let filePages = try tool.pdfs[0].doc.pages()
-        XCTAssertEqual(filePages.count, 5)
-        try Assert(page: filePages[0], isTagged: "5")
-        try Assert(page: filePages[1], isTagged: "4")
-        try Assert(page: filePages[2], isTagged: "3")
-        try Assert(page: filePages[3], isTagged: "2")
-        try Assert(page: filePages[4], isTagged: "1")
+        #expect(filePages.count == 5)
+        try expect(page: filePages[0], isTagged: "5")
+        try expect(page: filePages[1], isTagged: "4")
+        try expect(page: filePages[2], isTagged: "3")
+        try expect(page: filePages[3], isTagged: "2")
+        try expect(page: filePages[4], isTagged: "1")
     }
     
     /// Reverse page order of some pages of a file.
-    func testReversePageOrderB() throws {
+    @Test func reversePageOrderB() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -442,18 +443,18 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .reversePageOrder(file: .first, pages: .include([.range(indexes: 1 ... 3)]))
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 1)
+        #expect(tool.pdfs.count == 1)
         
         let filePages = try tool.pdfs[0].doc.pages()
-        XCTAssertEqual(filePages.count, 5)
-        try Assert(page: filePages[0], isTagged: "1")
-        try Assert(page: filePages[1], isTagged: "4")
-        try Assert(page: filePages[2], isTagged: "3")
-        try Assert(page: filePages[3], isTagged: "2")
-        try Assert(page: filePages[4], isTagged: "5")
+        #expect(filePages.count == 5)
+        try expect(page: filePages[0], isTagged: "1")
+        try expect(page: filePages[1], isTagged: "4")
+        try expect(page: filePages[2], isTagged: "3")
+        try expect(page: filePages[3], isTagged: "2")
+        try expect(page: filePages[4], isTagged: "5")
     }
     
-    func testRotatePages() throws {
+    @Test func rotatePages() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -461,11 +462,11 @@ final class PDFGadgetOperationsTests: XCTestCase {
         ])
         
         // establish baseline
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 0)?.rotation, 0)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 1)?.rotation, 0)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 2)?.rotation, 0)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 3)?.rotation, 0)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 4)?.rotation, 0)
+        #expect(tool.pdfs[0].doc.page(at: 0)?.rotation == 0)
+        #expect(tool.pdfs[0].doc.page(at: 1)?.rotation == 0)
+        #expect(tool.pdfs[0].doc.page(at: 2)?.rotation == 0)
+        #expect(tool.pdfs[0].doc.page(at: 3)?.rotation == 0)
+        #expect(tool.pdfs[0].doc.page(at: 4)?.rotation == 0)
         
         // absolute rotation
         try tool.perform(operations: [
@@ -476,11 +477,11 @@ final class PDFGadgetOperationsTests: XCTestCase {
             )
         ])
         
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 0)?.rotation, 0)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 1)?.rotation, 0)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 2)?.rotation, 180)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 3)?.rotation, 0)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 4)?.rotation, 0)
+        #expect(tool.pdfs[0].doc.page(at: 0)?.rotation == 0)
+        #expect(tool.pdfs[0].doc.page(at: 1)?.rotation == 0)
+        #expect(tool.pdfs[0].doc.page(at: 2)?.rotation == 180)
+        #expect(tool.pdfs[0].doc.page(at: 3)?.rotation == 0)
+        #expect(tool.pdfs[0].doc.page(at: 4)?.rotation == 0)
         
         // relative rotation
         try tool.perform(operations: [
@@ -491,14 +492,14 @@ final class PDFGadgetOperationsTests: XCTestCase {
             )
         ])
         
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 0)?.rotation, 0)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 1)?.rotation, 0)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 2)?.rotation, 270)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 3)?.rotation, 0)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 4)?.rotation, 0)
+        #expect(tool.pdfs[0].doc.page(at: 0)?.rotation == 0)
+        #expect(tool.pdfs[0].doc.page(at: 1)?.rotation == 0)
+        #expect(tool.pdfs[0].doc.page(at: 2)?.rotation == 270)
+        #expect(tool.pdfs[0].doc.page(at: 3)?.rotation == 0)
+        #expect(tool.pdfs[0].doc.page(at: 4)?.rotation == 0)
     }
     
-    func testFilterAnnotations() throws {
+    @Test func filterAnnotations() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
@@ -511,10 +512,10 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .filterAnnotations(file: .first, pages: .all, annotations: .all)
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 1)
+        #expect(tool.pdfs.count == 1)
         
-        XCTAssertEqual(tool.pdfs[0].doc.pageCount, 1)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 0)?.annotations.count, 8)
+        #expect(tool.pdfs[0].doc.pageCount == 1)
+        #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 8)
         
         // specific subtypes
         
@@ -522,10 +523,10 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .filterAnnotations(file: .first, pages: .all, annotations: .exclude([.circle, .square]))
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 1)
+        #expect(tool.pdfs.count == 1)
         
-        XCTAssertEqual(tool.pdfs[0].doc.pageCount, 1)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 0)?.annotations.count, 6)
+        #expect(tool.pdfs[0].doc.pageCount == 1)
+        #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 6)
         
         // none
         
@@ -533,17 +534,17 @@ final class PDFGadgetOperationsTests: XCTestCase {
             .filterAnnotations(file: .first, pages: .all, annotations: .none)
         ])
         
-        XCTAssertEqual(tool.pdfs.count, 1)
+        #expect(tool.pdfs.count == 1)
         
-        XCTAssertEqual(tool.pdfs[0].doc.pageCount, 1)
-        XCTAssertEqual(tool.pdfs[0].doc.page(at: 0)?.annotations.count, 0)
+        #expect(tool.pdfs[0].doc.pageCount == 1)
+        #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 0)
     }
     
-    func testExtractPlainText() throws {
+    @Test func extractPlainText() throws {
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
-            XCTUnwrap(PDFDocument(url: TestResource.loremIpsum.url()))
+            try #require(PDFDocument(url: TestResource.loremIpsum.url()))
         ])
         
         let textPage1 = "TEXTPAGE1"
@@ -557,9 +558,9 @@ final class PDFGadgetOperationsTests: XCTestCase {
             )
         ])
         
-        let extractedPage1TextCase = try XCTUnwrap(tool.variables[textPage1])
+        let extractedPage1TextCase = try #require(tool.variables[textPage1])
         guard case let .string(extractedPage1Text) = extractedPage1TextCase
-        else { XCTFail(); return }
+        else { #fail(); return }
         
         let expectedPage1Text = """
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ultrices
@@ -612,53 +613,53 @@ final class PDFGadgetOperationsTests: XCTestCase {
         // sometimes it pads extracted text with whitespace and/or trailing line-break, sometimes it
         // doesn't.
         // for our tests we choose to ignore these differences when comparing.
-        XCTAssertEqual(
-            extractedPage1Text.trimmingCharacters(in: .whitespacesAndNewlines),
+        #expect(
+            extractedPage1Text.trimmingCharacters(in: .whitespacesAndNewlines) ==
             expectedPage1Text
         )
     }
     
-    func testRemoveProtections() throws {
+    @Test func removeProtections() throws {
         // note: PDF password is "1234"
         
         let tool = PDFGadget()
         
         try tool.load(pdfs: [
-            XCTUnwrap(PDFDocument(url: TestResource.permissions.url()))
+            try #require(PDFDocument(url: TestResource.permissions.url()))
         ])
         
         // check initial permission status
-        XCTAssertTrue(tool.pdfs[0].doc.allowsContentAccessibility)
-        XCTAssertFalse(tool.pdfs[0].doc.allowsCommenting)
-        XCTAssertTrue(tool.pdfs[0].doc.allowsCopying)
-        XCTAssertTrue(tool.pdfs[0].doc.allowsPrinting)
-        XCTAssertFalse(tool.pdfs[0].doc.allowsDocumentAssembly)
-        XCTAssertFalse(tool.pdfs[0].doc.allowsDocumentChanges)
-        XCTAssertFalse(tool.pdfs[0].doc.allowsFormFieldEntry)
+        #expect(tool.pdfs[0].doc.allowsContentAccessibility)
+        #expect(!tool.pdfs[0].doc.allowsCommenting)
+        #expect(tool.pdfs[0].doc.allowsCopying)
+        #expect(tool.pdfs[0].doc.allowsPrinting)
+        #expect(!tool.pdfs[0].doc.allowsDocumentAssembly)
+        #expect(!tool.pdfs[0].doc.allowsDocumentChanges)
+        #expect(!tool.pdfs[0].doc.allowsFormFieldEntry)
         // check initial encryption status
-        XCTAssertTrue(tool.pdfs[0].doc.isEncrypted)
-        XCTAssertFalse(tool.pdfs[0].doc.isLocked)
+        #expect(tool.pdfs[0].doc.isEncrypted)
+        #expect(!tool.pdfs[0].doc.isLocked)
         // capture document atrributes
         let originalDocumentAttributes = tool.pdfs[0].doc.documentAttributes
         
         // remove protections
         let result = try tool.perform(operation: .removeProtections(files: .all))
-        XCTAssertEqual(result, .changed)
+        #expect(result == .changed)
         
         // check permission status
-        XCTAssertTrue(tool.pdfs[0].doc.allowsContentAccessibility)
-        XCTAssertTrue(tool.pdfs[0].doc.allowsCommenting)
-        XCTAssertTrue(tool.pdfs[0].doc.allowsCopying)
-        XCTAssertTrue(tool.pdfs[0].doc.allowsPrinting)
-        XCTAssertTrue(tool.pdfs[0].doc.allowsDocumentAssembly)
-        XCTAssertTrue(tool.pdfs[0].doc.allowsDocumentChanges)
-        XCTAssertTrue(tool.pdfs[0].doc.allowsFormFieldEntry)
+        #expect(tool.pdfs[0].doc.allowsContentAccessibility)
+        #expect(tool.pdfs[0].doc.allowsCommenting)
+        #expect(tool.pdfs[0].doc.allowsCopying)
+        #expect(tool.pdfs[0].doc.allowsPrinting)
+        #expect(tool.pdfs[0].doc.allowsDocumentAssembly)
+        #expect(tool.pdfs[0].doc.allowsDocumentChanges)
+        #expect(tool.pdfs[0].doc.allowsFormFieldEntry)
         // check encryption status
-        XCTAssertFalse(tool.pdfs[0].doc.isEncrypted)
-        XCTAssertFalse(tool.pdfs[0].doc.isLocked)
+        #expect(!tool.pdfs[0].doc.isEncrypted)
+        #expect(!tool.pdfs[0].doc.isLocked)
         // check document attributes are retained
-        XCTAssertEqual(
-            tool.pdfs[0].doc.documentAttributes?.count,
+        #expect(
+            tool.pdfs[0].doc.documentAttributes?.count ==
             originalDocumentAttributes?.count
         )
     }
@@ -670,43 +671,43 @@ extension PDFGadgetOperationsTests {
     // MARK: Test Resource Conveniences
     
     func testPDF1Page() throws -> PDFDocument {
-        try XCTUnwrap(PDFDocument(url: TestResource.pdf1page.url()))
+        try #require(PDFDocument(url: TestResource.pdf1page.url()))
     }
     
     func testPDF2Pages() throws -> PDFDocument {
-        try XCTUnwrap(PDFDocument(url: TestResource.pdf2pages.url()))
+        try #require(PDFDocument(url: TestResource.pdf2pages.url()))
     }
     
     func testPDF5Pages() throws -> PDFDocument {
-        try XCTUnwrap(PDFDocument(url: TestResource.pdf5pages.url()))
+        try #require(PDFDocument(url: TestResource.pdf5pages.url()))
     }
     
     func testPDF1Page_withAttrAnno() throws -> PDFDocument {
-        try XCTUnwrap(PDFDocument(url: TestResource.pdf1page_withAttributes_withAnnotations.url()))
+        try #require(PDFDocument(url: TestResource.pdf1page_withAttributes_withAnnotations.url()))
     }
     
-    // MARK: Assertions
+    // MARK: Expectations
     
     /// Checks that the files are generally the same.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertFileIsEqual(_ lhs: PDFFile, _ rhs: PDFFile) throws {
-        try AssertDocumentIsEqual(lhs.doc, rhs.doc)
+    func expectFileIsEqual(_ lhs: PDFFile, _ rhs: PDFFile) throws {
+        try expectDocumentIsEqual(lhs.doc, rhs.doc)
     }
     
     /// Checks that the files are generally the same.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertDocumentIsEqual(_ lhs: PDFDocument, _ rhs: PDFDocument) throws {
+    func expectDocumentIsEqual(_ lhs: PDFDocument, _ rhs: PDFDocument) throws {
         if let lhsAttribs = lhs.documentAttributes {
             guard let rhsAttribs = rhs.documentAttributes else {
-                XCTFail("Attributes are not equal."); return
+                #fail("Attributes are not equal."); return
             }
             // both docs have attributes, so we can compare them
             
-            XCTAssertEqual(lhsAttribs.count, rhsAttribs.count)
+            #expect(lhsAttribs.count == rhsAttribs.count)
             
             func compare(_ attr: PDFDocumentAttribute) throws {
-                XCTAssertEqual(
-                    lhsAttribs[attr] as? String,
+                #expect(
+                    lhsAttribs[attr] as? String ==
                     rhsAttribs[attr] as? String
                 )
             }
@@ -721,23 +722,23 @@ extension PDFGadgetOperationsTests {
             try compare(.titleAttribute)
         }
         
-        try AssertDocumentsAreEqual(lhs, rhs)
+        try expectDocumentsAreEqual(lhs, rhs)
     }
     
     /// Checks that pages are equal between two PDF files, by checking page text and annotations.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertFilesAreEqual(_ lhs: PDFFile, _ rhs: PDFFile) throws {
-        try AssertDocumentsAreEqual(lhs.doc, rhs.doc)
+    func expectFilesAreEqual(_ lhs: PDFFile, _ rhs: PDFFile) throws {
+        try expectDocumentsAreEqual(lhs.doc, rhs.doc)
     }
     
     /// Checks that pages are equal between two PDF files, by checking page text and annotations.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertDocumentsAreEqual(
+    func expectDocumentsAreEqual(
         _ lhs: PDFDocument,
         _ rhs: PDFDocument,
         ignoreOpenState: Bool = false
     ) throws {
-        try AssertPagesAreEqual(
+        try expectPagesAreEqual(
             lhs.pages(for: .all),
             rhs.pages(for: .all),
             ignoreOpenState: ignoreOpenState
@@ -746,21 +747,21 @@ extension PDFGadgetOperationsTests {
     
     /// Checks that pages are equal between two PDF files, by checking page text and annotations.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertPagesAreEqual(
+    func expectPagesAreEqual(
         _ lhs: [PDFPage],
         _ rhs: [PDFPage],
         ignoreOpenState: Bool = false
     ) throws {
-        XCTAssertEqual(lhs.count, rhs.count)
+        #expect(lhs.count == rhs.count)
         
         for (lhsPage, rhsPage) in zip(lhs, rhs) {
-            try AssertPageIsEqual(lhsPage, rhsPage, ignoreOpenState: ignoreOpenState)
+            try expectPageIsEqual(lhsPage, rhsPage, ignoreOpenState: ignoreOpenState)
         }
     }
     
     /// Checks that pages are equal between two PDF files, by checking page text and annotations.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertPageIsEqual(
+    func expectPageIsEqual(
         _ lhs: PDFPage,
         _ rhs: PDFPage,
         ignoreOpenState: Bool = false,
@@ -777,30 +778,30 @@ extension PDFGadgetOperationsTests {
         let rhsString = ignoreSurroundingTextWhitespace
             ? rhs.string?.trimmingCharacters(in: .whitespacesAndNewlines)
             : rhs.string
-        XCTAssertEqual(lhsString, rhsString)
+        #expect(lhsString == rhsString)
         
-        XCTAssertEqual(lhs.annotations.count, rhs.annotations.count)
+        #expect(lhs.annotations.count == rhs.annotations.count)
         for (lhsAnno, rhsAnno) in zip(lhs.annotations, rhs.annotations) {
-            try AssertAnnotationIsEqual(lhsAnno, rhsAnno, ignoreOpenState: ignoreOpenState)
+            try expectAnnotationIsEqual(lhsAnno, rhsAnno, ignoreOpenState: ignoreOpenState)
         }
     }
     
     /// Checks page text. Convenience to identify a page for unit testing purposes.
-    func Assert(page: PDFPage?, isTagged: String) throws {
-        guard let page else { XCTFail("Page is nil."); return }
-        XCTAssertEqual(page.string?.trimmed, isTagged)
+    func expect(page: PDFPage?, isTagged: String) throws {
+        guard let page else { #fail("Page is nil."); return }
+        #expect(page.string?.trimmed == isTagged)
     }
     
     /// Checks if two annotations have equal content.
     /// Not an exhaustive check but enough for unit testing.
-    func AssertAnnotationIsEqual(
+    func expectAnnotationIsEqual(
         _ lhs: PDFAnnotation,
         _ rhs: PDFAnnotation,
         ignoreOpenState: Bool
     ) throws {
-        XCTAssertEqual(lhs.type, rhs.type)
-        XCTAssertEqual(lhs.bounds, rhs.bounds)
-        XCTAssertEqual(lhs.contents, rhs.contents)
+        #expect(lhs.type == rhs.type)
+        #expect(lhs.bounds == rhs.bounds)
+        #expect(lhs.contents == rhs.contents)
         
         if ignoreOpenState {
             // it seems at some point PDFKit gained the behavior of removing the Open
@@ -808,9 +809,9 @@ extension PDFGadgetOperationsTests {
             // so it may be desirable to exempt the property from comparison.
             let lhsAKV = lhs.annotationKeyValues.filter { $0.key.base as? String != "/Open" }
             let rhsAKV = rhs.annotationKeyValues.filter { $0.key.base as? String != "/Open" }
-            XCTAssertEqual(lhsAKV.count, rhsAKV.count)
+            #expect(lhsAKV.count == rhsAKV.count)
         } else {
-            XCTAssertEqual(lhs.annotationKeyValues.count, rhs.annotationKeyValues.count)
+            #expect(lhs.annotationKeyValues.count == rhs.annotationKeyValues.count)
         }
     }
 }

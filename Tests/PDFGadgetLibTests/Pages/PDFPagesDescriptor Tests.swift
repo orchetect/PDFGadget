@@ -5,10 +5,11 @@
 //
 
 @testable import PDFGadgetLib
-import XCTest
+import Testing
+import TestingExtensions
 
-final class PDFPagesDescriptorTests: XCTestCase {
-    func testHashable() throws {
+@Suite struct PDFPagesDescriptorTests {
+    @Test func hashable() throws {
         let descriptors: Set<PDFPagesDescriptor> = [
             .oddNumbers,
             .oddNumbers,
@@ -41,21 +42,21 @@ final class PDFPagesDescriptorTests: XCTestCase {
             .pages(indexes: [3, 4])
         ]
         
-        XCTAssertEqual(descriptors.count, 10)
+        #expect(descriptors.count == 10)
     }
     
-    func testHashable_EdgeCases() throws {
+    @Test func hashable_EdgeCases() throws {
         // .page() page order is an array, not a set.
-        XCTAssertEqual(
-            Set<PDFPagesDescriptor>([.pages(indexes: [1, 2]), .pages(indexes: [2, 1])]),
+        #expect(
+            Set<PDFPagesDescriptor>([.pages(indexes: [1, 2]), .pages(indexes: [2, 1])]) ==
             [.pages(indexes: [1, 2]), .pages(indexes: [2, 1])]
         )
     }
     
-    func testContainsSamePages() throws {
+    @Test func containsSamePages() throws {
         func isSame(_ lhs: PDFPagesDescriptor, _ rhs: PDFPagesDescriptor? = nil) {
             let rhs = rhs ?? lhs
-            XCTAssertTrue(
+            #expect(
                 lhs.containsSamePages(as: rhs),
                 "\(lhs) is not the same as \(rhs)"
             )
@@ -80,413 +81,413 @@ final class PDFPagesDescriptorTests: XCTestCase {
         
         // false conditions
         
-        XCTAssertFalse(PDFPagesDescriptor.oddNumbers.containsSamePages(as: .evenNumbers))
+        #expect(!PDFPagesDescriptor.oddNumbers.containsSamePages(as: .evenNumbers))
     }
     
-    func testOddNumbers() throws {
+    @Test func oddNumbers() throws {
         let descriptor: PDFPagesDescriptor = .oddNumbers
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0]),
+        #expect(
+            descriptor.filtering([0]) ==
             .init(indexes: [0], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0, 1]),
+        #expect(
+            descriptor.filtering([0, 1]) ==
             .init(indexes: [0], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [1], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0, 1, 2, 3, 4]),
+        #expect(
+            descriptor.filtering([0, 1, 2, 3, 4]) ==
             .init(indexes: [0, 2, 4], isInclusive: true)
         )
     }
     
-    func testEvenNumbers() throws {
+    @Test func evenNumbers() throws {
         let descriptor: PDFPagesDescriptor = .evenNumbers
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0]),
+        #expect(
+            descriptor.filtering([0]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0, 1]),
+        #expect(
+            descriptor.filtering([0, 1]) ==
             .init(indexes: [1], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0, 1, 2, 3, 4]),
+        #expect(
+            descriptor.filtering([0, 1, 2, 3, 4]) ==
             .init(indexes: [1, 3], isInclusive: true)
         )
     }
     
-    func testEveryNthPage_1() throws {
+    @Test func everyNthPage_1() throws {
         let descriptor: PDFPagesDescriptor = .every(nthPage: 1, includeFirst: true)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0]),
+        #expect(
+            descriptor.filtering([0]) ==
             .init(indexes: [0], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0, 1]),
+        #expect(
+            descriptor.filtering([0, 1]) ==
             .init(indexes: [0, 1], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [1], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0, 1, 2, 3, 4]),
+        #expect(
+            descriptor.filtering([0, 1, 2, 3, 4]) ==
             .init(indexes: [0, 1, 2, 3, 4], isInclusive: true)
         )
     }
     
-    func testEveryNthPage_2_IncludeFirst() throws {
+    @Test func everyNthPage_2_IncludeFirst() throws {
         let descriptor: PDFPagesDescriptor = .every(nthPage: 2, includeFirst: true)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0]),
+        #expect(
+            descriptor.filtering([0]) ==
             .init(indexes: [0], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0, 1]),
+        #expect(
+            descriptor.filtering([0, 1]) ==
             .init(indexes: [0], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [1], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0, 1, 2, 3, 4]),
+        #expect(
+            descriptor.filtering([0, 1, 2, 3, 4]) ==
             .init(indexes: [0, 2, 4], isInclusive: true)
         )
     }
     
-    func testEveryNthPage_2_DoNotIncludeFirst() throws {
+    @Test func everyNthPage_2_DoNotIncludeFirst() throws {
         let descriptor: PDFPagesDescriptor = .every(nthPage: 2, includeFirst: false)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0]),
+        #expect(
+            descriptor.filtering([0]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0, 1]),
+        #expect(
+            descriptor.filtering([0, 1]) ==
             .init(indexes: [1], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([0, 1, 2, 3, 4]),
+        #expect(
+            descriptor.filtering([0, 1, 2, 3, 4]) ==
             .init(indexes: [1, 3], isInclusive: true)
         )
     }
     
-    func testRange() throws {
+    @Test func range() throws {
         let descriptor: PDFPagesDescriptor = .range(indexes: 1 ..< 3)
         print(descriptor.verboseDescription)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6]),
+        #expect(
+            descriptor.filtering([5, 6]) ==
             .init(indexes: [6], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7]),
+        #expect(
+            descriptor.filtering([5, 6, 7]) ==
             .init(indexes: [6, 7], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7, 8]),
+        #expect(
+            descriptor.filtering([5, 6, 7, 8]) ==
             .init(indexes: [6, 7], isInclusive: true)
         )
     }
     
-    func testClosedRange() throws {
+    @Test func closedRange() throws {
         let descriptor: PDFPagesDescriptor = .range(indexes: 1 ... 3)
         print(descriptor.verboseDescription)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6]),
+        #expect(
+            descriptor.filtering([5, 6]) ==
             .init(indexes: [6], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7]),
+        #expect(
+            descriptor.filtering([5, 6, 7]) ==
             .init(indexes: [6, 7], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7, 8]),
+        #expect(
+            descriptor.filtering([5, 6, 7, 8]) ==
             .init(indexes: [6, 7, 8], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7, 8, 9]),
+        #expect(
+            descriptor.filtering([5, 6, 7, 8, 9]) ==
             .init(indexes: [6, 7, 8], isInclusive: true)
         )
     }
     
-    func testPartialRangeFrom() throws {
+    @Test func partialRangeFrom() throws {
         let descriptor: PDFPagesDescriptor = .range(indexes: 1...)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6]),
+        #expect(
+            descriptor.filtering([5, 6]) ==
             .init(indexes: [6], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7]),
+        #expect(
+            descriptor.filtering([5, 6, 7]) ==
             .init(indexes: [6, 7], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7, 8]),
+        #expect(
+            descriptor.filtering([5, 6, 7, 8]) ==
             .init(indexes: [6, 7, 8], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7, 8, 9]),
+        #expect(
+            descriptor.filtering([5, 6, 7, 8, 9]) ==
             .init(indexes: [6, 7, 8, 9], isInclusive: true)
         )
     }
     
-    func testPartialRangeUpTo() throws {
+    @Test func partialRangeUpTo() throws {
         let descriptor: PDFPagesDescriptor = .range(indexes: ..<2)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [1], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6]),
+        #expect(
+            descriptor.filtering([5, 6]) ==
             .init(indexes: [5, 6], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7]),
+        #expect(
+            descriptor.filtering([5, 6, 7]) ==
             .init(indexes: [5, 6], isInclusive: true)
         )
     }
     
-    func testPartialRangeThrough() throws {
+    @Test func partialRangeThrough() throws {
         let descriptor: PDFPagesDescriptor = .range(indexes: ...2)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [1], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6]),
+        #expect(
+            descriptor.filtering([5, 6]) ==
             .init(indexes: [5, 6], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7]),
+        #expect(
+            descriptor.filtering([5, 6, 7]) ==
             .init(indexes: [5, 6, 7], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7, 8]),
+        #expect(
+            descriptor.filtering([5, 6, 7, 8]) ==
             .init(indexes: [5, 6, 7], isInclusive: true)
         )
     }
     
-    func testOpenRange() throws {
+    @Test func openRange() throws {
         let descriptor: PDFPagesDescriptor = .openRange(startIndex: 1)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([1]),
+        #expect(
+            descriptor.filtering([1]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6]),
+        #expect(
+            descriptor.filtering([5, 6]) ==
             .init(indexes: [6], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7]),
+        #expect(
+            descriptor.filtering([5, 6, 7]) ==
             .init(indexes: [6, 7], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7, 8]),
+        #expect(
+            descriptor.filtering([5, 6, 7, 8]) ==
             .init(indexes: [6, 7, 8], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7, 8, 9]),
+        #expect(
+            descriptor.filtering([5, 6, 7, 8, 9]) ==
             .init(indexes: [6, 7, 8, 9], isInclusive: true)
         )
     }
     
-    func testFirst() throws {
+    @Test func first() throws {
         let descriptor: PDFPagesDescriptor = .first(count: 2)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5]),
+        #expect(
+            descriptor.filtering([5]) ==
             .init(indexes: [5], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6]),
+        #expect(
+            descriptor.filtering([5, 6]) ==
             .init(indexes: [5, 6], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7]),
+        #expect(
+            descriptor.filtering([5, 6, 7]) ==
             .init(indexes: [5, 6], isInclusive: true)
         )
     }
     
-    func testLast() throws {
+    @Test func last() throws {
         let descriptor: PDFPagesDescriptor = .last(count: 2)
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5]),
+        #expect(
+            descriptor.filtering([5]) ==
             .init(indexes: [5], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6]),
+        #expect(
+            descriptor.filtering([5, 6]) ==
             .init(indexes: [5, 6], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7]),
+        #expect(
+            descriptor.filtering([5, 6, 7]) ==
             .init(indexes: [6, 7], isInclusive: true)
         )
     }
     
-    func testPages() throws {
+    @Test func pages() throws {
         let descriptor: PDFPagesDescriptor = .pages(indexes: [1, 3, 4])
         
-        XCTAssertEqual(
-            descriptor.filtering([]),
+        #expect(
+            descriptor.filtering([]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5]),
+        #expect(
+            descriptor.filtering([5]) ==
             .init(indexes: [], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6]),
+        #expect(
+            descriptor.filtering([5, 6]) ==
             .init(indexes: [6], isInclusive: false)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7, 8, 9]),
+        #expect(
+            descriptor.filtering([5, 6, 7, 8, 9]) ==
             .init(indexes: [6, 8, 9], isInclusive: true)
         )
         
-        XCTAssertEqual(
-            descriptor.filtering([5, 6, 7, 8, 9, 10]),
+        #expect(
+            descriptor.filtering([5, 6, 7, 8, 9, 10]) ==
             .init(indexes: [6, 8, 9], isInclusive: true)
         )
     }

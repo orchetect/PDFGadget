@@ -21,7 +21,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0"),
-        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.6.0")
+        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.6.0"),
+        .package(url: "https://github.com/orchetect/swift-testing-extensions.git", from: "0.2.0")
     ],
     targets: [
         .target(
@@ -33,7 +34,10 @@ let package = Package(
         ),
         .testTarget(
             name: "PDFGadgetLibTests",
-            dependencies: ["PDFGadgetLib"],
+            dependencies: [
+                "PDFGadgetLib",
+                .product(name: "TestingExtensions", package: "swift-testing-extensions")
+            ],
             resources: [.copy("TestResource/PDF Files")]
         ),
         .executableTarget(
