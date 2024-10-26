@@ -28,13 +28,13 @@ let package = Package(
         .target(
             name: "PDFGadgetLib",
             dependencies: [
-                // .product(name: "Collections", package: "swift-collections"),
-                .product(name: "OTCore", package: "OTCore")
+                "OTCore"
             ]
         ),
         .testTarget(
             name: "PDFGadgetLibTests",
             dependencies: [
+                "OTCore",
                 "PDFGadgetLib",
                 .product(name: "TestingExtensions", package: "swift-testing-extensions")
             ],
@@ -43,6 +43,7 @@ let package = Package(
         .executableTarget(
             name: "pdfgadget-cli",
             dependencies: [
+                "OTCore",
                 "PDFGadgetLib",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
