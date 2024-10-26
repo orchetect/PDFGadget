@@ -14,51 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "PDFGadget_PDFGadgetLibTests"
-               BuildableName = "PDFGadget_PDFGadgetLibTests"
-               BlueprintName = "PDFGadget_PDFGadgetLibTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "PDFGadgetLib"
                BuildableName = "PDFGadgetLib"
                BlueprintName = "PDFGadgetLib"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "NO"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "pdfgadget"
-               BuildableName = "pdfgadget"
-               BlueprintName = "pdfgadget"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "NO"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "pdfgadget-cli"
-               BuildableName = "pdfgadget-cli"
-               BlueprintName = "pdfgadget-cli"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -117,9 +75,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "PDFGadget_PDFGadgetLibTests"
-            BuildableName = "PDFGadget_PDFGadgetLibTests"
-            BlueprintName = "PDFGadget_PDFGadgetLibTests"
+            BlueprintIdentifier = "PDFGadgetLib"
+            BuildableName = "PDFGadgetLib"
+            BlueprintName = "PDFGadgetLib"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
