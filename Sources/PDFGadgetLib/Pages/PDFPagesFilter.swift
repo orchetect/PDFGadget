@@ -15,6 +15,8 @@ public enum PDFPagesFilter: Equatable, Hashable {
     case exclude(_ descriptors: [PDFPagesDescriptor])
 }
 
+extension PDFPagesFilter: Sendable { }
+
 extension PDFPagesFilter {
     func filtering(_ inputs: [Int], sort: Bool = true) -> IndexesDiff {
         var included = inputs

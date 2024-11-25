@@ -7,7 +7,7 @@
 #if canImport(PDFKit)
 
 import Foundation
-import PDFKit
+@preconcurrency import PDFKit
 
 extension PDFGadget {
     public enum VariableContent {
@@ -21,5 +21,7 @@ extension PDFGadget {
         case pdfDocument(PDFDocument)
     }
 }
+
+extension PDFGadget.VariableContent: Sendable { }
 
 #endif

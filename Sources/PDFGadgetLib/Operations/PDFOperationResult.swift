@@ -14,3 +14,5 @@ public enum PDFOperationResult: Equatable, Hashable {
     /// The operation resulted in one or more changes to the PDF file.
     case changed
 }
+
+extension PDFOperationResult: Sendable { }

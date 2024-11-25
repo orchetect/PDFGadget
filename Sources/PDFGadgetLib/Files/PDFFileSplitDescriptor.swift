@@ -20,6 +20,8 @@ public enum PDFFileSplitDescriptor: Equatable, Hashable {
     // TODO: add fileCount(Int) case to split a file into n number of files with equal number of pages each
 }
 
+extension PDFFileSplitDescriptor: Sendable { }
+
 extension PDFFileSplitDescriptor {
     func splits(source: PDFFile) -> [PDFOperation.PageRangeAndFilename] {
         var splits: [PDFOperation.PageRangeAndFilename] = []

@@ -84,4 +84,6 @@ extension PDFGadget {
     }
 }
 
+extension PDFGadget.Settings: Sendable { }
+
 #endif

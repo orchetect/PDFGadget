@@ -14,9 +14,12 @@ public struct PDFFileIntrospection {
     let id: UUID = .init()
     
     public var description: String
-    public var closure: (_ pdf: PDFDocument) -> Bool
+    public var closure: @Sendable (_ pdf: PDFDocument) -> Bool
     
-    public init(description: String, closure: @escaping (_ pdf: PDFDocument) -> Bool) {
+    public init(
+        description: String,
+        closure: @escaping @Sendable (_ pdf: PDFDocument) -> Bool
+    ) {
         self.description = description
         self.closure = closure
     }
@@ -34,5 +37,7 @@ extension PDFFileIntrospection: Hashable {
         // can't hash a closure
     }
 }
+
+extension PDFFileIntrospection: Sendable { }
 
 #endif

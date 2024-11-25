@@ -22,6 +22,8 @@ public enum PDFFilesDescriptor: Equatable, Hashable {
     case introspecting(_ introspection: PDFFileIntrospection)
 }
 
+extension PDFFilesDescriptor: Sendable { }
+
 extension PDFFilesDescriptor {
     /// Returns `nil` in the event of an error.
     func filtering(_ inputs: [PDFFile]) -> [PDFFile]? {

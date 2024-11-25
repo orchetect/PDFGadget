@@ -1,0 +1,41 @@
+//
+//  PDFOperation PDFTextDestination.swift
+//  PDFGadget • https://github.com/orchetect/PDFGadget
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
+//
+
+#if canImport(PDFKit)
+
+import Foundation
+
+/// A destination to transfer or save plain text.
+public enum PDFTextDestination: Equatable, Hashable {
+    /// System pasteboard (clipboard).
+    case pasteboard
+    
+    /// Save to a file on disk.
+    case file(url: URL)
+    
+    /// Store in memory in the ``PDFGadget`` instance's ``PDFGadget/variables`` dictionary,
+    /// keyed by the variable name.
+    ///
+    /// Appends or replaces variable.
+    case variable(named: String)
+}
+
+extension PDFTextDestination: Sendable { }
+
+extension PDFTextDestination {
+    public var verboseDescription: String {
+        switch self {
+        case .pasteboard:
+            return "pasteboard"
+        case let .file(url):
+            return url.absoluteString
+        case let .variable(name):
+            return "variable named \(name.quoted)"
+        }
+    }
+}
+
+#endif

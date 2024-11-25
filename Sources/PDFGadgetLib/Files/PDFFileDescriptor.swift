@@ -30,6 +30,8 @@ public enum PDFFileDescriptor: Equatable, Hashable {
     case introspecting(_ introspection: PDFFileIntrospection)
 }
 
+extension PDFFileDescriptor: Sendable { }
+
 extension PDFFileDescriptor {
     func first(in inputs: [PDFFile]) -> PDFFile? {
         switch self {

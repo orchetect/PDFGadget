@@ -113,6 +113,9 @@ extension PDFPagesDescriptor: Hashable {
     }
 }
 
+// Using `@unchecked` only because `RangeExpression` isn't Sendable
+extension PDFPagesDescriptor: @unchecked Sendable { }
+
 extension PDFPagesDescriptor {
     public var verboseDescription: String {
         switch self {

@@ -32,6 +32,8 @@ extension PDFPageRotation: CustomStringConvertible {
     }
 }
 
+extension PDFPageRotation: Sendable { }
+
 // MARK: - Angle
 
 extension PDFPageRotation {
@@ -61,6 +63,8 @@ extension PDFPageRotation.Angle: CustomStringConvertible {
         "\(rawValue) degrees"
     }
 }
+
+extension PDFPageRotation.Angle: Sendable { }
 
 extension PDFPageRotation.Angle {
     public static func + (lhs: Self, rhs: Self) -> Self {

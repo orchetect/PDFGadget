@@ -27,3 +27,5 @@ public struct IndexesDiff {
         included == original
     }
 }
+
+extension IndexesDiff: Sendable { }

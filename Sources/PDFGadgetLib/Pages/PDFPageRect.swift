@@ -25,6 +25,8 @@ public enum PDFPageRect: Equatable, Hashable {
     )
 }
 
+extension PDFPageRect: Sendable { }
+
 // MARK: - Static Constructors
 
 extension PDFPageRect {

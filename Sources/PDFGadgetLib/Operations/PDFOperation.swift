@@ -10,7 +10,7 @@ import Foundation
 import PDFKit
 
 /// PDF editing operations.
-public enum PDFOperation: Equatable, Hashable {
+public enum PDFOperation {
     // MARK: - File Operations
     
     /// New empty PDF file.
@@ -140,6 +140,12 @@ public enum PDFOperation: Equatable, Hashable {
     /// Attempts to remove document protections.
     case removeProtections(files: PDFFilesDescriptor)
 }
+
+extension PDFOperation: Equatable { }
+
+extension PDFOperation: Hashable { }
+
+extension PDFOperation: Sendable { }
 
 // MARK: - Static Constructors
 

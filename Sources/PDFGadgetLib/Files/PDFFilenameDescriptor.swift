@@ -34,6 +34,8 @@ public enum PDFFilenameDescriptor: Equatable, Hashable {
     // case doesNotMatch(regex: Regex)
 }
 
+extension PDFFilenameDescriptor: Sendable { }
+
 extension PDFFilenameDescriptor {
     public func matches(_ source: String) -> Bool {
         switch self {

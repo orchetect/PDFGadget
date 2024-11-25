@@ -15,7 +15,7 @@ import PDFGadgetLib
 struct PDFGadgetCLI: ParsableCommand {
     // MARK: - Config
     
-    static var configuration = CommandConfiguration(
+    static let configuration = CommandConfiguration(
         abstract: "PDF processing utilities.",
         discussion: "https://github.com/orchetect/PDFGadget",
         version: "0.1.1"

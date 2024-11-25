@@ -16,6 +16,8 @@ public enum PDFAnnotationFilter: Equatable, Hashable {
     case exclude(_ types: [PDFAnnotationSubtype])
 }
 
+extension PDFAnnotationFilter: Sendable { }
+
 extension PDFAnnotationFilter {
     func filtering(
         _ inputs: [PDFAnnotation]
