@@ -11,6 +11,8 @@ import Foundation
 /// A destination to transfer or save plain text.
 public enum PDFTextDestination: Equatable, Hashable {
     /// System pasteboard (clipboard).
+    @available(tvOS, unavailable)
+    @available(watchOS, unavailable)
     case pasteboard
     
     /// Save to a file on disk.

@@ -447,11 +447,17 @@ extension PDFGadget {
         
         switch destination {
         case .pasteboard:
+            #if !os(tvOS) && !os(watchOS)
             if !fullText.copyToClipboard() {
                 throw PDFGadgetError.runtimeError(
                     "Error while attempting to copy text to pasteboard."
                 )
             }
+            #else
+            throw PDFGadgetError.runtimeError(
+                "Copy text to pasteboard operation is unavailable on the current platform."
+            )
+            #endif
             
         case let .file(url):
             try fullText.write(to: url, atomically: false, encoding: .utf8)
