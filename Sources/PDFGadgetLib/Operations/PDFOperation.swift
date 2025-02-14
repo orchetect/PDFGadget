@@ -125,7 +125,7 @@ public enum PDFOperation {
     
     /// Filter annotation(s).
     case filterAnnotations(
-        file: PDFFileDescriptor,
+        files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         annotations: PDFAnnotationFilter
     )
@@ -279,8 +279,8 @@ extension PDFOperation {
         case let .cropPages(file, pages, area, process):
             return "Crop \(pages.verboseDescription) in \(file.verboseDescription) to \(area.verboseDescription) (\(process.verboseDescription))"
             
-        case let .filterAnnotations(file, pages, annotations):
-            return "Filter annotations \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"
+        case let .filterAnnotations(files, pages, annotations):
+            return "Filter annotations \(annotations.verboseDescription) for \(pages.verboseDescription) in \(files.verboseDescription)"
             
         case let .burnInAnnotations(files):
             return "Burn in annotations for \(files.verboseDescription)"

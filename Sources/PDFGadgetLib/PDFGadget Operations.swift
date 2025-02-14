@@ -422,11 +422,11 @@ extension PDFGadget {
     
     /// Filter annotations by type.
     func performFilterAnnotations(
-        file: PDFFileDescriptor,
+        files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         annotations: PDFAnnotationFilter
     ) throws -> PDFOperationResult {
-        try performPagesTransform(file: file, pages: pages) { page, pageDescription in
+        try performTransform(files: files, pages: pages) { page, pageDescription in
             let preCount = page.annotations.count
             var filteredCount = preCount
             for annotation in page.annotations {
@@ -442,6 +442,10 @@ extension PDFGadget {
                     "Could not remove \(annotations) annotations for \(pageDescription)."
                 )
             }
+            
+            return preCount != postCount
+                ? .changed
+                : .noChange(reason: nil)
         }
     }
     

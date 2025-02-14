@@ -517,7 +517,7 @@ import TestingExtensions
         // all
         
         try tool.perform(operations: [
-            .filterAnnotations(file: .first, pages: .all, annotations: .all)
+            .filterAnnotations(files: .first, pages: .all, annotations: .all)
         ])
         
         try #require(tool.pdfs.count == 1)
@@ -528,7 +528,7 @@ import TestingExtensions
         // specific subtypes
         
         try tool.perform(operations: [
-            .filterAnnotations(file: .first, pages: .all, annotations: .exclude([.circle, .square]))
+            .filterAnnotations(files: .first, pages: .all, annotations: .exclude([.circle, .square]))
         ])
         
         try #require(tool.pdfs.count == 1)
@@ -539,7 +539,7 @@ import TestingExtensions
         // none
         
         try tool.perform(operations: [
-            .filterAnnotations(file: .first, pages: .all, annotations: .none)
+            .filterAnnotations(files: .first, pages: .all, annotations: .none)
         ])
         
         try #require(tool.pdfs.count == 1)
@@ -581,7 +581,7 @@ import TestingExtensions
         defer { try? FileManager.default.removeItem(at: tempDir) }
         
         try tool.savePDFs(outputDir: tempDir)
-        let filename = tool.pdfs[0].filenameForExport + ".pdf"
+        let filename = tool.pdfs[0].filenameForExport(withExtension: true)
         let savedPDF = tempDir.appendingPathComponent(filename)
         let newDoc = try #require(PDFDocument(url: savedPDF))
         
