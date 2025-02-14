@@ -18,24 +18,6 @@ class PDFFile {
         self.doc = doc
         _customExportFilename = customExportFilename
     }
-    
-    /// Return the consolidated filename for export, without file extension.
-    var filenameForExport: String {
-        _customExportFilename
-            ?? doc.filenameWithoutExtension?.appending("-processed")
-            ?? "File"
-    }
-    
-    func set(filenameForExport: String?) {
-        _customExportFilename = filenameForExport
-    }
-    
-    /// Return the consolidated filename for filename text matching logic, without file extension.
-    var filenameForMatching: String {
-        _customExportFilename
-            ?? doc.filenameWithoutExtension
-            ?? ""
-    }
 }
 
 extension PDFFile: Equatable {
@@ -56,6 +38,31 @@ extension PDFFile: NSCopying {
             doc: doc.copy() as! PDFDocument,
             customExportFilename: _customExportFilename
         )
+    }
+}
+
+extension PDFFile {
+    /// Return the consolidated filename for export, without file extension.
+    var filenameForExport: String {
+        _customExportFilename
+        ?? doc.filenameWithoutExtension?.appending("-processed")
+        ?? "File"
+    }
+    
+    func set(filenameForExport: String?) {
+        _customExportFilename = filenameForExport
+    }
+    
+    /// Return the consolidated filename for filename text matching logic, without file extension.
+    var filenameForMatching: String {
+        _customExportFilename
+        ?? doc.filenameWithoutExtension
+        ?? ""
+    }
+    
+    /// Returns `true` if a custom file name was set.
+    var hasCustomExportFilename: Bool {
+        _customExportFilename != nil
     }
 }
 
