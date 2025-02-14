@@ -1,5 +1,5 @@
 //
-//  PDFPageRect.swift
+//  PDFPageArea.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
 //  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
@@ -7,7 +7,7 @@
 import Foundation
 internal import OTCore
 
-public enum PDFPageRect {
+public enum PDFPageArea {
     /// Scale the bounds by a uniform scale factor.
     /// `1.0` represents 1:1 scale to original.
     case scale(factor: Double)
@@ -39,15 +39,15 @@ public enum PDFPageRect {
     )
 }
 
-extension PDFPageRect: Equatable { }
+extension PDFPageArea: Equatable { }
 
-extension PDFPageRect: Hashable { }
+extension PDFPageArea: Hashable { }
 
-extension PDFPageRect: Sendable { }
+extension PDFPageArea: Sendable { }
 
 // MARK: - Static Constructors
 
-extension PDFPageRect {
+extension PDFPageArea {
     #if os(macOS)
     public static func scaleInsets(_ insets: NSEdgeInsets) -> Self {
         .scaleInsets(
@@ -72,7 +72,7 @@ extension PDFPageRect {
 #if canImport(SwiftUI)
 import SwiftUI
 
-extension PDFPageRect {
+extension PDFPageArea {
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public static func scaleInsets(_ insets: EdgeInsets) -> Self {
         .scaleInsets(
@@ -85,7 +85,7 @@ extension PDFPageRect {
 }
 #endif
 
-extension PDFPageRect {
+extension PDFPageArea {
     public func rect(
         for source: CGRect,
         rotation: PDFPageRotation.Angle = ._0degrees
@@ -164,7 +164,7 @@ extension PDFPageRect {
     }
 }
 
-extension PDFPageRect {
+extension PDFPageArea {
     public var verboseDescription: String {
         switch self {
         case let .scale(factor):

@@ -407,7 +407,7 @@ extension PDFGadget {
     func performCropPages(
         file: PDFFileDescriptor,
         pages: PDFPagesFilter,
-        area: PDFPageRect,
+        area: PDFPageArea,
         process: PDFOperation.ValueModification
     ) throws -> PDFOperationResult {
         try performPagesTransform(file: file, pages: pages) { page, _ in

@@ -115,7 +115,7 @@ public enum PDFOperation {
     case cropPages(
         file: PDFFileDescriptor,
         pages: PDFPagesFilter,
-        area: PDFPageRect,
+        area: PDFPageArea,
         process: PDFOperation.ValueModification = .relative
     )
     
