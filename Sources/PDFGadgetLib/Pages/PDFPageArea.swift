@@ -90,7 +90,7 @@ extension PDFPageArea {
     ) -> CGRect {
         switch self {
         case let .insets(top, leading, bottom, trailing):
-            var (top, leading, bottom, trailing) = Self.rotate(
+            var (top, leading, bottom, trailing) = PDFPageInset.rotate(
                 top: top,
                 leading: leading,
                 bottom: bottom,
@@ -155,30 +155,6 @@ extension PDFPageArea {
             // TODO: account for page rotation
             
             return CGRect(x: x, y: y, width: width, height: height)
-        }
-    }
-    
-    static func rotate(
-        top: PDFPageInset,
-        leading: PDFPageInset,
-        bottom: PDFPageInset,
-        trailing: PDFPageInset,
-        by rotation: PDFPageRotation.Angle
-    ) -> (
-        top: PDFPageInset,
-        leading: PDFPageInset,
-        bottom: PDFPageInset,
-        trailing: PDFPageInset
-    ) {
-        switch rotation {
-        case ._0degrees:
-            (top, leading, bottom, trailing)
-        case ._90degrees:
-            (trailing, top, leading, bottom)
-        case ._180degrees:
-            (bottom, trailing, top, leading)
-        case ._270degrees:
-            (leading, bottom, trailing, top)
         }
     }
 }
