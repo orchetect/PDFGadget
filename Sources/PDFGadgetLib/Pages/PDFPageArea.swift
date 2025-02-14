@@ -8,29 +8,16 @@ import Foundation
 internal import OTCore
 
 public enum PDFPageArea {
-    /// Scale the bounds by a uniform scale factor.
-    /// `1.0` represents 1:1 scale to original.
-    case scale(factor: Double)
-    
-    /// Scale insets individually by their own scale factor.
-    /// `1.0` represents 1:1 scale to original.
-    case scaleInsets(
-        top: Double = 1.0,
-        leading: Double = 1.0,
-        bottom: Double = 1.0,
-        trailing: Double = 1.0
-    )
-    
     /// Literal inset values.
     /// A value of zero represents no change.
     case insets(
-        top: Double = 0.0,
-        leading: Double = 0.0,
-        bottom: Double = 0.0,
-        trailing: Double = 0.0
+        top: PDFPageInset = .passthrough,
+        leading: PDFPageInset = .passthrough,
+        bottom: PDFPageInset = .passthrough,
+        trailing: PDFPageInset = .passthrough
     )
     
-    /// Literal bounds values.
+    /// Literal bounds values in points.
     case rect(
         x: Double,
         y: Double,
@@ -48,13 +35,24 @@ extension PDFPageArea: Sendable { }
 // MARK: - Static Constructors
 
 extension PDFPageArea {
+    /// Scale the bounds by a uniform scale factor.
+    /// `1.0` represents 1:1 scale to original.
+    public static func scale(factor: Double) -> Self {
+        .insets(
+            top: .scale(factor: factor),
+            leading: .scale(factor: factor),
+            bottom: .scale(factor: factor),
+            trailing: .scale(factor: factor)
+        )
+    }
+    
     #if os(macOS)
-    public static func scaleInsets(_ insets: NSEdgeInsets) -> Self {
-        .scaleInsets(
-            top: insets.top,
-            leading: insets.left,
-            bottom: insets.bottom,
-            trailing: insets.right
+    public static func insets(_ insets: NSEdgeInsets) -> Self {
+        .insets(
+            top: .points(insets.top),
+            leading: .points(insets.left),
+            bottom: .points(insets.bottom),
+            trailing: .points(insets.right)
         )
     }
     #endif
@@ -74,12 +72,12 @@ import SwiftUI
 
 extension PDFPageArea {
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    public static func scaleInsets(_ insets: EdgeInsets) -> Self {
-        .scaleInsets(
-            top: insets.top,
-            leading: insets.leading,
-            bottom: insets.bottom,
-            trailing: insets.trailing
+    public static func insets(_ insets: EdgeInsets) -> Self {
+        .insets(
+            top: .points(insets.top),
+            leading: .points(insets.leading),
+            bottom: .points(insets.bottom),
+            trailing: .points(insets.trailing)
         )
     }
 }
@@ -91,36 +89,6 @@ extension PDFPageArea {
         rotation: PDFPageRotation.Angle = ._0degrees
     ) -> CGRect {
         switch self {
-        case let .scale(factor):
-            // rotation has no effect
-            let factor = factor.clamped(to: 0.01 ... 100.0)
-            return source.scale(factor: factor)
-            
-        case let .scaleInsets(top, leading, bottom, trailing):
-            var (top, leading, bottom, trailing) = Self.rotate(
-                top: top,
-                leading: leading,
-                bottom: bottom,
-                trailing: trailing,
-                by: rotation
-            )
-            
-            top = top.clamped(to: 0.01 ... 100.0)
-            leading = leading.clamped(to: 0.01 ... 100.0)
-            bottom = bottom.clamped(to: 0.01 ... 100.0)
-            trailing = trailing.clamped(to: 0.01 ... 100.0)
-            
-            // TODO: Add additional guards for validation checks to prevent inversions
-            
-            let width = source.width * leading * trailing
-            let height = source.height * top * bottom
-            let x = source.origin.x
-                + (source.width - (source.width * leading))
-            let y = source.origin.y
-                + (source.height - (source.height * bottom))
-            
-            return CGRect(x: x, y: y, width: width, height: height)
-            
         case let .insets(top, leading, bottom, trailing):
             var (top, leading, bottom, trailing) = Self.rotate(
                 top: top,
@@ -130,27 +98,78 @@ extension PDFPageArea {
                 by: rotation
             )
             
-            // TODO: Add additional guards for validation checks to prevent inversions
+            var x = source.origin.x
+            var y = source.origin.y
+            var width = source.width
+            var height = source.height
             
-            let width = source.width + leading + trailing
-            let height = source.height + top + bottom
-            let x = source.origin.x - leading
-            let y = source.origin.y - bottom
+            switch top {
+            case let .points(value):
+                height += value
+            case var .scale(factor):
+                factor = factor.clamped(to: 0.01 ... 100.0)
+                height *= factor
+            case .passthrough:
+                break
+            }
+            
+            switch leading {
+            case let .points(value):
+                width += value
+                x -= value
+            case var .scale(factor):
+                factor = factor.clamped(to: 0.01 ... 100.0)
+                width *= factor
+                x += (source.width - (source.width * factor))
+            case .passthrough:
+                break
+            }
+            
+            switch bottom {
+            case let .points(value):
+                height += value
+                y -= value
+            case var .scale(factor):
+                factor = factor.clamped(to: 0.01 ... 100.0)
+                height *= factor
+                y += (source.height - (source.height * factor))
+            case .passthrough:
+                break
+            }
+            
+            switch trailing {
+            case let .points(value):
+                width += value
+            case var .scale(factor):
+                factor = factor.clamped(to: 0.01 ... 100.0)
+                width *= factor
+            case .passthrough:
+                break
+            }
+            
+            // TODO: Add additional guards for validation checks to prevent inversions
             
             return CGRect(x: x, y: y, width: width, height: height)
             
         case let .rect(x, y, width, height):
+            // TODO: account for page rotation
+            
             return CGRect(x: x, y: y, width: width, height: height)
         }
     }
     
     static func rotate(
-        top: Double,
-        leading: Double,
-        bottom: Double,
-        trailing: Double,
+        top: PDFPageInset,
+        leading: PDFPageInset,
+        bottom: PDFPageInset,
+        trailing: PDFPageInset,
         by rotation: PDFPageRotation.Angle
-    ) -> (top: Double, leading: Double, bottom: Double, trailing: Double) {
+    ) -> (
+        top: PDFPageInset,
+        leading: PDFPageInset,
+        bottom: PDFPageInset,
+        trailing: PDFPageInset
+    ) {
         switch rotation {
         case ._0degrees:
             (top, leading, bottom, trailing)
@@ -167,12 +186,8 @@ extension PDFPageArea {
 extension PDFPageArea {
     public var verboseDescription: String {
         switch self {
-        case let .scale(factor):
-            return "scale factor of \(factor)"
-        case let .scaleInsets(top, leading, bottom, trailing):
-            return "scale insets top:\(top) leading:\(leading) bottom:\(bottom) trailing:\(trailing)"
         case let .insets(top, leading, bottom, trailing):
-            return "insets top:\(top) leading:\(leading) bottom:\(bottom) trailing:\(trailing)"
+            return "insets top: \(top), leading: \(leading), bottom: \(bottom), trailing: \(trailing)"
         case let .rect(x, y, width, height):
             return "area x:\(x) y:\(y) w:\(width) h:\(height)"
         }

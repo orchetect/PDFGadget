@@ -26,9 +26,9 @@ extension PDFPageInset: CustomStringConvertible {
     public var description: String {
         switch self {
         case let .points(value):
-            "\(value)"
+            "\(value)pts"
         case let .scale(factor):
-            "scale x(\(factor))"
+            "scaled \(factor)x"
         case .passthrough:
             "same"
         }
