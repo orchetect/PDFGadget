@@ -12,16 +12,24 @@ import PDFKit
 /// Internal wrapper for `PDFDocument` to contain metadata for processing and exporting.
 class PDFFile {
     var doc: PDFDocument
-    private var _customExportFilename: String?
+    var writeOptions: [PDFDocumentWriteOption: Any]
+    private var customExportFilename: String?
     
-    init(doc: PDFDocument, customExportFilename: String? = nil) {
+    init(
+        doc: PDFDocument,
+        customExportFilename: String? = nil,
+        writeOptions: [PDFDocumentWriteOption: Any] = [:]
+    ) {
         self.doc = doc
-        _customExportFilename = customExportFilename
+        self.customExportFilename = customExportFilename
+        self.writeOptions = writeOptions
     }
     
     /// Initialize with a new empty `PDFDocument`.
     init() {
         doc = PDFDocument()
+        self.customExportFilename = nil
+        writeOptions = [:]
     }
 }
 
@@ -41,7 +49,8 @@ extension PDFFile: NSCopying {
     func copy(with zone: NSZone? = nil) -> Any {
         PDFFile(
             doc: doc.copy() as! PDFDocument,
-            customExportFilename: _customExportFilename
+            customExportFilename: customExportFilename,
+            writeOptions: writeOptions
         )
     }
 }
@@ -49,25 +58,25 @@ extension PDFFile: NSCopying {
 extension PDFFile {
     /// Return the consolidated filename for export, without file extension.
     var filenameForExport: String {
-        _customExportFilename
+        customExportFilename
             ?? doc.filenameWithoutExtension?.appending("-processed")
             ?? "File"
     }
     
     func set(filenameForExport: String?) {
-        _customExportFilename = filenameForExport
+        customExportFilename = filenameForExport
     }
     
     /// Return the consolidated filename for filename text matching logic, without file extension.
     var filenameForMatching: String {
-        _customExportFilename
+        customExportFilename
             ?? doc.filenameWithoutExtension
             ?? ""
     }
     
     /// Returns `true` if a custom file name was set.
     var hasCustomExportFilename: Bool {
-        _customExportFilename != nil
+        customExportFilename != nil
     }
 }
 

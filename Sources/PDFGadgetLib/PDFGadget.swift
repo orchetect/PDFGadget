@@ -146,7 +146,23 @@ extension PDFGadget {
             }
             
             logger.info("Saving to file \(outFilePath.path.quoted)...")
-            if !pdf.doc.write(to: outFilePath) {
+            
+            // PDFKit Obj-C header docs for `dataRepresentation(options:)`:
+            //
+            // "Methods to record the current state of the PDFDocument as data or a file.  Passing a QuartzFilter object
+            // in the options dictionary with the key @"QuartzFilter" will allow you to have the filter applied when
+            // saving the PDF."
+            
+            // PDFKit Obj-C header docs for `write(to:withOptions:)`:
+            //
+            // [This method] may take any CoreGraphics options that are typically  passed into CGPDFContextCreate(...)
+            // and CGPDFContextCreateWithURL(...)'s auxiliaryInfo dictionary. For encryption, you may provide an owner
+            // and user password via the keys PDFDocumentWriteOption, where the values should be non-zero length
+            // strings.
+            
+            // TL;DR - write options can only be used with `.write(to:withOptions:)`
+            
+            if !pdf.doc.write(to: outFilePath, withOptions: pdf.writeOptions) {
                 throw PDFGadgetError.runtimeError(
                     "An error occurred while attempting to save the PDF file."
                 )
@@ -231,6 +247,12 @@ extension PDFGadget {
             
         case let .filterAnnotations(file, pages, annotations):
             return try performFilterAnnotations(file: file, pages: pages, annotations: annotations)
+            
+        case let .burnInAnnotations(files):
+            guard #available(macOS 13.0, *) else {
+                throw PDFGadgetError.runtimeError("Burn in annotations is not supported. macOS 13 or higher is required.")
+            }
+            return try performBurnInAnnotations(files: files)
             
         case let .extractPlainText(file, pages, destination, pageBreak):
             return try performExtractPlainText(

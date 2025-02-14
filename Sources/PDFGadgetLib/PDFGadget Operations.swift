@@ -445,6 +445,34 @@ extension PDFGadget {
         }
     }
     
+    @available(macOS 13.0, *)
+    @available(iOS, unavailable)
+    @available(tvOS, unavailable)
+    @available(watchOS, unavailable)
+    @available(visionOS, unavailable)
+    func performBurnInAnnotations(
+        files: PDFFilesDescriptor
+    ) throws -> PDFOperationResult {
+        let pdfs = try expectZeroOrMoreFiles(files)
+        
+        guard !pdfs.isEmpty else {
+            return .noChange(reason: "No files specified.")
+        }
+        
+        var isChanged = false
+        
+        for pdf in pdfs {
+            if !pdf.writeOptions.keys.contains(.burnInAnnotationsOption) {
+                pdf.writeOptions[.burnInAnnotationsOption] = true
+                isChanged = true
+            }
+        }
+        
+        return isChanged
+            ? .changed
+            : .noChange(reason: "Option already set.")
+    }
+    
     func performExtractPlainText(
         file: PDFFileDescriptor,
         pages: PDFPagesFilter,

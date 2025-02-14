@@ -130,6 +130,11 @@ public enum PDFOperation {
         annotations: PDFAnnotationFilter
     )
     
+    /// Burn in annotations when exporting file to disk.
+    /// This applies to an entire file and cannot be applied to individual pages.
+    /// (macOS 13+)
+    case burnInAnnotations(files: PDFFilesDescriptor)
+    
     // --> nil out all annotations' `userName: String?` property etc.
     // case removeAnnotationAuthors(files: PDFFilesDescriptor, pages: PDFPagesFilter, for: PDFAnnotationFilter)
     
@@ -276,6 +281,9 @@ extension PDFOperation {
             
         case let .filterAnnotations(file, pages, annotations):
             return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"
+            
+        case let .burnInAnnotations(files):
+            return "Burn in annotations for \(files.verboseDescription)"
             
         case let .extractPlainText(file, pages, destination, _ /* pageBreak */ ):
             return "Extract plain text from \(pages.verboseDescription) in \(file.verboseDescription) to \(destination.verboseDescription)"
