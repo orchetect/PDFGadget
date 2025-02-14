@@ -497,8 +497,15 @@ extension PDFGadget {
         for file in files {
             // TODO: add checks to see if file has permissions set first, and skip removing protections if unnecessary and return `.noChange`
             
+            let originalFilenameForExport = file.filenameForExport
             let unprotectedFile = try file.doc.unprotectedCopy()
             file.doc = unprotectedFile
+            
+            // new PDFDocument does not inherit `documentURL` so we will set its custom filename
+            // since `documentURL` is a read-only property
+            if !file.hasCustomExportFilename {
+                file.set(filenameForExport: originalFilenameForExport)
+            }
         }
         
         return .changed
