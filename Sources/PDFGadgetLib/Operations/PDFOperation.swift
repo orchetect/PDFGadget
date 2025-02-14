@@ -105,15 +105,15 @@ public enum PDFOperation {
     /// the existing page.
     ///
     /// - Parameters:
-    ///   - file: File
-    ///   - pages: Pages
+    ///   - files: File(s).
+    ///   - pages: Page(s).
     ///   - area: Area descriptor.
     ///   - process: If `absolute`, the crop applied to the original media box dimensions,
     ///     even if a crop already exists (effectively, the crop is replaced and not augmented).
     ///     If `relative`, the the crop operation is applied relatively - if no crop exists, it is applied
     ///     to the media box, but if a crop exists, the existing crop is augmented.
     case cropPages(
-        file: PDFFileDescriptor,
+        files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         area: PDFPageArea,
         process: PDFOperation.ValueModification = .relative
@@ -276,8 +276,8 @@ extension PDFOperation {
         case let .rotatePages(files, pages, rotation):
             return "Rotate \(pages.verboseDescription) in \(files.verboseDescription) \(rotation.verboseDescription)"
             
-        case let .cropPages(file, pages, area, process):
-            return "Crop \(pages.verboseDescription) in \(file.verboseDescription) to \(area.verboseDescription) (\(process.verboseDescription))"
+        case let .cropPages(files, pages, area, process):
+            return "Crop \(pages.verboseDescription) in \(files.verboseDescription) to \(area.verboseDescription) (\(process.verboseDescription))"
             
         case let .filterAnnotations(files, pages, annotations):
             return "Filter annotations \(annotations.verboseDescription) for \(pages.verboseDescription) in \(files.verboseDescription)"

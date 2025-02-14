@@ -399,12 +399,12 @@ extension PDFGadget {
     }
     
     func performCropPages(
-        file: PDFFileDescriptor,
+        files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         area: PDFPageArea,
         process: PDFOperation.ValueModification
     ) throws -> PDFOperationResult {
-        try performTransform(file: file, pages: pages) { page, _ in
+        try performTransform(files: files, pages: pages) { page, _ in
             let originalCropBox = page.bounds(for: .cropBox)
             
             let bounds = switch process {
