@@ -97,9 +97,29 @@ public enum PDFOperation {
     /// Rotation can be absolute or relative to current page rotation (if any).
     case rotatePages(file: PDFFileDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
     
-    // TODO: case crop(pages: PDFPagesFilter, area: PDFPageRect)
+    /// Crop page(s) by the given area descriptor.
+    ///
+    /// For scaling descriptors, a value of `1.0` represents 1:1 scale (no change).
+    /// A crop cannot be larger than the source page's dimensions -- if a crop operation results in
+    /// bounds that extend past the original media box, the crop will be reduced to the extents of
+    /// the existing page.
+    ///
+    /// - Parameters:
+    ///   - file: File
+    ///   - pages: Pages
+    ///   - area: Area descriptor.
+    ///   - process: If `absolute`, the crop applied to the original media box dimensions,
+    ///     even if a crop already exists (effectively, the crop is replaced and not augmented).
+    ///     If `relative`, the the crop operation is applied relatively - if no crop exists, it is applied
+    ///     to the media box, but if a crop exists, the existing crop is augmented.
+    case cropPages(
+        file: PDFFileDescriptor,
+        pages: PDFPagesFilter,
+        area: PDFPageRect,
+        process: PDFOperation.ValueModification = .relative
+    )
     
-    // TODO: case flip(pages: PDFPagesFilter, axis: Axis) // -> use Quartz filter?
+    // TODO: case flip(file: PDFFileDescriptor, pages: PDFPagesFilter, axis: Axis) // -> use Quartz filter?
     
     // MARK: - Page Content Operations
     
@@ -250,6 +270,9 @@ extension PDFOperation {
             
         case let .rotatePages(file, pages, rotation):
             return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation)"
+            
+        case let .cropPages(file, pages, area, process):
+            return "Crop \(pages.verboseDescription) in \(file.verboseDescription) to \(area.verboseDescription) (\(process.verboseDescription))"
             
         case let .filterAnnotations(file, pages, annotations):
             return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"

@@ -7,9 +7,13 @@
 import Foundation
 internal import OTCore
 
-public enum PDFPageRect: Equatable, Hashable {
+public enum PDFPageRect {
+    /// Scale the bounds by a uniform scale factor.
+    /// `1.0` represents 1:1 scale to original.
     case scale(factor: Double)
     
+    /// Scale insets individually by their own scale factor.
+    /// `1.0` represents 1:1 scale to original.
     case scaleInsets(
         top: Double = 1.0,
         leading: Double = 1.0,
@@ -17,13 +21,18 @@ public enum PDFPageRect: Equatable, Hashable {
         trailing: Double = 1.0
     )
     
+    /// Literal bounds values.
     case rect(
-        x: Double = 0.0,
-        y: Double = 0.0,
-        width: Double = 1.0,
-        height: Double = 1.0
+        x: Double,
+        y: Double,
+        width: Double,
+        height: Double
     )
 }
+
+extension PDFPageRect: Equatable { }
+
+extension PDFPageRect: Hashable { }
 
 extension PDFPageRect: Sendable { }
 
@@ -75,17 +84,21 @@ extension PDFPageRect {
             return source.scale(factor: factor)
             
         case let .scaleInsets(top, leading, bottom, trailing):
-            guard top > 0, leading > 0, bottom > 0, trailing > 0 else { return source }
-            // TODO: Add additional guards for validation checks
+            let top = top.clamped(to: 0.01 ... 100.0)
+            let leading = leading.clamped(to: 0.01 ... 100.0)
+            let bottom = bottom.clamped(to: 0.01 ... 100.0)
+            let trailing = trailing.clamped(to: 0.01 ... 100.0)
             
-            var rect = source
+            // TODO: Add additional guards for validation checks to prevent inversions
             
-            rect.size.width = rect.width * leading * trailing
-            rect.size.height = rect.height * top * bottom
-            rect.origin.x = rect.origin.x + (rect.height - (rect.height * bottom))
-            rect.origin.y = rect.origin.y + (rect.width - (rect.width * leading))
+            let width = source.width * leading * trailing
+            let height = source.height * top * bottom
+            let x = source.origin.x
+                + (source.width - (source.width * leading))
+            let y = source.origin.y
+                + (source.height - (source.height * bottom))
             
-            return rect
+            return CGRect(x: x, y: y, width: width, height: height)
             
         case let .rect(x, y, width, height):
             return CGRect(x: x, y: y, width: width, height: height)
@@ -99,7 +112,7 @@ extension PDFPageRect {
         case let .scale(factor):
             return "scale factor of \(factor)"
         case let .scaleInsets(top, leading, bottom, trailing):
-            return "scale insets \(top) \(leading) \(bottom) \(trailing)"
+            return "scale insets top:\(top) leading:\(leading) bottom:\(bottom) trailing:\(trailing)"
         case let .rect(x, y, width, height):
             return "area x:\(x) y:\(y) w:\(width) h:\(height)"
         }

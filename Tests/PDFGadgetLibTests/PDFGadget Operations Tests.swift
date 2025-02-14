@@ -499,6 +499,8 @@ import TestingExtensions
         #expect(tool.pdfs[0].doc.page(at: 4)?.rotation == 0)
     }
     
+    // TODO: add unit test for crop operation
+    
     @Test func filterAnnotations() throws {
         let tool = PDFGadget()
         

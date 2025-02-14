@@ -404,6 +404,22 @@ extension PDFGadget {
         }
     }
     
+    func performCropPages(
+        file: PDFFileDescriptor,
+        pages: PDFPagesFilter,
+        area: PDFPageRect,
+        process: PDFOperation.ValueModification
+    ) throws -> PDFOperationResult {
+        try performPagesTransform(file: file, pages: pages) { page, _ in
+            // TODO: this needs to accommodate pages that are rotated, otherwise crop is always applied to non-rotated page bounds
+            let bounds = switch process {
+            case .absolute: page.bounds(for: .mediaBox)
+            case .relative: page.bounds(for: .cropBox)
+            }
+            page.setBounds(area.rect(for: bounds), for: .cropBox)
+        }
+    }
+    
     /// Filter annotations by type.
     func performFilterAnnotations(
         file: PDFFileDescriptor,
