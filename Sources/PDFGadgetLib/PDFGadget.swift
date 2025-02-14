@@ -239,8 +239,8 @@ extension PDFGadget {
         case let .reversePageOrder(file, pages):
             return try performReversePageOrder(file: file, pages: pages)
             
-        case let .rotatePages(file, pages, rotation):
-            return try performRotatePages(file: file, pages: pages, rotation: rotation)
+        case let .rotatePages(files, pages, rotation):
+            return try performRotatePages(files: files, pages: pages, rotation: rotation)
             
         case let .cropPages(file, pages, area, process):
             return try performCropPages(file: file, pages: pages, area: area, process: process)

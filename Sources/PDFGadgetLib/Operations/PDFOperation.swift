@@ -95,7 +95,7 @@ public enum PDFOperation {
     
     /// Rotate page(s) by a multiple of 90 degrees.
     /// Rotation can be absolute or relative to current page rotation (if any).
-    case rotatePages(file: PDFFileDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
+    case rotatePages(files: PDFFilesDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
     
     /// Crop page(s) by the given area descriptor.
     ///
@@ -273,8 +273,8 @@ extension PDFOperation {
         case let .reversePageOrder(file, pages):
             return "Reverse page order of \(pages.verboseDescription) in \(file.verboseDescription)"
             
-        case let .rotatePages(file, pages, rotation):
-            return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation.verboseDescription)"
+        case let .rotatePages(files, pages, rotation):
+            return "Rotate \(pages.verboseDescription) in \(files.verboseDescription) \(rotation.verboseDescription)"
             
         case let .cropPages(file, pages, area, process):
             return "Crop \(pages.verboseDescription) in \(file.verboseDescription) to \(area.verboseDescription) (\(process.verboseDescription))"

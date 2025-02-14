@@ -381,11 +381,11 @@ extension PDFGadget {
     
     /// Sets the rotation angle for the page in degrees.
     func performRotatePages(
-        file: PDFFileDescriptor,
+        files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         rotation: PDFPageRotation
     ) throws -> PDFOperationResult {
-        try performTransform(file: file, pages: pages) { page, _ in
+        try performTransform(files: files, pages: pages) { page, _ in
             let originalPageRotation = page.rotation
             
             let sourceAngle = PDFPageRotation.Angle(degrees: page.rotation) ?? ._0degrees
