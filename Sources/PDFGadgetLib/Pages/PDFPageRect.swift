@@ -21,6 +21,15 @@ public enum PDFPageRect {
         trailing: Double = 1.0
     )
     
+    /// Literal inset values.
+    /// A value of zero represents no change.
+    case insets(
+        top: Double = 0.0,
+        leading: Double = 0.0,
+        bottom: Double = 0.0,
+        trailing: Double = 0.0
+    )
+    
     /// Literal bounds values.
     case rect(
         x: Double,
@@ -77,17 +86,29 @@ extension PDFPageRect {
 #endif
 
 extension PDFPageRect {
-    public func rect(for source: CGRect) -> CGRect {
+    public func rect(
+        for source: CGRect,
+        rotation: PDFPageRotation.Angle = ._0degrees
+    ) -> CGRect {
         switch self {
         case let .scale(factor):
+            // rotation has no effect
             let factor = factor.clamped(to: 0.01 ... 100.0)
             return source.scale(factor: factor)
             
         case let .scaleInsets(top, leading, bottom, trailing):
-            let top = top.clamped(to: 0.01 ... 100.0)
-            let leading = leading.clamped(to: 0.01 ... 100.0)
-            let bottom = bottom.clamped(to: 0.01 ... 100.0)
-            let trailing = trailing.clamped(to: 0.01 ... 100.0)
+            var (top, leading, bottom, trailing) = Self.rotate(
+                top: top,
+                leading: leading,
+                bottom: bottom,
+                trailing: trailing,
+                by: rotation
+            )
+            
+            top = top.clamped(to: 0.01 ... 100.0)
+            leading = leading.clamped(to: 0.01 ... 100.0)
+            bottom = bottom.clamped(to: 0.01 ... 100.0)
+            trailing = trailing.clamped(to: 0.01 ... 100.0)
             
             // TODO: Add additional guards for validation checks to prevent inversions
             
@@ -100,8 +121,45 @@ extension PDFPageRect {
             
             return CGRect(x: x, y: y, width: width, height: height)
             
+        case let .insets(top, leading, bottom, trailing):
+            var (top, leading, bottom, trailing) = Self.rotate(
+                top: top,
+                leading: leading,
+                bottom: bottom,
+                trailing: trailing,
+                by: rotation
+            )
+            
+            // TODO: Add additional guards for validation checks to prevent inversions
+            
+            let width = source.width + leading + trailing
+            let height = source.height + top + bottom
+            let x = source.origin.x - leading
+            let y = source.origin.y - bottom
+            
+            return CGRect(x: x, y: y, width: width, height: height)
+            
         case let .rect(x, y, width, height):
             return CGRect(x: x, y: y, width: width, height: height)
+        }
+    }
+    
+    static func rotate(
+        top: Double,
+        leading: Double,
+        bottom: Double,
+        trailing: Double,
+        by rotation: PDFPageRotation.Angle
+    ) -> (top: Double, leading: Double, bottom: Double, trailing: Double) {
+        switch rotation {
+        case ._0degrees:
+            (top, leading, bottom, trailing)
+        case ._90degrees:
+            (trailing, top, leading, bottom)
+        case ._180degrees:
+            (bottom, trailing, top, leading)
+        case ._270degrees:
+            (leading, bottom, trailing, top)
         }
     }
 }
@@ -113,6 +171,8 @@ extension PDFPageRect {
             return "scale factor of \(factor)"
         case let .scaleInsets(top, leading, bottom, trailing):
             return "scale insets top:\(top) leading:\(leading) bottom:\(bottom) trailing:\(trailing)"
+        case let .insets(top, leading, bottom, trailing):
+            return "insets top:\(top) leading:\(leading) bottom:\(bottom) trailing:\(trailing)"
         case let .rect(x, y, width, height):
             return "area x:\(x) y:\(y) w:\(width) h:\(height)"
         }
