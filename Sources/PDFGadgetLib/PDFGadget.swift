@@ -242,8 +242,8 @@ extension PDFGadget {
         case let .rotatePages(files, pages, rotation):
             return try performRotatePages(files: files, pages: pages, rotation: rotation)
             
-        case let .cropPages(files, pages, area, process):
-            return try performCropPages(files: files, pages: pages, area: area, process: process)
+        case let .cropPages(files, pages, area, apply):
+            return try performCropPages(files: files, pages: pages, area: area, apply: apply)
             
         case let .filterAnnotations(files, pages, annotations):
             return try performFilterAnnotations(files: files, pages: pages, annotations: annotations)

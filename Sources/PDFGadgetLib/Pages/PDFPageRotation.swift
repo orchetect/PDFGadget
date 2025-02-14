@@ -11,15 +11,15 @@ import Foundation
 /// PDF editing page rotation descriptor.
 public struct PDFPageRotation {
     public var angle: Angle
-    public var process: PDFOperation.ChangeBehavior
+    public var changeBehavior: PDFOperation.ChangeBehavior
     
-    public init(angle: Angle, process: PDFOperation.ChangeBehavior = .relative) {
+    public init(angle: Angle, apply changeBehavior: PDFOperation.ChangeBehavior = .relative) {
         self.angle = angle
-        self.process = process
+        self.changeBehavior = changeBehavior
     }
     
     public func degrees(offsetting other: Angle = ._0degrees) -> Int {
-        switch process {
+        switch changeBehavior {
         case .absolute: return angle.degrees
         case .relative: return (angle + other).degrees
         }
@@ -32,7 +32,7 @@ extension PDFPageRotation: Hashable { }
 
 extension PDFPageRotation {
     public var verboseDescription: String {
-        "\(process == .relative ? "by" : "to") \(angle.verboseDescription)"
+        "\(changeBehavior == .relative ? "by" : "to") \(angle.verboseDescription)"
     }
 }
 

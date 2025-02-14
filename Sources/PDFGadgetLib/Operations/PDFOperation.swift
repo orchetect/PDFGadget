@@ -108,7 +108,7 @@ public enum PDFOperation {
     ///   - files: File(s).
     ///   - pages: Page(s).
     ///   - area: Area descriptor.
-    ///   - process: If `absolute`, the crop applied to the original media box dimensions,
+    ///   - apply: If `absolute`, the crop applied to the original media box dimensions,
     ///     even if a crop already exists (effectively, the crop is replaced and not augmented).
     ///     If `relative`, the the crop operation is applied relatively - if no crop exists, it is applied
     ///     to the media box, but if a crop exists, the existing crop is augmented.
@@ -116,7 +116,7 @@ public enum PDFOperation {
         files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         area: PDFPageArea,
-        process: PDFOperation.ChangeBehavior = .relative
+        apply: PDFOperation.ChangeBehavior = .relative
     )
     
     // TODO: case flip(file: PDFFileDescriptor, pages: PDFPagesFilter, axis: Axis) // -> use Quartz filter?

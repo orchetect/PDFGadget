@@ -473,7 +473,7 @@ import TestingExtensions
             .rotatePages(
                 files: .first,
                 pages: .include([.pages(indexes: [2])]),
-                rotation: .init(angle: ._180degrees, process: .absolute)
+                rotation: .init(angle: ._180degrees, apply: .absolute)
             )
         ])
         
@@ -488,7 +488,7 @@ import TestingExtensions
             .rotatePages(
                 files: .first,
                 pages: .include([.pages(indexes: [2])]),
-                rotation: .init(angle: ._90degrees, process: .relative)
+                rotation: .init(angle: ._90degrees, apply: .relative)
             )
         ])
         
