@@ -11,9 +11,9 @@ import Foundation
 /// PDF editing page rotation descriptor.
 public struct PDFPageRotation {
     public var angle: Angle
-    public var process: PDFOperation.ValueModification
+    public var process: PDFOperation.ChangeBehavior
     
-    public init(angle: Angle, process: PDFOperation.ValueModification = .relative) {
+    public init(angle: Angle, process: PDFOperation.ChangeBehavior = .relative) {
         self.angle = angle
         self.process = process
     }

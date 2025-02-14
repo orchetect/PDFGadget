@@ -116,7 +116,7 @@ public enum PDFOperation {
         files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         area: PDFPageArea,
-        process: PDFOperation.ValueModification = .relative
+        process: PDFOperation.ChangeBehavior = .relative
     )
     
     // TODO: case flip(file: PDFFileDescriptor, pages: PDFPagesFilter, axis: Axis) // -> use Quartz filter?

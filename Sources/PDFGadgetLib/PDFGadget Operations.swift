@@ -402,7 +402,7 @@ extension PDFGadget {
         files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         area: PDFPageArea,
-        process: PDFOperation.ValueModification
+        process: PDFOperation.ChangeBehavior
     ) throws -> PDFOperationResult {
         try performTransform(files: files, pages: pages) { page, _ in
             let originalCropBox = page.bounds(for: .cropBox)

@@ -1,5 +1,5 @@
 //
-//  PDFOperation ValueModification.swift
+//  PDFOperation ChangeBehavior.swift
 //  PDFGadget • https://github.com/orchetect/PDFGadget
 //  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
@@ -10,7 +10,7 @@ import Foundation
 
 extension PDFOperation {
     /// PDF editing operation value modification behavior.
-    public enum ValueModification {
+    public enum ChangeBehavior {
         /// Set absolute page rotation value, replacing existing rotation if any.
         case absolute
         
@@ -20,13 +20,13 @@ extension PDFOperation {
     }
 }
 
-extension PDFOperation.ValueModification: Equatable { }
+extension PDFOperation.ChangeBehavior: Equatable { }
 
-extension PDFOperation.ValueModification: Hashable { }
+extension PDFOperation.ChangeBehavior: Hashable { }
 
-extension PDFOperation.ValueModification: Sendable { }
+extension PDFOperation.ChangeBehavior: Sendable { }
 
-extension PDFOperation.ValueModification {
+extension PDFOperation.ChangeBehavior {
     public var verboseDescription: String {
         switch self {
         case .absolute:
