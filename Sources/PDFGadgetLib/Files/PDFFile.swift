@@ -55,6 +55,12 @@ extension PDFFile: NSCopying {
     }
 }
 
+extension PDFFile: CustomStringConvertible {
+    var description: String {
+        "PDFFile(\(filenameForExport(withExtension: true)))"
+    }
+}
+
 extension PDFFile {
     /// Return the consolidated filename for export, without file extension.
     var filenameForExport: String {
