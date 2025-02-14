@@ -499,7 +499,7 @@ import TestingExtensions
         #expect(tool.pdfs[0].doc.page(at: 4)?.rotation == 0)
     }
     
-    // TODO: add unit test for crop operation
+    // TODO: add unit test for 'crop' operation
     
     @Test func filterAnnotations() throws {
         let tool = PDFGadget()
@@ -508,13 +508,19 @@ import TestingExtensions
             testPDF1Page_withAttrAnno()
         ])
         
+        // initial conditions
+        
+        try #require(tool.pdfs.count == 1)
+        
+        #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 8)
+        
         // all
         
         try tool.perform(operations: [
             .filterAnnotations(file: .first, pages: .all, annotations: .all)
         ])
         
-        #expect(tool.pdfs.count == 1)
+        try #require(tool.pdfs.count == 1)
         
         #expect(tool.pdfs[0].doc.pageCount == 1)
         #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 8)
@@ -525,7 +531,7 @@ import TestingExtensions
             .filterAnnotations(file: .first, pages: .all, annotations: .exclude([.circle, .square]))
         ])
         
-        #expect(tool.pdfs.count == 1)
+        try #require(tool.pdfs.count == 1)
         
         #expect(tool.pdfs[0].doc.pageCount == 1)
         #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 6)
@@ -536,10 +542,50 @@ import TestingExtensions
             .filterAnnotations(file: .first, pages: .all, annotations: .none)
         ])
         
-        #expect(tool.pdfs.count == 1)
+        try #require(tool.pdfs.count == 1)
         
         #expect(tool.pdfs[0].doc.pageCount == 1)
         #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 0)
+    }
+    
+    @Test func burnInAnnotations() throws {
+        let tool = PDFGadget()
+        
+        try tool.load(pdfs: [
+            testPDF1Page_withAttrAnno()
+        ])
+        
+        // initial conditions
+        
+        try #require(tool.pdfs.count == 1)
+        
+        #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 8)
+        
+        // set option
+        
+        try tool.perform(operations: [
+            .burnInAnnotations(files: .all) // only takes effect on file write to disk
+        ])
+        
+        try #require(tool.pdfs.count == 1)
+        
+        #expect(tool.pdfs[0].doc.pageCount == 1)
+        #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 8)
+        
+        // write file and read it back
+        // (must write to disk, as `dataRepresentation(options:)` does not take write options)
+        
+        let tempDir = URL.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: false)
+        // defer cleanup
+        defer { try? FileManager.default.removeItem(at: tempDir) }
+        
+        try tool.savePDFs(outputDir: tempDir)
+        let filename = tool.pdfs[0].filenameForExport + ".pdf"
+        let savedPDF = tempDir.appendingPathComponent(filename)
+        let newDoc = try #require(PDFDocument(url: savedPDF))
+        
+        #expect(newDoc.page(at: 0)?.annotations.isEmpty == true)
     }
     
     @Test func extractPlainText() throws {
