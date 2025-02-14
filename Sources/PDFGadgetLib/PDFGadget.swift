@@ -114,7 +114,7 @@ extension PDFGadget {
     public func savePDFs(
         outputDir: URL?
     ) throws {
-        let filenames = pdfs.map(\.filenameForExport)
+        let filenames = pdfs.map { $0.filenameForExport(withExtension: false) }
         
         // ensure there are exactly the right number of filenames
         guard filenames.count == pdfs.count else {
@@ -245,8 +245,8 @@ extension PDFGadget {
         case let .cropPages(file, pages, area, process):
             return try performCropPages(file: file, pages: pages, area: area, process: process)
             
-        case let .filterAnnotations(file, pages, annotations):
-            return try performFilterAnnotations(file: file, pages: pages, annotations: annotations)
+        case let .filterAnnotations(files, pages, annotations):
+            return try performFilterAnnotations(files: files, pages: pages, annotations: annotations)
             
         case let .burnInAnnotations(files):
             guard #available(macOS 13.0, *) else {

@@ -62,15 +62,16 @@ extension PDFFile: CustomStringConvertible {
 }
 
 extension PDFFile {
-    /// Return the consolidated filename for export, without file extension.
-    var filenameForExport: String {
-        customExportFilename
+    /// Return the consolidated filename for export.
+    func filenameForExport(withExtension: Bool) -> String {
+        let base = customExportFilename
             ?? doc.filenameWithoutExtension?.appending("-processed")
             ?? "File"
+        return withExtension ? base + ".pdf" : base
     }
     
-    func set(filenameForExport: String?) {
-        customExportFilename = filenameForExport
+    func set(filenameForExportWithoutExtension filename: String?) {
+        customExportFilename = filename
     }
     
     /// Return the consolidated filename for filename text matching logic, without file extension.

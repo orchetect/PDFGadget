@@ -166,13 +166,13 @@ import TestingExtensions
         ])
         
         // just check default filename - not important for this test but we'll do it any way
-        #expect(tool.pdfs[1].filenameForExport == TestResource.pdf2pages.name + "-processed")
+        #expect(tool.pdfs[1].filenameForExport(withExtension: false) == TestResource.pdf2pages.name + "-processed")
         
         try tool.perform(operations: [
             .setFilename(file: .index(1), filename: "NewFileName")
         ])
         
-        #expect(tool.pdfs[1].filenameForExport == "NewFileName")
+        #expect(tool.pdfs[1].filenameForExport(withExtension: false) == "NewFileName")
     }
     
     @Test func setFilenames() throws {
@@ -185,18 +185,18 @@ import TestingExtensions
         ])
         
         // check default filenames first
-        #expect(tool.pdfs[0].filenameForExport == TestResource.pdf1page.name + "-processed")
-        #expect(tool.pdfs[1].filenameForExport == TestResource.pdf2pages.name + "-processed")
-        #expect(tool.pdfs[2].filenameForExport == TestResource.pdf5pages.name + "-processed")
+        #expect(tool.pdfs[0].filenameForExport(withExtension: false) == TestResource.pdf1page.name + "-processed")
+        #expect(tool.pdfs[1].filenameForExport(withExtension: false) == TestResource.pdf2pages.name + "-processed")
+        #expect(tool.pdfs[2].filenameForExport(withExtension: false) == TestResource.pdf5pages.name + "-processed")
         
         try tool.perform(operations: [
             .setFilenames(files: .all, filenames: ["Renamed1", "Renamed2", "Renamed3"])
         ])
         
         // check renamed files
-        #expect(tool.pdfs[0].filenameForExport == "Renamed1")
-        #expect(tool.pdfs[1].filenameForExport == "Renamed2")
-        #expect(tool.pdfs[2].filenameForExport == "Renamed3")
+        #expect(tool.pdfs[0].filenameForExport(withExtension: false) == "Renamed1")
+        #expect(tool.pdfs[1].filenameForExport(withExtension: false) == "Renamed2")
+        #expect(tool.pdfs[2].filenameForExport(withExtension: false) == "Renamed3")
     }
     
     @Test func removeFileAttributes() throws {

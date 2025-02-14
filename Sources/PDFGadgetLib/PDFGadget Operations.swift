@@ -95,12 +95,11 @@ extension PDFGadget {
             let newFile = PDFFile()
             
             if let filename = split.filename {
-                newFile.set(filenameForExport: filename)
+                newFile.set(filenameForExportWithoutExtension: filename)
             } else {
-                newFile.set(
-                    filenameForExport: newFile
-                        .filenameForExport + "-split\(dedupeFilenameCount)"
-                )
+                let newFilename = newFile.filenameForExport(withExtension: false)
+                    + "-split\(dedupeFilenameCount)"
+                newFile.set(filenameForExportWithoutExtension: newFilename)
                 dedupeFilenameCount += 1
             }
             newFile.doc.append(pages: pages)
@@ -156,9 +155,9 @@ extension PDFGadget {
         file pdf: PDFFile,
         filename: String?
     ) throws -> PDFOperationResult {
-        let oldFilename = pdf.filenameForExport
+        let oldFilename = pdf.filenameForExport(withExtension: false)
         
-        pdf.set(filenameForExport: filename)
+        pdf.set(filenameForExportWithoutExtension: filename)
         
         return filename == oldFilename
             ? .noChange(reason: "New filename is identical to old filename.")
@@ -529,14 +528,14 @@ extension PDFGadget {
         for file in files {
             // TODO: add checks to see if file has permissions set first, and skip removing protections if unnecessary and return `.noChange`
             
-            let originalFilenameForExport = file.filenameForExport
+            let originalFilenameForExport = file.filenameForExport(withExtension: false)
             let unprotectedFile = try file.doc.unprotectedCopy()
             file.doc = unprotectedFile
             
             // new PDFDocument does not inherit `documentURL` so we will set its custom filename
             // since `documentURL` is a read-only property
             if !file.hasCustomExportFilename {
-                file.set(filenameForExport: originalFilenameForExport)
+                file.set(filenameForExportWithoutExtension: originalFilenameForExport)
             }
         }
         
