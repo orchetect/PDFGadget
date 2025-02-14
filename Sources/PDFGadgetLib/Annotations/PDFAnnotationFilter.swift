@@ -74,11 +74,11 @@ extension PDFAnnotationFilter {
             return "no annotations"
             
         case let .include(types):
-            let typesStr = types.map(\.rawValue).joined(separator: ", ")
+            let typesStr = types.map(\.rawValue.quoted).joined(separator: ", ")
             return "including \(typesStr) annotations"
             
         case let .exclude(types):
-            let typesStr = types.map(\.rawValue).joined(separator: ", ")
+            let typesStr = types.map(\.rawValue.quoted).joined(separator: ", ")
             return "excluding \(typesStr) annotations"
         }
     }

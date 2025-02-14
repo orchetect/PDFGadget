@@ -230,7 +230,7 @@ extension PDFOperation {
             
         case let .setFilename(file, filename):
             if let filename {
-                return "Set filename for \(file.verboseDescription) to \(filename.quoted)"
+                return "Set filename for \(file.verboseDescription) to \(filename.quoted) (without extension)"
             } else {
                 return "Reset filename for \(file.verboseDescription))"
             }
@@ -240,16 +240,16 @@ extension PDFOperation {
                 .map { $0 ?? "<reset>" }
                 .map { $0.quoted }
                 .joined(separator: ", ")
-            return "Set \(files.verboseDescription) to \(formattedFilenames)"
+            return "Set filename(s) for \(files.verboseDescription) to \(formattedFilenames)"
             
         case let .removeFileAttributes(files):
             return "Remove attributes (metadata) for \(files.verboseDescription)"
             
         case let .setFileAttribute(files, attr, value):
             if let value {
-                return "Set \(attr) attribute value \(value.quoted) for \(files.verboseDescription)"
+                return "Set \(attr.rawValue) attribute value \(value.quoted) for \(files.verboseDescription)"
             } else {
-                return "Remove \(attr) attribute from \(files.verboseDescription)"
+                return "Remove \(attr.rawValue) attribute from \(files.verboseDescription)"
             }
         
         case let .filterPages(file, pages):
@@ -274,13 +274,13 @@ extension PDFOperation {
             return "Reverse page order of \(pages.verboseDescription) in \(file.verboseDescription)"
             
         case let .rotatePages(file, pages, rotation):
-            return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation)"
+            return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation.verboseDescription)"
             
         case let .cropPages(file, pages, area, process):
             return "Crop \(pages.verboseDescription) in \(file.verboseDescription) to \(area.verboseDescription) (\(process.verboseDescription))"
             
         case let .filterAnnotations(file, pages, annotations):
-            return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"
+            return "Filter annotations \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"
             
         case let .burnInAnnotations(files):
             return "Burn in annotations for \(files.verboseDescription)"

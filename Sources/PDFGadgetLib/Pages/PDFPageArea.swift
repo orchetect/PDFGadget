@@ -103,7 +103,7 @@ extension PDFPageArea {
     ) -> CGRect {
         switch self {
         case let .insets(top, leading, bottom, trailing):
-            var (top, leading, bottom, trailing) = PDFPageInset.rotate(
+            let (top, leading, bottom, trailing) = PDFPageInset.rotate(
                 top: top,
                 leading: leading,
                 bottom: bottom,
