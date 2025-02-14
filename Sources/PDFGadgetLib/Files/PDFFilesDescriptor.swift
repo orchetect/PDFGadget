@@ -19,6 +19,7 @@ public enum PDFFilesDescriptor {
     case indexes(_ indexes: [Int])
     case indexRange(_ indexRange: ClosedRange<Int>)
     case filename(_ filenameDescriptor: PDFFilenameDescriptor)
+    // case filenames(_ filenameDescriptors: [PDFFilenameDescriptor]) // TODO: add this
     case introspecting(_ introspection: PDFFileIntrospection)
 }
 

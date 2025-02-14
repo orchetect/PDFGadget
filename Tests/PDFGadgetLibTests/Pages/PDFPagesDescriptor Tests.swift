@@ -231,7 +231,6 @@ import TestingExtensions
     
     @Test func range() throws {
         let descriptor: PDFPagesDescriptor = .range(indexes: 1 ..< 3)
-        print(descriptor.verboseDescription)
         
         #expect(
             descriptor.filtering([]) ==
@@ -261,7 +260,6 @@ import TestingExtensions
     
     @Test func closedRange() throws {
         let descriptor: PDFPagesDescriptor = .range(indexes: 1 ... 3)
-        print(descriptor.verboseDescription)
         
         #expect(
             descriptor.filtering([]) ==
