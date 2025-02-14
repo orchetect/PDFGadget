@@ -152,9 +152,23 @@ extension PDFPageArea {
             return CGRect(x: x, y: y, width: width, height: height)
             
         case let .rect(x, y, width, height):
-            // TODO: account for page rotation
-            
-            return CGRect(x: x, y: y, width: width, height: height)
+            switch rotation {
+            case ._0degrees:
+                let x = source.origin.x + x
+                let y = source.origin.y + y
+                let w = width
+                let h = height
+                return CGRect(x: x, y: y, width: w, height: h)
+            case ._90degrees:
+                // TODO: account for page rotation
+                return CGRect(x: x, y: y, width: width, height: height)
+            case ._180degrees:
+                // TODO: account for page rotation
+                return CGRect(x: x, y: y, width: width, height: height)
+            case ._270degrees:
+                // TODO: account for page rotation
+                return CGRect(x: x, y: y, width: width, height: height)
+            }
         }
     }
 }
