@@ -4,11 +4,11 @@
 
 Batch PDF utilities with simple API for Swift. Declarative API for:
 
-- assigning or remove file attributes (metadata)
+- assigning or removing file attributes (metadata)
 - file filtering, ordering, and merging
 - page management: reordering, collation, copying, moving, and replacement
 - page presentation: rotation, cropping, etc.
-- page content: filtering or removal of annotations
+- page content: filtering, removal or burn-in of annotations
 
 > [!NOTE]
 > Currently this package is only a Swift library. A CLI tool and/or GUI frontend may be added in future.
@@ -78,11 +78,13 @@ The following are single operations that may be used in a batch sequence of oper
 - Replace pages by copying or moving them
 - Reverse page order (all or subset of pages)
 - Rotate pages
+- Crop pages
 - Split file into multiple files
 
 ### Page Content Operations
 
 - Filter annotations (by types, or remove all)
+- Burn in annotations
 - Extract plain text (to system pasteboard, to file on disk, or to variable in memory)
 
 ## Getting Started
