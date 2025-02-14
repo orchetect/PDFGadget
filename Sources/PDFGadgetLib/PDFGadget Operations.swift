@@ -411,12 +411,12 @@ extension PDFGadget {
         process: PDFOperation.ValueModification
     ) throws -> PDFOperationResult {
         try performPagesTransform(file: file, pages: pages) { page, _ in
-            // TODO: this needs to accommodate pages that are rotated, otherwise crop is always applied to non-rotated page bounds
             let bounds = switch process {
             case .absolute: page.bounds(for: .mediaBox)
             case .relative: page.bounds(for: .cropBox)
             }
-            page.setBounds(area.rect(for: bounds), for: .cropBox)
+            let rotationAngle = PDFPageRotation.Angle(degrees: page.rotation) ?? ._0degrees
+            page.setBounds(area.rect(for: bounds, rotation: rotationAngle), for: .cropBox)
         }
     }
     
