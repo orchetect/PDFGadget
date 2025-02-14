@@ -10,7 +10,7 @@ import Foundation
 
 extension PDFOperation {
     /// PDF editing operation value modification behavior.
-    public enum ValueModification: Equatable, Hashable {
+    public enum ValueModification {
         /// Set absolute page rotation value, replacing existing rotation if any.
         case absolute
         
@@ -19,6 +19,10 @@ extension PDFOperation {
         case relative
     }
 }
+
+extension PDFOperation.ValueModification: Equatable { }
+
+extension PDFOperation.ValueModification: Hashable { }
 
 extension PDFOperation.ValueModification: Sendable { }
 

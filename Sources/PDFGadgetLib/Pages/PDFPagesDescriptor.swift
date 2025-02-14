@@ -152,11 +152,6 @@ extension PDFPagesDescriptor {
 }
 
 extension PDFPagesDescriptor {
-    public struct FilterResult: Equatable {
-        let indexes: [Int]
-        let isInclusive: Bool
-    }
-    
     public func filtering(
         _ pageNumbers: [Int],
         sort: Bool = true

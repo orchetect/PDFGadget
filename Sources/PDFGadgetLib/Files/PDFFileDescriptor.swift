@@ -10,7 +10,7 @@ import Foundation
 import PDFKit
 
 /// Criteria to match a single PDF file.
-public enum PDFFileDescriptor: Equatable, Hashable {
+public enum PDFFileDescriptor {
     /// First file.
     case first
     
@@ -29,6 +29,10 @@ public enum PDFFileDescriptor: Equatable, Hashable {
     /// File matching against an introspection closure.
     case introspecting(_ introspection: PDFFileIntrospection)
 }
+
+extension PDFFileDescriptor: Equatable { }
+
+extension PDFFileDescriptor: Hashable { }
 
 extension PDFFileDescriptor: Sendable { }
 

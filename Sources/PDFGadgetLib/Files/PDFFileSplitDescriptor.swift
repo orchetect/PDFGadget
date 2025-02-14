@@ -11,7 +11,7 @@ internal import OTCore
 import PDFKit
 
 /// Criteria for splitting a PDF file.
-public enum PDFFileSplitDescriptor: Equatable, Hashable {
+public enum PDFFileSplitDescriptor {
     case at(pageIndexes: [Int])
     case every(pageCount: Int)
     case pageIndexesAndFilenames([PDFOperation.PageRangeAndFilename])
@@ -19,6 +19,10 @@ public enum PDFFileSplitDescriptor: Equatable, Hashable {
     
     // TODO: add fileCount(Int) case to split a file into n number of files with equal number of pages each
 }
+
+extension PDFFileSplitDescriptor: Equatable { }
+
+extension PDFFileSplitDescriptor: Hashable { }
 
 extension PDFFileSplitDescriptor: Sendable { }
 

@@ -22,8 +22,8 @@ extension PDFPageInset: Hashable { }
 
 extension PDFPageInset: Sendable { }
 
-extension PDFPageInset: CustomStringConvertible {
-    public var description: String {
+extension PDFPageInset {
+    public var verboseDescription: String {
         switch self {
         case let .points(value):
             "\(value)pts"

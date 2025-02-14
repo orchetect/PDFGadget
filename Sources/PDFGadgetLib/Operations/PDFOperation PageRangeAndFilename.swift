@@ -10,7 +10,7 @@ import Foundation
 
 extension PDFOperation {
     /// PDF editing operation page range & filename descriptor.
-    public struct PageRangeAndFilename: Equatable, Hashable {
+    public struct PageRangeAndFilename {
         public var pageRange: ClosedRange<Int>
         public var filename: String?
         
@@ -21,12 +21,16 @@ extension PDFOperation {
     }
 }
 
+extension PDFOperation.PageRangeAndFilename: Equatable { }
+
 extension PDFOperation.PageRangeAndFilename: Comparable {
     public static func < (lhs: Self, rhs: Self) -> Bool {
         // TODO: naïve sorting but mostly works, could be better
         lhs.pageRange.lowerBound < rhs.pageRange.lowerBound
     }
 }
+
+extension PDFOperation.PageRangeAndFilename: Hashable { }
 
 extension PDFOperation.PageRangeAndFilename: Sendable { }
 

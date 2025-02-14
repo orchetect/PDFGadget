@@ -9,12 +9,16 @@
 import Foundation
 import PDFKit
 
-public enum PDFAnnotationFilter: Equatable, Hashable {
+public enum PDFAnnotationFilter {
     case all
     case none
     case include(_ types: [PDFAnnotationSubtype])
     case exclude(_ types: [PDFAnnotationSubtype])
 }
+
+extension PDFAnnotationFilter: Equatable { }
+
+extension PDFAnnotationFilter: Hashable { }
 
 extension PDFAnnotationFilter: Sendable { }
 

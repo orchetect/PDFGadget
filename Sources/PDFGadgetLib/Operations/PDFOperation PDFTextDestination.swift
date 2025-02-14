@@ -9,7 +9,7 @@
 import Foundation
 
 /// A destination to transfer or save plain text.
-public enum PDFTextDestination: Equatable, Hashable {
+public enum PDFTextDestination {
     /// System pasteboard (clipboard).
     @available(tvOS, unavailable)
     @available(watchOS, unavailable)
@@ -24,6 +24,10 @@ public enum PDFTextDestination: Equatable, Hashable {
     /// Appends or replaces variable.
     case variable(named: String)
 }
+
+extension PDFTextDestination: Equatable { }
+
+extension PDFTextDestination: Hashable { }
 
 extension PDFTextDestination: Sendable { }
 

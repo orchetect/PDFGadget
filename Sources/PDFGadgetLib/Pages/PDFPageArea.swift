@@ -32,6 +32,17 @@ extension PDFPageArea: Hashable { }
 
 extension PDFPageArea: Sendable { }
 
+extension PDFPageArea {
+    public var verboseDescription: String {
+        switch self {
+        case let .insets(top, leading, bottom, trailing):
+            return "insets top: \(top.verboseDescription), leading: \(leading.verboseDescription), bottom: \(bottom.verboseDescription), trailing: \(trailing.verboseDescription)"
+        case let .rect(x, y, width, height):
+            return "area x:\(x) y:\(y) w:\(width) h:\(height)"
+        }
+    }
+}
+
 // MARK: - Static Constructors
 
 extension PDFPageArea {
@@ -82,6 +93,8 @@ extension PDFPageArea {
     }
 }
 #endif
+
+// MARK: - Methods
 
 extension PDFPageArea {
     public func rect(
@@ -169,17 +182,6 @@ extension PDFPageArea {
                 // TODO: account for page rotation
                 return CGRect(x: x, y: y, width: width, height: height)
             }
-        }
-    }
-}
-
-extension PDFPageArea {
-    public var verboseDescription: String {
-        switch self {
-        case let .insets(top, leading, bottom, trailing):
-            return "insets top: \(top), leading: \(leading), bottom: \(bottom), trailing: \(trailing)"
-        case let .rect(x, y, width, height):
-            return "area x:\(x) y:\(y) w:\(width) h:\(height)"
         }
     }
 }

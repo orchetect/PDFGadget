@@ -13,7 +13,7 @@ import PDFKit
 extension PDFGadget {
     /// New empty PDF files.
     func performNewFile() throws -> PDFOperationResult {
-        pdfs.append(newEmptyPDFFile())
+        pdfs.append(PDFFile())
         return .changed
     }
     
@@ -92,7 +92,7 @@ extension PDFGadget {
         var dedupeFilenameCount = 0
         for split in newSplits {
             let pages = try pdf.doc.pages(at: split.pageRange, copy: true)
-            let newFile = newEmptyPDFFile()
+            let newFile = PDFFile()
             
             if let filename = split.filename {
                 newFile.set(filenameForExport: filename)
@@ -515,10 +515,6 @@ extension PDFGadget {
 // MARK: - Helpers
 
 extension PDFGadget {
-    func newEmptyPDFFile() -> PDFFile {
-        PDFFile(doc: PDFDocument())
-    }
-    
     func expectOneFile(
         _ descriptor: PDFFileDescriptor,
         error: String? = nil
