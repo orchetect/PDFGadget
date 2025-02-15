@@ -232,7 +232,7 @@ extension PDFOperation {
             if let filename {
                 return "Set filename for \(file.verboseDescription) to \(filename.quoted) (without extension)"
             } else {
-                return "Reset filename for \(file.verboseDescription))"
+                return "Reset filename for \(file.verboseDescription)"
             }
             
         case let .setFilenames(files, filenames):
