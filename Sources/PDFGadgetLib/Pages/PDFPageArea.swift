@@ -165,22 +165,47 @@ extension PDFPageArea {
             return CGRect(x: x, y: y, width: width, height: height)
             
         case let .rect(x, y, width, height):
+            // associated values define a rect in the current rotation presentation,
+            // however PDFKit treats bounds in the page's non-rotated coordinate context.
+            // this means we need to "rotate" our coordinates respectively to convert them
+            // if the page is rotated.
+            
             switch rotation {
             case ._0degrees:
-                let x = source.origin.x + x
-                let y = source.origin.y + y
-                let w = width
-                let h = height
-                return CGRect(x: x, y: y, width: w, height: h)
+                var rect = CGRect(x: x, y: y, width: width, height: height)
+                rect.origin.x += source.origin.x
+                rect.origin.y += source.origin.y
+                return rect
             case ._90degrees:
-                // TODO: account for page rotation
-                return CGRect(x: x, y: y, width: width, height: height)
+                var rect = CGRect(x: x, y: y, width: width, height: height)
+                
+                var source = source.rotate90Degrees(within: source, isAbsolute: true)
+                rect = rect.rotate90Degrees(within: source, isAbsolute: false)
+                
+                source = source.rotate90Degrees(within: source, isAbsolute: true)
+                rect = rect.rotate90Degrees(within: source, isAbsolute: false)
+                
+                source = source.rotate90Degrees(within: source, isAbsolute: true)
+                rect = rect.rotate90Degrees(within: source, isAbsolute: false)
+                
+                return rect
             case ._180degrees:
-                // TODO: account for page rotation
-                return CGRect(x: x, y: y, width: width, height: height)
+                var rect = CGRect(x: x, y: y, width: width, height: height)
+                
+                var source = source
+                rect = rect.rotate90Degrees(within: source, isAbsolute: false)
+                
+                source = source.rotate90Degrees(within: source, isAbsolute: true)
+                rect = rect.rotate90Degrees(within: source, isAbsolute: false)
+                
+                return rect
             case ._270degrees:
-                // TODO: account for page rotation
-                return CGRect(x: x, y: y, width: width, height: height)
+                var rect = CGRect(x: x, y: y, width: width, height: height)
+                
+                let source = source.rotate90Degrees(within: source, isAbsolute: true)
+                rect = rect.rotate90Degrees(within: source, isAbsolute: false)
+                
+                return rect
             }
         }
     }
