@@ -40,3 +40,32 @@ extension URL {
         }
     }
 }
+
+extension CGRect {
+    /// Rotates the rect within its parent area, redefining the origin
+    ///
+    /// - Parameters:
+    ///   - area: Parent area.
+    ///   - isAbsolute: If `true`, this asserts that `self` and parent `area` share the same origin.
+    ///     If `false`, the calculation is treated as relative (the parent's area is treated as
+    ///     having a zero origin).
+    /// - Returns: The rotated rect.
+    func rotate90Degrees(
+        within area: CGRect,
+        isAbsolute: Bool
+    ) -> Self {
+        var rect = CGRect(
+            x: origin.y,
+            y: area.origin.y + area.width - width - (origin.x - area.origin.x),
+            width: height,
+            height: width
+        )
+        
+        if !isAbsolute {
+            rect.origin.x += area.origin.y
+            rect.origin.y -= area.origin.x
+        }
+        
+        return rect
+    }
+}

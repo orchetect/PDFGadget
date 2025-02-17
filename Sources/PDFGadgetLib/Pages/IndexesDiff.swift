@@ -28,4 +28,8 @@ public struct IndexesDiff {
     }
 }
 
+extension IndexesDiff: Equatable { }
+
+extension IndexesDiff: Hashable { }
+
 extension IndexesDiff: Sendable { }

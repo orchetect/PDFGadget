@@ -9,71 +9,33 @@
 import Foundation
 
 /// PDF editing page rotation descriptor.
-public struct PDFPageRotation: Equatable, Hashable {
+public struct PDFPageRotation {
     public var angle: Angle
-    public var process: PDFOperation.ValueModification
+    public var changeBehavior: PDFOperation.ChangeBehavior
     
-    public init(angle: Angle, process: PDFOperation.ValueModification = .relative) {
+    public init(angle: Angle, apply changeBehavior: PDFOperation.ChangeBehavior = .relative) {
         self.angle = angle
-        self.process = process
+        self.changeBehavior = changeBehavior
     }
     
     public func degrees(offsetting other: Angle = ._0degrees) -> Int {
-        switch process {
+        switch changeBehavior {
         case .absolute: return angle.degrees
         case .relative: return (angle + other).degrees
         }
     }
 }
 
-extension PDFPageRotation: CustomStringConvertible {
-    public var description: String {
-        "\(process == .relative ? "by" : "to") \(angle)"
+extension PDFPageRotation: Equatable { }
+
+extension PDFPageRotation: Hashable { }
+
+extension PDFPageRotation {
+    public var verboseDescription: String {
+        "\(changeBehavior == .relative ? "by" : "to") \(angle.verboseDescription)"
     }
 }
 
 extension PDFPageRotation: Sendable { }
-
-// MARK: - Angle
-
-extension PDFPageRotation {
-    /// PDF editing page rotation angle.
-    public enum Angle: Int {
-        case _0degrees = 0
-        case _90degrees = 90
-        case _180degrees = 180
-        case _270degrees = 270
-        
-        public init?(degrees: Int) {
-            if degrees < 0 {
-                self.init(rawValue: 360 + (degrees % 360))
-            } else {
-                self.init(rawValue: degrees % 360)
-            }
-        }
-        
-        public var degrees: Int {
-            rawValue
-        }
-    }
-}
-
-extension PDFPageRotation.Angle: CustomStringConvertible {
-    public var description: String {
-        "\(rawValue) degrees"
-    }
-}
-
-extension PDFPageRotation.Angle: Sendable { }
-
-extension PDFPageRotation.Angle {
-    public static func + (lhs: Self, rhs: Self) -> Self {
-        Self(degrees: lhs.degrees + rhs.degrees) ?? ._0degrees
-    }
-    
-    public static func - (lhs: Self, rhs: Self) -> Self {
-        Self(degrees: lhs.degrees - rhs.degrees) ?? ._0degrees
-    }
-}
 
 #endif

@@ -9,12 +9,16 @@
 import Foundation
 import PDFKit
 
-public enum PDFAnnotationFilter: Equatable, Hashable {
+public enum PDFAnnotationFilter {
     case all
     case none
     case include(_ types: [PDFAnnotationSubtype])
     case exclude(_ types: [PDFAnnotationSubtype])
 }
+
+extension PDFAnnotationFilter: Equatable { }
+
+extension PDFAnnotationFilter: Hashable { }
 
 extension PDFAnnotationFilter: Sendable { }
 
@@ -70,11 +74,11 @@ extension PDFAnnotationFilter {
             return "no annotations"
             
         case let .include(types):
-            let typesStr = types.map(\.rawValue).joined(separator: ", ")
+            let typesStr = types.map(\.rawValue.quoted).joined(separator: ", ")
             return "including \(typesStr) annotations"
             
         case let .exclude(types):
-            let typesStr = types.map(\.rawValue).joined(separator: ", ")
+            let typesStr = types.map(\.rawValue.quoted).joined(separator: ", ")
             return "excluding \(typesStr) annotations"
         }
     }

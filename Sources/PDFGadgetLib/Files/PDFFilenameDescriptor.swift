@@ -8,7 +8,7 @@ import Foundation
 internal import OTCore
 
 /// Criteria to match a PDF filename (excluding .pdf file extension).
-public enum PDFFilenameDescriptor: Equatable, Hashable {
+public enum PDFFilenameDescriptor {
     /// Exact full string match.
     case equals(String)
     
@@ -31,8 +31,13 @@ public enum PDFFilenameDescriptor: Equatable, Hashable {
     case doesNotContain(String)
     
     // case matches(regex: Regex)
+    
     // case doesNotMatch(regex: Regex)
 }
+
+extension PDFFilenameDescriptor: Equatable { }
+
+extension PDFFilenameDescriptor: Hashable { }
 
 extension PDFFilenameDescriptor: Sendable { }
 

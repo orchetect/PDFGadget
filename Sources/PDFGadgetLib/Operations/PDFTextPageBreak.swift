@@ -9,11 +9,15 @@
 import Foundation
 
 /// Character(s) to insert at PDF page breaks in plain text output.
-public enum PDFTextPageBreak: String, Equatable, Hashable {
+public enum PDFTextPageBreak: String {
     case none = ""
     case newLine = "\n"
     case doubleNewLine = "\n\n"
 }
+
+extension PDFTextPageBreak: Equatable { }
+
+extension PDFTextPageBreak: Hashable { }
 
 extension PDFTextPageBreak: Sendable { }
 

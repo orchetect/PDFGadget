@@ -95,20 +95,45 @@ public enum PDFOperation {
     
     /// Rotate page(s) by a multiple of 90 degrees.
     /// Rotation can be absolute or relative to current page rotation (if any).
-    case rotatePages(file: PDFFileDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
+    case rotatePages(files: PDFFilesDescriptor, pages: PDFPagesFilter, rotation: PDFPageRotation)
     
-    // TODO: case crop(pages: PDFPagesFilter, area: PDFPageRect)
+    /// Crop page(s) by the given area descriptor.
+    ///
+    /// For scaling descriptors, a value of `1.0` represents 1:1 scale (no change).
+    /// A crop cannot be larger than the source page's dimensions -- if a crop operation results in
+    /// bounds that extend past the original media box, the crop will be reduced to the extents of
+    /// the existing page.
+    ///
+    /// - Parameters:
+    ///   - files: File(s).
+    ///   - pages: Page(s).
+    ///   - area: Area descriptor.
+    ///   - apply: If `absolute`, the crop applied to the original media box dimensions,
+    ///     even if a crop already exists (effectively, the crop is replaced and not augmented).
+    ///     If `relative`, the the crop operation is applied relatively - if no crop exists, it is applied
+    ///     to the media box, but if a crop exists, the existing crop is augmented.
+    case cropPages(
+        files: PDFFilesDescriptor,
+        pages: PDFPagesFilter,
+        area: PDFPageArea,
+        apply: PDFOperation.ChangeBehavior = .relative
+    )
     
-    // TODO: case flip(pages: PDFPagesFilter, axis: Axis) // -> use Quartz filter?
+    // TODO: case flip(file: PDFFileDescriptor, pages: PDFPagesFilter, axis: Axis) // -> use Quartz filter?
     
     // MARK: - Page Content Operations
     
     /// Filter annotation(s).
     case filterAnnotations(
-        file: PDFFileDescriptor,
+        files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         annotations: PDFAnnotationFilter
     )
+    
+    /// Burn in annotations when exporting file to disk.
+    /// This applies to an entire file and cannot be applied to individual pages.
+    /// (macOS 13+)
+    case burnInAnnotations(files: PDFFilesDescriptor)
     
     // --> nil out all annotations' `userName: String?` property etc.
     // case removeAnnotationAuthors(files: PDFFilesDescriptor, pages: PDFPagesFilter, for: PDFAnnotationFilter)
@@ -205,9 +230,9 @@ extension PDFOperation {
             
         case let .setFilename(file, filename):
             if let filename {
-                return "Set filename for \(file.verboseDescription) to \(filename.quoted)"
+                return "Set filename for \(file.verboseDescription) to \(filename.quoted) (without extension)"
             } else {
-                return "Reset filename for \(file.verboseDescription))"
+                return "Reset filename for \(file.verboseDescription)"
             }
             
         case let .setFilenames(files, filenames):
@@ -215,16 +240,16 @@ extension PDFOperation {
                 .map { $0 ?? "<reset>" }
                 .map { $0.quoted }
                 .joined(separator: ", ")
-            return "Set \(files.verboseDescription) to \(formattedFilenames)"
+            return "Set filename(s) for \(files.verboseDescription) to \(formattedFilenames)"
             
         case let .removeFileAttributes(files):
             return "Remove attributes (metadata) for \(files.verboseDescription)"
             
         case let .setFileAttribute(files, attr, value):
             if let value {
-                return "Set \(attr) attribute value \(value.quoted) for \(files.verboseDescription)"
+                return "Set \(attr.rawValue) attribute value \(value.quoted) for \(files.verboseDescription)"
             } else {
-                return "Remove \(attr) attribute from \(files.verboseDescription)"
+                return "Remove \(attr.rawValue) attribute from \(files.verboseDescription)"
             }
         
         case let .filterPages(file, pages):
@@ -248,11 +273,17 @@ extension PDFOperation {
         case let .reversePageOrder(file, pages):
             return "Reverse page order of \(pages.verboseDescription) in \(file.verboseDescription)"
             
-        case let .rotatePages(file, pages, rotation):
-            return "Rotate \(pages.verboseDescription) in \(file.verboseDescription) \(rotation)"
+        case let .rotatePages(files, pages, rotation):
+            return "Rotate \(pages.verboseDescription) in \(files.verboseDescription) \(rotation.verboseDescription)"
             
-        case let .filterAnnotations(file, pages, annotations):
-            return "Filter \(annotations.verboseDescription) for \(pages.verboseDescription) in \(file.verboseDescription)"
+        case let .cropPages(files, pages, area, process):
+            return "Crop \(pages.verboseDescription) in \(files.verboseDescription) to \(area.verboseDescription) (\(process.verboseDescription))"
+            
+        case let .filterAnnotations(files, pages, annotations):
+            return "Filter annotations \(annotations.verboseDescription) for \(pages.verboseDescription) in \(files.verboseDescription)"
+            
+        case let .burnInAnnotations(files):
+            return "Burn in annotations for \(files.verboseDescription)"
             
         case let .extractPlainText(file, pages, destination, _ /* pageBreak */ ):
             return "Extract plain text from \(pages.verboseDescription) in \(file.verboseDescription) to \(destination.verboseDescription)"

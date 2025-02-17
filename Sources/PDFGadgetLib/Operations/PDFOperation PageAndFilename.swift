@@ -10,7 +10,7 @@ import Foundation
 
 extension PDFOperation {
     /// PDF editing operation page & filename descriptor.
-    public struct PageAndFilename: Equatable, Hashable {
+    public struct PageAndFilename {
         public var pageIndex: Int
         public var filename: String?
         
@@ -21,18 +21,22 @@ extension PDFOperation {
     }
 }
 
+extension PDFOperation.PageAndFilename: Equatable { }
+
 extension PDFOperation.PageAndFilename: Comparable {
     public static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.pageIndex < rhs.pageIndex
     }
 }
 
+extension PDFOperation.PageAndFilename: Hashable { }
+
 extension PDFOperation.PageAndFilename: Sendable { }
 
 extension PDFOperation.PageAndFilename {
     public var verboseDescription: String {
         if let filename {
-            return "page index \(pageIndex)  with name \(filename.quoted)"
+            return "page index \(pageIndex) with name \(filename.quoted)"
         } else {
             return "page index \(pageIndex)"
         }

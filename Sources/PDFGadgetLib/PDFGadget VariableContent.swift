@@ -22,6 +22,10 @@ extension PDFGadget {
     }
 }
 
+extension PDFGadget.VariableContent: Equatable { }
+
+extension PDFGadget.VariableContent: Hashable { }
+
 extension PDFGadget.VariableContent: Sendable { }
 
 #endif

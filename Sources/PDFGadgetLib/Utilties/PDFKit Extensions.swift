@@ -167,6 +167,8 @@ extension PDFDocument {
     /// This is based on the premise that copying pages to a new empty PDF document
     /// will strip the file's protections. This still works as of macOS 15 but it
     /// may break in future revisions to PDFKit.
+    ///
+    /// Note that the returned document will not inherit the source document's `documentURL`.
     @_disfavoredOverload
     public func unprotectedCopy() throws -> PDFDocument {
         let newPDF = PDFDocument()

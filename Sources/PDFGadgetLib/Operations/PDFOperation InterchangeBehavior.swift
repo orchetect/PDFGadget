@@ -10,11 +10,15 @@ import Foundation
 
 extension PDFOperation {
     /// PDF editing operation behavior.
-    public enum InterchangeBehavior: Equatable, Hashable {
+    public enum InterchangeBehavior {
         case copy
         case move
     }
 }
+
+extension PDFOperation.InterchangeBehavior: Equatable { }
+
+extension PDFOperation.InterchangeBehavior: Hashable { }
 
 extension PDFOperation.InterchangeBehavior: Sendable { }
 

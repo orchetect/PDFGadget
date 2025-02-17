@@ -13,7 +13,7 @@ import PDFKit
 extension PDFGadget {
     /// New empty PDF files.
     func performNewFile() throws -> PDFOperationResult {
-        pdfs.append(newEmptyPDFFile())
+        pdfs.append(PDFFile())
         return .changed
     }
     
@@ -92,15 +92,14 @@ extension PDFGadget {
         var dedupeFilenameCount = 0
         for split in newSplits {
             let pages = try pdf.doc.pages(at: split.pageRange, copy: true)
-            let newFile = newEmptyPDFFile()
+            let newFile = PDFFile()
             
             if let filename = split.filename {
-                newFile.set(filenameForExport: filename)
+                newFile.set(filenameForExportWithoutExtension: filename)
             } else {
-                newFile.set(
-                    filenameForExport: newFile
-                        .filenameForExport + "-split\(dedupeFilenameCount)"
-                )
+                let newFilename = newFile.filenameForExport(withExtension: false)
+                    + "-split\(dedupeFilenameCount)"
+                newFile.set(filenameForExportWithoutExtension: newFilename)
                 dedupeFilenameCount += 1
             }
             newFile.doc.append(pages: pages)
@@ -156,9 +155,9 @@ extension PDFGadget {
         file pdf: PDFFile,
         filename: String?
     ) throws -> PDFOperationResult {
-        let oldFilename = pdf.filenameForExport
+        let oldFilename = pdf.filenameForExport(withExtension: false)
         
-        pdf.set(filenameForExport: filename)
+        pdf.set(filenameForExportWithoutExtension: filename)
         
         return filename == oldFilename
             ? .noChange(reason: "New filename is identical to old filename.")
@@ -198,19 +197,13 @@ extension PDFGadget {
     func performRemoveFileAttributes(
         files: PDFFilesDescriptor
     ) throws -> PDFOperationResult {
-        let pdfs = try expectZeroOrMoreFiles(files)
-        
-        guard !pdfs.isEmpty else {
-            return .noChange(reason: "No files specified.")
-        }
-        
-        var result: PDFOperationResult = .noChange(reason: "No attributes were found.")
-        
-        for pdf in pdfs {
+        try performTransform(files: files) { pdf, _ in
+            var isChanged = false
+            
             // setting nil doesn't work, have to set empty dictionary instead
             if pdf.doc.documentAttributes?.isEmpty == false {
                 pdf.doc.documentAttributes = [:]
-                result = .changed
+                isChanged = true
             }
             // validation check
             guard pdf.doc.documentAttributes == nil
@@ -220,9 +213,9 @@ extension PDFGadget {
                     "Failed to remove attributes for \(pdf)."
                 )
             }
+            
+            return isChanged ? .changed : .noChange(reason: "No attributes were found.")
         }
-        
-        return result
     }
     
     /// Set an attribute's value for one or more files.
@@ -231,22 +224,16 @@ extension PDFGadget {
         attribute: PDFDocumentAttribute,
         value: String?
     ) throws -> PDFOperationResult {
-        let pdfs = try expectZeroOrMoreFiles(files)
-        
-        guard !pdfs.isEmpty else {
-            return .noChange(reason: "No files specified.")
-        }
-        
-        var result: PDFOperationResult = .noChange(reason: "Value(s) are identical.")
-        
-        for pdf in pdfs {
+        try performTransform(files: files) { pdf, _ in
+            var isChanged = false
+            
             if pdf.doc.documentAttributes == nil {
                 pdf.doc.documentAttributes = [:]
             }
             
             func assignValue() {
                 pdf.doc.documentAttributes?[attribute] = value
-                result = .changed
+                isChanged = true
             }
             
             if let existingValue = pdf.doc.documentAttributes?[attribute] as? String {
@@ -256,9 +243,9 @@ extension PDFGadget {
             } else {
                 assignValue()
             }
+            
+            return isChanged ? .changed : .noChange(reason: "Value(s) are identical.")
         }
-        
-        return result
     }
     
     /// Filter page(s).
@@ -394,23 +381,53 @@ extension PDFGadget {
     
     /// Sets the rotation angle for the page in degrees.
     func performRotatePages(
-        file: PDFFileDescriptor,
+        files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         rotation: PDFPageRotation
     ) throws -> PDFOperationResult {
-        try performPagesTransform(file: file, pages: pages) { page, _ in
+        try performTransform(files: files, pages: pages) { page, _ in
+            let originalPageRotation = page.rotation
+            
             let sourceAngle = PDFPageRotation.Angle(degrees: page.rotation) ?? ._0degrees
-            page.rotation = rotation.degrees(offsetting: sourceAngle)
+            let newPageRotation = rotation.degrees(offsetting: sourceAngle)
+            page.rotation = newPageRotation
+            
+            return originalPageRotation != newPageRotation
+                ? .changed
+                : .noChange(reason: nil)
+        }
+    }
+    
+    func performCropPages(
+        files: PDFFilesDescriptor,
+        pages: PDFPagesFilter,
+        area: PDFPageArea,
+        apply changeBehavior: PDFOperation.ChangeBehavior
+    ) throws -> PDFOperationResult {
+        try performTransform(files: files, pages: pages) { page, _ in
+            let originalCropBox = page.bounds(for: .cropBox)
+            
+            let bounds = switch changeBehavior {
+            case .absolute: page.bounds(for: .mediaBox)
+            case .relative: page.bounds(for: .cropBox)
+            }
+            let rotationAngle = PDFPageRotation.Angle(degrees: page.rotation) ?? ._0degrees
+            let newCropBox = area.rect(for: bounds, rotation: rotationAngle)
+            page.setBounds(newCropBox, for: .cropBox)
+            
+            return originalCropBox != newCropBox
+                ? .changed
+                : .noChange(reason: nil)
         }
     }
     
     /// Filter annotations by type.
     func performFilterAnnotations(
-        file: PDFFileDescriptor,
+        files: PDFFilesDescriptor,
         pages: PDFPagesFilter,
         annotations: PDFAnnotationFilter
     ) throws -> PDFOperationResult {
-        try performPagesTransform(file: file, pages: pages) { page, pageDescription in
+        try performTransform(files: files, pages: pages) { page, pageDescription in
             let preCount = page.annotations.count
             var filteredCount = preCount
             for annotation in page.annotations {
@@ -426,6 +443,25 @@ extension PDFGadget {
                     "Could not remove \(annotations) annotations for \(pageDescription)."
                 )
             }
+            
+            return preCount != postCount
+                ? .changed
+                : .noChange(reason: nil)
+        }
+    }
+    
+    @available(macOS 13.0, iOS 16.0, tvOS 16.0, *)
+    @available(watchOS, unavailable)
+    func performBurnInAnnotations(
+        files: PDFFilesDescriptor
+    ) throws -> PDFOperationResult {
+        try performTransform(files: files) { pdf, _ in
+            if !pdf.writeOptions.keys.contains(.burnInAnnotationsOption) {
+                pdf.writeOptions[.burnInAnnotationsOption] = true
+                return .changed
+            } else {
+                return .noChange(reason: "Option already set.")
+            }
         }
     }
     
@@ -435,12 +471,17 @@ extension PDFGadget {
         to destination: PDFTextDestination,
         pageBreak: PDFTextPageBreak
     ) throws -> PDFOperationResult {
+        let noChangeReason = "Reading plain text."
+        
         var pageTexts: [String] = []
         
         // discard result since this is a read-only operation
-        let _ = try performPagesTransform(file: file, pages: pages) { page, pageDescription in
-            guard let pageText = page.string else { return }
+        let _ = try performTransform(file: file, pages: pages) { page, pageDescription in
+            guard let pageText = page.string else {
+                return .noChange(reason: noChangeReason)
+            }
             pageTexts.append(pageText)
+            return .noChange(reason: noChangeReason)
         }
         
         let fullText = pageTexts.joined(separator: pageBreak.rawValue)
@@ -466,7 +507,7 @@ extension PDFGadget {
             variables[variableName] = .string(fullText)
         }
         
-        return .noChange(reason: "Reading plain text.")
+        return .noChange(reason: noChangeReason)
     }
     
     func performRemoveProtections(
@@ -481,8 +522,15 @@ extension PDFGadget {
         for file in files {
             // TODO: add checks to see if file has permissions set first, and skip removing protections if unnecessary and return `.noChange`
             
+            let originalFilenameForExport = file.filenameForExport(withExtension: false)
             let unprotectedFile = try file.doc.unprotectedCopy()
             file.doc = unprotectedFile
+            
+            // new PDFDocument does not inherit `documentURL` so we will set its custom filename
+            // since `documentURL` is a read-only property
+            if !file.hasCustomExportFilename {
+                file.set(filenameForExportWithoutExtension: originalFilenameForExport)
+            }
         }
         
         return .changed
@@ -492,10 +540,6 @@ extension PDFGadget {
 // MARK: - Helpers
 
 extension PDFGadget {
-    func newEmptyPDFFile() -> PDFFile {
-        PDFFile(doc: PDFDocument())
-    }
-    
     func expectOneFile(
         _ descriptor: PDFFileDescriptor,
         error: String? = nil
@@ -542,13 +586,65 @@ extension PDFGadget {
     }
     
     /// Generic wrapper for transforming page(s).
-    func performPagesTransform(
+    func performTransform(
+        files: PDFFilesDescriptor,
+        transform: (_ file: PDFFile, _ pageDescription: String) throws -> PDFOperationResult
+    ) throws -> PDFOperationResult {
+        let pdfs = try expectZeroOrMoreFiles(files)
+        
+        guard !pdfs.isEmpty else {
+            return .noChange(reason: "No files specified.")
+        }
+        
+        var returnResult: PDFOperationResult = .noChange(reason: nil)
+        
+        for pdf in pdfs {
+            let result = try transform(pdf, "file \(pdf)")
+            if returnResult != .changed { returnResult = result }
+        }
+        
+        return returnResult
+    }
+    
+    /// Generic wrapper for transforming page(s).
+    func performTransform(
+        files: PDFFilesDescriptor,
+        pages: PDFPagesFilter,
+        transform: (_ page: PDFPage, _ pageDescription: String) throws -> PDFOperationResult
+    ) throws -> PDFOperationResult {
+        let pdfs = try expectZeroOrMoreFiles(files)
+        
+        guard !pdfs.isEmpty else {
+            return .noChange(reason: "No files specified.")
+        }
+        
+        var returnResult: PDFOperationResult = .noChange(reason: nil)
+        
+        for pdf in pdfs {
+            let result = try performTransform(file: pdf, pages: pages, transform: transform)
+            if returnResult != .changed { returnResult = result }
+        }
+        
+        return returnResult
+    }
+    
+    /// Generic wrapper for transforming page(s).
+    func performTransform(
         file: PDFFileDescriptor,
         pages: PDFPagesFilter,
-        transform: (_ page: PDFPage, _ pageDescription: String) throws -> Void
+        transform: (_ page: PDFPage, _ pageDescription: String) throws -> PDFOperationResult
     ) throws -> PDFOperationResult {
         let pdf = try expectOneFile(file)
         
+        return try performTransform(file: pdf, pages: pages, transform: transform)
+    }
+    
+    /// Generic wrapper for transforming page(s).
+    func performTransform(
+        file pdf: PDFFile,
+        pages: PDFPagesFilter,
+        transform: (_ page: PDFPage, _ pageDescription: String) throws -> PDFOperationResult
+    ) throws -> PDFOperationResult {
         let pdfIndexes = try pdf.doc.pageIndexes(filter: pages)
         
         guard pdfIndexes.isInclusive else {
@@ -557,16 +653,19 @@ extension PDFGadget {
             )
         }
         
+        var returnResult: PDFOperationResult = .noChange(reason: nil)
+        
         for index in pdfIndexes.included {
             guard let page = pdf.doc.page(at: index) else {
                 throw PDFGadgetError.runtimeError(
-                    "Page number \(index + 1) of \(file) could not be read."
+                    "Page number \(index + 1) of \(pdf) could not be read."
                 )
             }
-            try transform(page, "page number \(index + 1) of \(file)")
+            let result = try transform(page, "page number \(index + 1) of \(pdf)")
+            if returnResult != .changed { returnResult = result }
         }
         
-        return .changed
+        return returnResult
     }
 }
 

@@ -4,6 +4,8 @@
 //  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 @testable import PDFGadgetLib
 import Testing
 import TestingExtensions
@@ -231,7 +233,6 @@ import TestingExtensions
     
     @Test func range() throws {
         let descriptor: PDFPagesDescriptor = .range(indexes: 1 ..< 3)
-        print(descriptor.verboseDescription)
         
         #expect(
             descriptor.filtering([]) ==
@@ -261,7 +262,6 @@ import TestingExtensions
     
     @Test func closedRange() throws {
         let descriptor: PDFPagesDescriptor = .range(indexes: 1 ... 3)
-        print(descriptor.verboseDescription)
         
         #expect(
             descriptor.filtering([]) ==
@@ -492,3 +492,5 @@ import TestingExtensions
         )
     }
 }
+
+#endif

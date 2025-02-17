@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 6.0
 // (be sure to update the .swift-version file when this Swift version changes)
 
 import PackageDescription
@@ -21,8 +21,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0"),
-        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.7.1"),
-        .package(url: "https://github.com/orchetect/swift-testing-extensions.git", from: "0.2.0")
+        .package(url: "https://github.com/orchetect/OTCore.git", from: "1.7.3"),
+        .package(url: "https://github.com/orchetect/swift-testing-extensions.git", from: "0.2.1")
     ],
     targets: [
         .target(

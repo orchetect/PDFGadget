@@ -166,13 +166,13 @@ import TestingExtensions
         ])
         
         // just check default filename - not important for this test but we'll do it any way
-        #expect(tool.pdfs[1].filenameForExport == TestResource.pdf2pages.name + "-processed")
+        #expect(tool.pdfs[1].filenameForExport(withExtension: false) == TestResource.pdf2pages.name + "-processed")
         
         try tool.perform(operations: [
             .setFilename(file: .index(1), filename: "NewFileName")
         ])
         
-        #expect(tool.pdfs[1].filenameForExport == "NewFileName")
+        #expect(tool.pdfs[1].filenameForExport(withExtension: false) == "NewFileName")
     }
     
     @Test func setFilenames() throws {
@@ -185,18 +185,18 @@ import TestingExtensions
         ])
         
         // check default filenames first
-        #expect(tool.pdfs[0].filenameForExport == TestResource.pdf1page.name + "-processed")
-        #expect(tool.pdfs[1].filenameForExport == TestResource.pdf2pages.name + "-processed")
-        #expect(tool.pdfs[2].filenameForExport == TestResource.pdf5pages.name + "-processed")
+        #expect(tool.pdfs[0].filenameForExport(withExtension: false) == TestResource.pdf1page.name + "-processed")
+        #expect(tool.pdfs[1].filenameForExport(withExtension: false) == TestResource.pdf2pages.name + "-processed")
+        #expect(tool.pdfs[2].filenameForExport(withExtension: false) == TestResource.pdf5pages.name + "-processed")
         
         try tool.perform(operations: [
             .setFilenames(files: .all, filenames: ["Renamed1", "Renamed2", "Renamed3"])
         ])
         
         // check renamed files
-        #expect(tool.pdfs[0].filenameForExport == "Renamed1")
-        #expect(tool.pdfs[1].filenameForExport == "Renamed2")
-        #expect(tool.pdfs[2].filenameForExport == "Renamed3")
+        #expect(tool.pdfs[0].filenameForExport(withExtension: false) == "Renamed1")
+        #expect(tool.pdfs[1].filenameForExport(withExtension: false) == "Renamed2")
+        #expect(tool.pdfs[2].filenameForExport(withExtension: false) == "Renamed3")
     }
     
     @Test func removeFileAttributes() throws {
@@ -471,9 +471,9 @@ import TestingExtensions
         // absolute rotation
         try tool.perform(operations: [
             .rotatePages(
-                file: .first,
+                files: .first,
                 pages: .include([.pages(indexes: [2])]),
-                rotation: .init(angle: ._180degrees, process: .absolute)
+                rotation: .init(angle: ._180degrees, apply: .absolute)
             )
         ])
         
@@ -486,9 +486,9 @@ import TestingExtensions
         // relative rotation
         try tool.perform(operations: [
             .rotatePages(
-                file: .first,
+                files: .first,
                 pages: .include([.pages(indexes: [2])]),
-                rotation: .init(angle: ._90degrees, process: .relative)
+                rotation: .init(angle: ._90degrees, apply: .relative)
             )
         ])
         
@@ -499,6 +499,8 @@ import TestingExtensions
         #expect(tool.pdfs[0].doc.page(at: 4)?.rotation == 0)
     }
     
+    // TODO: add unit test for 'crop' operation
+    
     @Test func filterAnnotations() throws {
         let tool = PDFGadget()
         
@@ -506,13 +508,19 @@ import TestingExtensions
             testPDF1Page_withAttrAnno()
         ])
         
+        // initial conditions
+        
+        try #require(tool.pdfs.count == 1)
+        
+        #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 8)
+        
         // all
         
         try tool.perform(operations: [
-            .filterAnnotations(file: .first, pages: .all, annotations: .all)
+            .filterAnnotations(files: .first, pages: .all, annotations: .all)
         ])
         
-        #expect(tool.pdfs.count == 1)
+        try #require(tool.pdfs.count == 1)
         
         #expect(tool.pdfs[0].doc.pageCount == 1)
         #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 8)
@@ -520,10 +528,10 @@ import TestingExtensions
         // specific subtypes
         
         try tool.perform(operations: [
-            .filterAnnotations(file: .first, pages: .all, annotations: .exclude([.circle, .square]))
+            .filterAnnotations(files: .first, pages: .all, annotations: .exclude([.circle, .square]))
         ])
         
-        #expect(tool.pdfs.count == 1)
+        try #require(tool.pdfs.count == 1)
         
         #expect(tool.pdfs[0].doc.pageCount == 1)
         #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 6)
@@ -531,13 +539,55 @@ import TestingExtensions
         // none
         
         try tool.perform(operations: [
-            .filterAnnotations(file: .first, pages: .all, annotations: .none)
+            .filterAnnotations(files: .first, pages: .all, annotations: .none)
         ])
         
-        #expect(tool.pdfs.count == 1)
+        try #require(tool.pdfs.count == 1)
         
         #expect(tool.pdfs[0].doc.pageCount == 1)
         #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 0)
+    }
+    
+    @available(watchOS, unavailable)
+    @Test func burnInAnnotations() throws {
+        let tool = PDFGadget()
+        
+        try tool.load(pdfs: [
+            testPDF1Page_withAttrAnno()
+        ])
+        
+        // initial conditions
+        
+        try #require(tool.pdfs.count == 1)
+        
+        #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 8)
+        
+        // set option
+        
+        try tool.perform(operations: [
+            .burnInAnnotations(files: .all) // only takes effect on file write to disk
+        ])
+        
+        try #require(tool.pdfs.count == 1)
+        
+        #expect(tool.pdfs[0].doc.pageCount == 1)
+        #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 8)
+        
+        // write file and read it back
+        // (must write to disk, as `dataRepresentation(options:)` does not take write options)
+        
+        let tempDir = FileManager.default.temporaryDirectoryCompat
+            .appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: false)
+        // defer cleanup
+        defer { try? FileManager.default.removeItem(at: tempDir) }
+        
+        try tool.savePDFs(outputDir: tempDir)
+        let filename = tool.pdfs[0].filenameForExport(withExtension: true)
+        let savedPDF = tempDir.appendingPathComponent(filename)
+        let newDoc = try #require(PDFDocument(url: savedPDF))
+        
+        #expect(newDoc.page(at: 0)?.annotations.isEmpty == true)
     }
     
     @Test func extractPlainText() throws {

@@ -4,16 +4,22 @@
 //  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
 internal import OTCore
 
 /// Criteria to filter PDF pages.
-public enum PDFPagesFilter: Equatable, Hashable {
+public enum PDFPagesFilter {
     case all
     // case none
     case include(_ descriptors: [PDFPagesDescriptor])
     case exclude(_ descriptors: [PDFPagesDescriptor])
 }
+
+extension PDFPagesFilter: Equatable { }
+
+extension PDFPagesFilter: Hashable { }
 
 extension PDFPagesFilter: Sendable { }
 
@@ -92,3 +98,5 @@ extension PDFPagesFilter {
         }
     }
 }
+
+#endif

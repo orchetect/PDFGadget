@@ -4,6 +4,8 @@
 //  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
 internal import OTCore
 
@@ -152,11 +154,6 @@ extension PDFPagesDescriptor {
 }
 
 extension PDFPagesDescriptor {
-    public struct FilterResult: Equatable {
-        let indexes: [Int]
-        let isInclusive: Bool
-    }
-    
     public func filtering(
         _ pageNumbers: [Int],
         sort: Bool = true
@@ -234,3 +231,5 @@ extension PDFPagesDescriptor {
         }
     }
 }
+
+#endif

@@ -11,16 +11,6 @@ internal import OTCore
 
 extension PDFGadget {
     public struct Settings {
-        public enum Defaults {
-            public static let operations: [PDFOperation] = []
-            public static let outputDir: URL? = nil
-            public static let savePDFs: Bool = true
-        }
-        
-        public enum Validation {
-            // public static let ... = 1 ... 10
-        }
-        
         public var sourcePDFs: [URL]
         public var outputDir: URL?
         public var operations: [PDFOperation]
@@ -52,38 +42,56 @@ extension PDFGadget {
             
             try validate()
         }
-        
-        private func validate() throws {
-            try sourcePDFs.forEach { url in
-                guard url.fileExists, url.isFolder == false else {
-                    throw PDFGadgetError.validationError(
-                        "File does not exist at \(url.path.quoted)."
-                    )
-                }
-            }
-            
-            if let outputDir {
-                guard outputDir.fileExists else {
-                    throw PDFGadgetError.validationError(
-                        "Output folder does not exist at \(outputDir.path.quoted)."
-                    )
-                }
-                guard outputDir.isFolder == true else {
-                    throw PDFGadgetError.validationError(
-                        "Output path is not a folder: \(outputDir.path.quoted)."
-                    )
-                }
-            }
-            
-            guard !operations.isEmpty else {
-                throw PDFGadgetError.validationError(
-                    "No operation(s) are specified."
-                )
-            }
-        }
     }
 }
 
 extension PDFGadget.Settings: Sendable { }
+
+// MARK: - Defaults
+
+extension PDFGadget.Settings {
+    public enum Defaults {
+        public static let operations: [PDFOperation] = []
+        public static let outputDir: URL? = nil
+        public static let savePDFs: Bool = true
+    }
+}
+
+// MARK: - Validation
+
+extension PDFGadget.Settings {
+    public enum Validation {
+        // public static let ... = 1 ... 10
+    }
+    
+    private func validate() throws {
+        try sourcePDFs.forEach { url in
+            guard url.fileExists, url.isFolder == false else {
+                throw PDFGadgetError.validationError(
+                    "File does not exist at \(url.path.quoted)."
+                )
+            }
+        }
+        
+        if let outputDir {
+            guard outputDir.fileExists else {
+                throw PDFGadgetError.validationError(
+                    "Output folder does not exist at \(outputDir.path.quoted)."
+                )
+            }
+            guard outputDir.isFolder == true else {
+                throw PDFGadgetError.validationError(
+                    "Output path is not a folder: \(outputDir.path.quoted)."
+                )
+            }
+        }
+        
+        guard !operations.isEmpty else {
+            throw PDFGadgetError.validationError(
+                "No operation(s) are specified."
+            )
+        }
+    }
+}
 
 #endif
