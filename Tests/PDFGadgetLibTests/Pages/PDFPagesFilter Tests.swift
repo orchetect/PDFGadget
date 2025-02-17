@@ -4,6 +4,8 @@
 //  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 @testable import PDFGadgetLib
 import Testing
 import TestingExtensions
@@ -183,3 +185,5 @@ import TestingExtensions
         }
     }
 }
+
+#endif

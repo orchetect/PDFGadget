@@ -4,6 +4,8 @@
 //  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 public enum PDFPageInset {
     /// A literal value in points.
     case points(Double)
@@ -62,3 +64,5 @@ extension PDFPageInset {
         }
     }
 }
+
+#endif

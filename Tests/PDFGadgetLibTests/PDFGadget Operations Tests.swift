@@ -548,6 +548,7 @@ import TestingExtensions
         #expect(tool.pdfs[0].doc.page(at: 0)?.annotations.count == 0)
     }
     
+    @available(watchOS, unavailable)
     @Test func burnInAnnotations() throws {
         let tool = PDFGadget()
         
@@ -575,7 +576,8 @@ import TestingExtensions
         // write file and read it back
         // (must write to disk, as `dataRepresentation(options:)` does not take write options)
         
-        let tempDir = URL.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let tempDir = FileManager.default.temporaryDirectoryCompat
+            .appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: false)
         // defer cleanup
         defer { try? FileManager.default.removeItem(at: tempDir) }

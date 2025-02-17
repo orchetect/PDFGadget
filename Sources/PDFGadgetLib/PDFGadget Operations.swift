@@ -450,11 +450,8 @@ extension PDFGadget {
         }
     }
     
-    @available(macOS 13.0, *)
-    @available(iOS, unavailable)
-    @available(tvOS, unavailable)
+    @available(macOS 13.0, iOS 16.0, tvOS 16.0, *)
     @available(watchOS, unavailable)
-    @available(visionOS, unavailable)
     func performBurnInAnnotations(
         files: PDFFilesDescriptor
     ) throws -> PDFOperationResult {

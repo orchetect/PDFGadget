@@ -4,6 +4,8 @@
 //  © 2023-2024 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(PDFKit)
+
 import Foundation
 internal import OTCore
 
@@ -210,3 +212,5 @@ extension PDFPageArea {
         }
     }
 }
+
+#endif

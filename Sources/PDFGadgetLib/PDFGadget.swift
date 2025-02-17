@@ -249,10 +249,15 @@ extension PDFGadget {
             return try performFilterAnnotations(files: files, pages: pages, annotations: annotations)
             
         case let .burnInAnnotations(files):
-            guard #available(macOS 13.0, *) else {
-                throw PDFGadgetError.runtimeError("Burn in annotations is not supported. macOS 13 or higher is required.")
+            let errorMessage = "Burn in annotations is not supported. macOS 13.0, iOS 16.0, or tvOS 16.0 is required."
+            guard #available(macOS 13.0, iOS 16.0, tvOS 16.0, *) else {
+                throw PDFGadgetError.runtimeError(errorMessage)
             }
+            #if !os(watchOS)
             return try performBurnInAnnotations(files: files)
+            #else
+            throw PDFGadgetError.runtimeError(errorMessage)
+            #endif
             
         case let .extractPlainText(file, pages, destination, pageBreak):
             return try performExtractPlainText(
