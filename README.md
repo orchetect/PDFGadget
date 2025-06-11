@@ -104,6 +104,13 @@ Licensed under the MIT license. See [LICENSE](/LICENSE) for details.
 
 If you enjoy using PDFGadget and want to contribute to open-source financially, GitHub sponsorship is much appreciated. Feedback and code contributions are also welcome.
 
-## Roadmap & Contributions
+## Community & Support
 
-Planned and in-progress features can be found in [Issues](https://github.com/orchetect/PDFGadget/issues). Any help is welcome and appreciated.
+Please do not email maintainers for technical support. Several options are available for issues and questions:
+
+- Questions and feature ideas can be posted to [Discussions](https://github.com/orchetect/PDFGadget/discussions).
+- If an issue is a verifiable bug with reproducible steps it may be posted in [Issues](https://github.com/orchetect/PDFGadget/issues).
+
+## Contributions
+
+Contributions are welcome. Posting in [Discussions](https://github.com/orchetect/PDFGadget/discussions) first prior to new submitting PRs for features or modifications is encouraged.
