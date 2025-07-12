@@ -25,7 +25,7 @@ extension PDFOperation: ExpressibleByArgument {
         }) else { return nil }
         let rawParams = String(argument.dropFirst(id.rawValue.count + 1))
         
-        print(id.rawValue, "with body:", String(rawParams).quoted)
+        logger.info("\(id.rawValue) with body: \(String(rawParams).quoted)")
         
         switch id {
         case .newFile:
