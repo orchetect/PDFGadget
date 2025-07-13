@@ -5,7 +5,7 @@
 //
 
 import CoreGraphics
-@testable import PDFGadgetLib
+@testable import PDFGadget
 import Testing
 
 @Suite struct CGRectTests {

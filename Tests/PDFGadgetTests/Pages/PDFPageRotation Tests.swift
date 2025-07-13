@@ -6,7 +6,7 @@
 
 #if canImport(PDFKit)
 
-@testable import PDFGadgetLib
+@testable import PDFGadget
 import Testing
 import TestingExtensions
 

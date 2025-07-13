@@ -10,8 +10,8 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "PDFGadgetLib",
-            targets: ["PDFGadgetLib"]
+            name: "PDFGadget",
+            targets: ["PDFGadget"]
         )
     ],
     dependencies: [
@@ -20,16 +20,16 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "PDFGadgetLib",
+            name: "PDFGadget",
             dependencies: [
                 "OTCore"
             ]
         ),
         .testTarget(
-            name: "PDFGadgetLibTests",
+            name: "PDFGadgetTests",
             dependencies: [
                 "OTCore",
-                "PDFGadgetLib",
+                "PDFGadget",
                 .product(name: "TestingExtensions", package: "swift-testing-extensions")
             ],
             resources: [.copy("TestResource/PDF Files")]

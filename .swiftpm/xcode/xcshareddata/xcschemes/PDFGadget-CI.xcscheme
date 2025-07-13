@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1600"
+   LastUpgradeVersion = "1640"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "PDFGadgetLib"
-               BuildableName = "PDFGadgetLib"
-               BlueprintName = "PDFGadgetLib"
+               BlueprintIdentifier = "PDFGadget"
+               BuildableName = "PDFGadget"
+               BlueprintName = "PDFGadget"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -34,9 +34,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "PDFGadgetLibTests"
-               BuildableName = "PDFGadgetLibTests"
-               BlueprintName = "PDFGadgetLibTests"
+               BlueprintIdentifier = "PDFGadgetTests"
+               BuildableName = "PDFGadgetTests"
+               BlueprintName = "PDFGadgetTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -59,6 +59,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "PDFGadget"
+            BuildableName = "PDFGadget"
+            BlueprintName = "PDFGadget"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
