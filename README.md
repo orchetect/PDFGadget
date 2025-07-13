@@ -10,9 +10,6 @@ Batch PDF utilities with simple API for Swift. Declarative API for:
 - page presentation: rotation, cropping, etc.
 - page content: filtering, removal or burn-in of annotations, removal of file protections
 
-> [!NOTE]
-> Currently this package is only a Swift library. A CLI tool and/or GUI frontend may be added in future.
-
 ## Basic Usage
 
 ```swift
