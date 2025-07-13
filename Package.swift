@@ -11,7 +11,6 @@ let package = Package(
     products: [
         .library(
             name: "PDFGadgetLib",
-            type: .static,
             targets: ["PDFGadgetLib"]
         )
     ],
