@@ -8,7 +8,7 @@
 
 import Foundation
 import os.log
-internal import OTCore
+internal import SwiftExtensions
 import PDFKit
 
 /// PDF editing toolkit offering declarative batch file & page operations.
@@ -287,7 +287,7 @@ extension PDFGadget {
         
         guard let folderPath,
               folderPath.fileExists,
-              folderPath.isFolder == true
+              folderPath.isDirectory
         else {
             throw PDFGadgetError.runtimeError(
                 "Could not determine output path. Output path is either not a folder or does not exist."

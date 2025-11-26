@@ -7,7 +7,7 @@
 #if canImport(PDFKit)
 
 import Foundation
-internal import OTCore
+internal import SwiftExtensions
 
 /// Criteria to filter PDF pages.
 public enum PDFPagesFilter {

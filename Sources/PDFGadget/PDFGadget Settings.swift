@@ -7,7 +7,7 @@
 #if canImport(PDFKit)
 
 import Foundation
-internal import OTCore
+internal import SwiftExtensions
 
 extension PDFGadget {
     public struct Settings {
@@ -66,7 +66,7 @@ extension PDFGadget.Settings {
     
     private func validate() throws {
         try sourcePDFs.forEach { url in
-            guard url.fileExists, url.isFolder == false else {
+            guard url.fileExists, url.isDirectory else {
                 throw PDFGadgetError.validationError(
                     "File does not exist at \(url.path.quoted)."
                 )
@@ -79,7 +79,7 @@ extension PDFGadget.Settings {
                     "Output folder does not exist at \(outputDir.path.quoted)."
                 )
             }
-            guard outputDir.isFolder == true else {
+            guard outputDir.isDirectory else {
                 throw PDFGadgetError.validationError(
                     "Output path is not a folder: \(outputDir.path.quoted)."
                 )

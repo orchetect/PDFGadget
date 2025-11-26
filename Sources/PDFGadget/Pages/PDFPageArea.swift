@@ -7,7 +7,7 @@
 #if canImport(PDFKit)
 
 import Foundation
-internal import OTCore
+internal import SwiftExtensions
 
 public enum PDFPageArea {
     /// Literal inset values.

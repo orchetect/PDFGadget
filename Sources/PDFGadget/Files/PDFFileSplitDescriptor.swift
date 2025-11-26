@@ -7,7 +7,7 @@
 #if canImport(PDFKit)
 
 import Foundation
-internal import OTCore
+internal import SwiftExtensions
 import PDFKit
 
 /// Criteria for splitting a PDF file.

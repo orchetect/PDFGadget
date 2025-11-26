@@ -5,7 +5,7 @@
 //
 
 import Foundation
-internal import OTCore
+internal import SwiftExtensions
 
 /// Criteria to match a PDF filename (excluding .pdf file extension).
 public enum PDFFilenameDescriptor {

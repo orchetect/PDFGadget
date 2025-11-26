@@ -7,7 +7,7 @@
 #if canImport(PDFKit)
 
 @testable import PDFGadget
-internal import OTCore
+internal import SwiftExtensions
 import PDFKit
 import Testing
 import TestingExtensions
