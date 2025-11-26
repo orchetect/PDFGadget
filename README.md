@@ -1,6 +1,6 @@
-# PDFGadget
+# swift-pdf-processor
 
-[![CI Build Status](https://github.com/orchetect/PDFGadget/actions/workflows/build.yml/badge.svg)](https://github.com/orchetect/PDFGadget/actions/workflows/build.yml) [![Platforms - macOS 11+ | iOS 14+ | visionOS 1+](https://img.shields.io/badge/platforms-macOS%2011+%20|%20iOS%2014+%20|%20visionOS%201+-lightgrey.svg?style=flat)](https://developer.apple.com/swift) ![Swift 6.0](https://img.shields.io/badge/Swift-6.0-orange.svg?style=flat) [![Xcode 16](https://img.shields.io/badge/Xcode-16-blue.svg?style=flat)](https://developer.apple.com/swift) [![License: MIT](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/orchetect/PDFGadget/blob/main/LICENSE)
+[![Platforms - macOS 11+ | iOS 14+ | visionOS 1+](https://img.shields.io/badge/platforms-macOS%2011+%20|%20iOS%2014+%20|%20visionOS%201+-lightgrey.svg?style=flat)](https://developer.apple.com/swift) ![Swift 6.0](https://img.shields.io/badge/Swift-6.0-orange.svg?style=flat) [![Xcode 16](https://img.shields.io/badge/Xcode-16-blue.svg?style=flat)](https://developer.apple.com/swift) [![License: MIT](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/orchetect/swift-pdf-processor/blob/main/LICENSE)
 
 Batch PDF utilities with simple API for Swift. Declarative API for:
 
@@ -10,10 +10,35 @@ Batch PDF utilities with simple API for Swift. Declarative API for:
 - page presentation: rotation, cropping, etc.
 - page content: filtering, removal or burn-in of annotations, removal of file protections
 
+## Installation
+
+### Swift Package Manager (SPM)
+
+To add this package to an Xcode app project, use:
+
+ `https://github.com/orchetect/swift-pdf-processor` as the URL.
+
+To add this package to a Swift package, add the dependency to your package and target in Package.swift:
+
+```swift
+let package = Package(
+    dependencies: [
+        .package(url: "https://github.com/orchetect/swift-pdf-processor", from: "0.3.0")
+    ],
+    targets: [
+        .target(
+            dependencies: [
+                .product(name: "PDFProcessor", package: "swift-pdf-processor")
+            ]
+        )
+    ]
+)
+```
+
 ## Basic Usage
 
 ```swift
-import PDFGadget
+import PDFProcessor
 
 let sources = [URL, URL, URL, ...] // URLs to one or more PDF files
 let outputDir = URL.desktopDirectory
@@ -22,24 +47,24 @@ let outputDir = URL.desktopDirectory
 The steps of loading source PDFs, performing operations, and saving the resulting PDFs can be performed individually:
 
 ```swift
-let pdfGadget = PDFGadget()
+let processor = PDFProcessor()
 
-try pdfGadget.load(pdfs: sources)
-try pdfGadget.perform(operations: [
+try processor.load(pdfs: sources)
+try processor.perform(operations: [
     // one or more operations
 ])
 
 // access the resulting PDF documents in memory
-pdfGadget.pdfDocuments // [PDFDocument]
+processor.pdfDocuments // [PDFDocument]
 
 // or save them as PDF files to disk
-try pdfGadget.savePDFs(outputDir: outputDir)
+try processor.savePDFs(outputDir: outputDir)
 ```
 
-Or a fully automated batch operation can be run with a single call to `run()` by passing in a populated instance of `PDFGadget.Settings`.
+Or a fully automated batch operation can be run with a single call to `run()` by passing in a populated instance of `PDFProcessor.Settings`.
 
 ```swift
-let settings = try PDFGadget.Settings(
+let settings = try PDFProcessor.Settings(
     sourcePDFs: sources,
     outputDir: outputDir,
     operations: [
@@ -48,7 +73,7 @@ let settings = try PDFGadget.Settings(
     savePDFs: true
 )
 
-try PDFGadget().run(using: settings)
+try PDFProcessor().run(using: settings)
 ```
 
 ## Batch Operations
@@ -85,11 +110,6 @@ The following are single operations that may be used in a batch sequence of oper
 - Burn in annotations
 - Extract plain text (to system pasteboard, to file on disk, or to variable in memory)
 
-## Getting Started
-
-1. Add the package to your application as a dependency using Swift Package Manager
-2. `import PDFGadget`
-
 ## Author
 
 Coded by a bunch of 🐹 hamsters in a trenchcoat that calls itself [@orchetect](https://github.com/orchetect).
@@ -100,15 +120,19 @@ Licensed under the MIT license. See [LICENSE](/LICENSE) for details.
 
 ## Sponsoring
 
-If you enjoy using PDFGadget and want to contribute to open-source financially, GitHub sponsorship is much appreciated. Feedback and code contributions are also welcome.
+If you enjoy using swift-pdf-processor and want to contribute to open-source financially, GitHub sponsorship is much appreciated. Feedback and code contributions are also welcome.
 
 ## Community & Support
 
 Please do not email maintainers for technical support. Several options are available for issues and questions:
 
-- Questions and feature ideas can be posted to [Discussions](https://github.com/orchetect/PDFGadget/discussions).
-- If an issue is a verifiable bug with reproducible steps it may be posted in [Issues](https://github.com/orchetect/PDFGadget/issues).
+- Questions and feature ideas can be posted to [Discussions](https://github.com/orchetect/swift-pdf-processor/discussions).
+- If an issue is a verifiable bug with reproducible steps it may be posted in [Issues](https://github.com/orchetect/swift-pdf-processor/issues).
 
 ## Contributions
 
-Contributions are welcome. Posting in [Discussions](https://github.com/orchetect/PDFGadget/discussions) first prior to new submitting PRs for features or modifications is encouraged.
+Contributions are welcome. Posting in [Discussions](https://github.com/orchetect/swift-pdf-processor/discussions) first prior to new submitting PRs for features or modifications is encouraged.
+
+## Legacy
+
+This repository was formerly known as PDFGadget.

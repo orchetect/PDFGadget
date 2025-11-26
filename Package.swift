@@ -4,14 +4,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "PDFGadget",
+    name: "swift-pdf-processor",
     platforms: [
         .macOS(.v11), .iOS(.v14), .tvOS(.v14), .watchOS(.v7)
     ],
     products: [
         .library(
-            name: "PDFGadget",
-            targets: ["PDFGadget"]
+            name: "PDFProcessor",
+            targets: ["PDFProcessor"]
         )
     ],
     dependencies: [
@@ -20,15 +20,15 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "PDFGadget",
+            name: "PDFProcessor",
             dependencies: [
                 .product(name: "SwiftExtensions", package: "swift-extensions")
             ]
         ),
         .testTarget(
-            name: "PDFGadgetTests",
+            name: "PDFProcessorTests",
             dependencies: [
-                "PDFGadget",
+                "PDFProcessor",
                 .product(name: "SwiftExtensions", package: "swift-extensions"),
                 .product(name: "TestingExtensions", package: "swift-testing-extensions")
             ],

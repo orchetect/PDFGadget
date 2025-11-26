@@ -1,0 +1,22 @@
+//
+//  PDFOperationResult.swift
+//  swift-pdf-processor • https://github.com/orchetect/swift-pdf-processor
+//  © 2023-2024 Steffan Andrews • Licensed under MIT License
+//
+
+import Foundation
+
+/// PDF editing operation result.
+public enum PDFOperationResult {
+    /// The operation did not result in any change to the PDF file.
+    case noChange(reason: String? = nil)
+    
+    /// The operation resulted in one or more changes to the PDF file.
+    case changed
+}
+
+extension PDFOperationResult: Equatable { }
+
+extension PDFOperationResult: Hashable { }
+
+extension PDFOperationResult: Sendable { }
